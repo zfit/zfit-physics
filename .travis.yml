@@ -1,0 +1,38 @@
+language: python
+os:
+- linux
+matrix:
+  include:
+  - python: 3.7
+    dist: xenial
+    sudo: true
+  - python: 3.6
+install: pip install -U tox-travis
+script:
+- tox
+- pip install -U .
+- bash utils/ci/test_examples.sh
+- pip install -r requirements_dev.txt
+after_success:
+- pip install coveralls
+- coveralls
+deploy:
+- provider: pypi
+  distributions: sdist bdist_wheel
+  user: zfit
+  password:
+    secure: ARUio2lGnsOSIvkQFA/eY1FDk+WTv9z3lPoD34BPx/RM3oRIjv3RgtF9XWRL3upB3Yn2Dcy5vzSrGmfeJYMrX6n6E86boR9nTUua1CTG+TRiOuCM1Nr0UeWL69AYWXn3jp2xYsKY4G2n8f+fLAHcwg4fqLNELO4JX57usHAz0eiBI50rYhbacREMcDg/s5NjoynK1ENMyjx09PXCFLcZoKhE/T38Qpkq8xL2q5N8KCzjgiRxhafZK45nma2fhVLgh3hBslMNEpjR7Ka3U+bq1VtLST/VksOVhGmRg9S6W3VoYQogsjLAR9qGE2Z6gt8H//OLifvEgrSxFCNNVf9Lun+9sv0DtgVVunr4h66rcbQKU94igD2iwEp/V9N3A5qPR8nbJ1kLZBG4543W0gbs75knR3LhEIaC6/lukDfRDYhrbB8088+0bX2JqXJIv1zoapdi1SBSDYfiwWk8ZS6uUp7ZCAlcXRUuMDMhDbhGPfDQMf14CCJw5W5oC/C895SpofDxXhuugYb65V6jENEA8ZdaXYxteK1B2VDfxqLEQOrJuWknDmFIiTrQccXeYtTCDCGznc696gag0Oo00vXOPFiG58nxX1320ToaQinxCPuBFrBkIuzw9OqSZ/NHGpl5MtJDNO5Xb4WYMMOxuhLmNEG9zcYds4wwxsjMc/WMtcc=
+  on:
+    branch: master
+    tags: true
+    repo: zfit/zfit-physics
+    python: 3.7
+- provider: pages
+  skip_cleanup: true
+  github_token:
+    secure: loN6oKtEEicR8O71eoeZLO7KEKjtE1EIo1FpWykbUmCB8KEFJz0KtDwwEcT9at2i3LfG6MEccaHtfTwsXycnP3YktFnFA+C0MxTgeKF1evWC1S/xED/vRr3OjczVjrhjZ4viDJmPGr4O+VaMeNf9usde9OmRBdUWUV7qhKk2CZwh8GcBH4XkbtdjQrQoXSJa4WVl6Ix0NNdQ/ckfQIt2Gw7HF2bggRdT31rGWx2FEHJUsb5632LJRCbkC/5p3N24Eqih0G472Q9DwrnZ3AqqjK+mLmFAghw6fy1992FqqH6QCZ9gbDkXmQqIQ0aL37A1S15NtDRXmj/a8uL5E76F4ybP3aKvxsPhkcTLK+ATk2rYtlAc+wD6/L+rUdKJEDZx855+aMhcS5F6mXBXjlTPLf1NU7jWcUjdIzEuLDOATmQs9EcFX3sv7sS8XB+Zrp4P2QpBHWuUlzmHqC6lVFLNSieqioHxXgvvIUyxHW5rVnkP2/FGUw0tyWtLO+8B/20d+Wdrgza2e5qmKK1s1YvmY7IkDc6IgbG8oMVnx7bsZmH7R3ZbT34T2qM7gPi5zM/C0Z+1HS5b2rG36HMlRVWEPFj+AhbnmHXCHlyUttbhcPzvYnuPspvaz4nyFXfv0JP+LMfJ+JhqExk1cKOLl6Ec4zN9z5icXAgpDeKZOViiUk8=
+  local_dir: docs/_build/html
+  keep-history: true
+  on:
+    branch: develop
+    condition: $TRAVIS_PYTHON_VERSION = "3.7" && $TRAVIS_OS_NAME = "linux"
