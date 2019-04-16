@@ -10,6 +10,7 @@ matrix:
 install: pip install -U tox-travis
 script:
 - tox
+- pip install git+https://github.com/zfit/zfit
 - pip install -U .
 - bash utils/ci/test_examples.sh
 - pip install -r requirements_dev.txt
