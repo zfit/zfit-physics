@@ -16,4 +16,6 @@ __credits__ = ["Jonas Eschle <jonas.eschle@cern.ch>",
                # TODO(release): add more, Anton etc
                ]
 
-__all__ = []
+__all__ = ["pdf"]
+
+from . import pdf
