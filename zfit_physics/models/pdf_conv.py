@@ -1,40 +1,45 @@
 from functools import reduce
 
 import tensorflow as tf
+import tensorflow_probability as tfp
 import zfit
+from zfit import ztf
 from zfit.util import ztyping
 from zfit.util import exception
 from zfit.util.container import convert_to_container
 from zfit.util.exception import DueToLazynessNotImplementedError
 
 
-class ConvContrib(zfit.pdf.BasePDF):
-    def __init__(self, func, kernel, limits: zfit.Space, obs: ztyping.ObsTypeInput, ndraws, name):
+class ConvPDF(zfit.pdf.BasePDF):
+    def __init__(self, func, kernel, obs: ztyping.ObsTypeInput, ndraws=20000, name="Convolution"):
         super().__init__(obs=obs, params={}, name=name)
-        if self.space.n_limits == 0:
+        limits = self.space
+        if limits.n_limits == 0:
             raise exception.LimitsNotSpecifiedError("obs have to have limits to define where to integrate over.")
-        ndraws = convert_to_container(ndraws)
-        if len(ndraws) == 1 and limits.n_obs == 2:
-            ndraws = (ndraws[0], ndraws[0])
-        if limits.n_obs == 2:
-            lower1, lower2, upper1, upper2 = limits.limit2d
-            x, y = tf.meshgrid(tf.linspace(lower1, upper1, ndraws[0]),
-                               tf.linspace(lower2, upper2, ndraws[1]))
-            grid_points = tf.concat([tf.reshape(x, [-1, 1]), tf.reshape(y, [-1, 1])], axis=1)
-        elif limits.n_obs == 1:
-            lower, upper = limits.limit1d
-            grid_points = tf.linspace(lower, upper, ndraws[0])
-        else:
-            raise DueToLazynessNotImplementedError("Only 1 and 2 dimensional convolution implemented currently.")
+        if limits.n_limits > 1:
+            raise DueToLazynessNotImplementedError("Multiple Limits not implemented")
 
-        self._grid_points = grid_points  # true vars
+        if isinstance(func, zfit.pdf.BasePDF):
+            func = lambda x: func.unnormalized_pdf(x=x)
+        if isinstance(kernel, zfit.pdf.BasePDF):
+            kernel = lambda x: kernel.unnormalized_pdf(x=x)
+
+        lower = limits.lower[0]
+        upper = limits.upper[0]
+        lower = ztf.convert_to_tensor(lower, dtype=self.dtype)
+        upper = ztf.convert_to_tensor(upper, dtype=self.dtype)
+        samples_normed = tfp.mcmc.sample_halton_sequence(dim=limits.n_obs, num_results=ndraws, dtype=self.dtype,
+                                                         randomized=False)
+        samples = samples_normed * (upper - lower) + lower  # samples is [0, 1], stretch it
+        sample_data = zfit.Data.from_tensor(obs=limits, tensor=samples)
+
+        self._grid_points = samples  # true vars
         self._kernel_func = kernel  # callable func of reco - true vars
-        self._func_values = func(grid_points)  # func of true vars
+        self._func_values = func(sample_data)  # func of true vars
         self._conv_limits = limits
 
     def _unnormalized_pdf(self, x):
-        x = x.unstack_x()
-        TODO continue here
         area = self._conv_limits.area()
-        return tf.map_fn(lambda xi: area * tf.reduce_mean(self._func_values * self._kernel_func(xi - self._grid_points)), x)  # func of reco vars
-
+        return tf.map_fn(
+            lambda xi: area * tf.reduce_mean(self._func_values * self._kernel_func(xi - self._grid_points)),
+            x)  # func of reco vars

@@ -1,4 +1,4 @@
-"""Example file of a custom pdf implementation. Create a modul for each pdf that you add."""
+"""Example file of a custom pdf implementation. Create a module for each pdf that you add."""
 import zfit
 
 class Example(zfit.pdf.ZPDF):
