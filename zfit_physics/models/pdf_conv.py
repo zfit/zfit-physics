@@ -33,13 +33,18 @@ class ConvPDF(zfit.pdf.BasePDF):
         samples = samples_normed * (upper - lower) + lower  # samples is [0, 1], stretch it
         sample_data = zfit.Data.from_tensor(obs=limits, tensor=samples)
 
-        self._grid_points = samples  # true vars
+        self._grid_points = sample_data  # true vars
         self._kernel_func = kernel  # callable func of reco - true vars
         self._func_values = func(sample_data)  # func of true vars
         self._conv_limits = limits
 
     def _unnormalized_pdf(self, x):
         area = self._conv_limits.area()
+        grid_points = tf.transpose(self._grid_points.value())
+        TODO fix shapes
+        return area * tf.reduce_mean(self._func_values * self._kernel_func(x - grid_points), axis=1)
+
+
         return tf.map_fn(
             lambda xi: area * tf.reduce_mean(self._func_values * self._kernel_func(xi - self._grid_points)),
             x)  # func of reco vars

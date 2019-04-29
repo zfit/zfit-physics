@@ -20,8 +20,11 @@ def test_conv_simple():
     conv = zphys.pdf.ConvPDF(func=lambda x: uniform1.pdf(x),
                              kernel=lambda x: gauss1.pdf(x), obs=obs)
 
-    probs = conv.pdf(x=np.linspace(-5, 5, 1000))
+    x = np.linspace(-5, 5, 1000)
+    probs = conv.pdf(x=x)
     probs_np = zfit.run(probs)
+
+
 
 
 
