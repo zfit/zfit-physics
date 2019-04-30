@@ -1,17 +1,35 @@
 import tensorflow as tf
 import tensorflow_probability.python.distributions as tfd
+from zfit import ztf
+from zfit.models.dist_tfp import WrapDistribution
+from zfit.util import ztyping
+from zfit.util.container import convert_to_container
 
 
-class KDE:  # multidimensional kde with gaussian kernel
-    def __init__(self, data, sigma):
-        n = data.shape[0].value  # ndata
-        d = data.shape[1].value  # ndim
-        # Bandwidth definition, use silverman's rule of thumb for 2d
-        cov = tf.diag([tf.square((4. / (d + 2.)) ** (1 / (d + 4)) * n ** (-1 / (d + 4)) * s) for s in sigma])
+class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kernel
+    def __init__(self, data: tf.Tensor, sigma: ztyping.ParamTypeInput, obs: ztyping.ObsTypeInput,
+                 name: str = "GaussianKDE"):
+        """Gaussian Kernel Density Estimation using Silverman's rule of thumb
+
+        Args:
+            data: Data points to build a kernel around
+            sigma: sigmas for the covariance matrix of the multivariate gaussian
+            obs:
+            name: Name of the PDF
+        """
+        size = tf.shape(data)[0]
+        dims = tf.shape(data)[-1]
+        sigma = convert_to_container(sigma)
+
+        # Bandwidth definition, use silverman's rule of thumb for nd
+        cov = tf.diag(
+            [tf.square((4. / (dims + 2.)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in sigma])
         # kernel prob output shape: (n,)
-        kern = tfd.Independent(tfd.MultivariateNormalFullCovariance(loc=data, covariance_matrix=cov))
-        # sum over n
-        self.kde = tfd.MixtureSameFamily(mixture_distribution=tfd.Categorical(probs=[1 / n] * n),
-                                         components_distribution=kern)
+        kernel = tfd.MultivariateNormalFullCovariance(loc=data, covariance_matrix=cov)
+        reshaped_kernel = tfd.Independent(kernel)
 
-    def prob(self, x): return self.kde.prob(x)
+        categorical = tfd.Categorical(probs=ztf.constant(1 / size, shape=(size,)))  # no grad -> no need to recreate
+        dist_params = dict(mixture_distribution=categorical,
+                           components_distribution=reshaped_kernel)
+        distribution = tfd.MixtureSameFamily
+        super().__init__(distribution=distribution, dist_params=dist_params, obs=obs, name=name)
