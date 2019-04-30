@@ -23,7 +23,7 @@ def test_conv_simple():
     x = np.linspace(-5, 5, 1000)
     probs = conv.pdf(x=x)
     probs_np = zfit.run(probs)
-
+    assert len(probs_np) == 1000
 
 
 
