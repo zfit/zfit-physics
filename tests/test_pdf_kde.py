@@ -1,6 +1,7 @@
 """Example test for a pdf or function"""
 
 import zfit
+import numpy as np
 # Important, do the imports below
 from zfit.core.testing import setup_function, teardown_function, tester
 
@@ -11,17 +12,29 @@ param1_true = 0.3
 param2_true = 1.2
 
 
-def test_special_property1():
+def test_simple_kde():
     # test special properties  here
-    assert True
+    data = np.random.normal(size=(100, 3))
+    sigmas = [0.5, 1., 2]
+    lower = ((-5, -5, -5),)
+    upper = ((5, 5, 5),)
+    obs = zfit.Space(["obs1", "obs2", "obs3"], limits=(lower, upper))
+
+    kde = zphys.pdf.GaussianKDE(data=data, sigma=sigmas, obs=obs)
+
+    probs = kde.pdf(x=data + 0.03)
+    probs_np = zfit.run(probs)
 
 
 # register the pdf here and provide sets of working parameter configurations
 
 def _kde_params_factory():
-    mu_ = zfit.Parameter('mu_cb', param1_true)
-    sigma_ = zfit.Parameter('sigma_cb', param2_true)
-    return {"mu": mu_, "sigma": sigma_}
+    data = np.random.normal(size=(100, 3))
+    sigmas = [0.5, 1., 2]
+    lower = ((-5, -5, -5),)
+    upper = ((5, 5, 5),)
+    obs = zfit.Space(["obs1", "obs2", "obs3"], limits=(lower, upper))
+    return {"data": data, "sigma": sigmas, "obs": obs}
 
 
-tester.register_pdf(pdf_class=zfit.pdf.Gauss, params_factories=_gauss_params_factory())
+tester.register_pdf(pdf_class=zphys.pdf.GaussianKDE, params_factories=_kde_params_factory())
