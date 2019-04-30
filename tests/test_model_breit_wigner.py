@@ -21,7 +21,7 @@ def test_special_property1():
 def _bw_params_factory():
     mres = zfit.Parameter('mres', param1_true)
     wres = zfit.Parameter('wres', param2_true)
-    return {"mres": mres, "mres": mres}
+    return {"mres": mres, "wres": wres}
 
 
 # tester.register_func(func_class=zfit.pdf.Gauss, params_factories=_bw_params_factory())
