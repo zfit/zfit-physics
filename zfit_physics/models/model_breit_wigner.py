@@ -16,7 +16,8 @@ def relativistic_breit_wigner(m2, mres, wres):
 
 class RelativisticBreitWigner(zfit.func.BaseFunc):
 
-    def __init__(self, obs: ztyping.ObsTypeInput, mres: float, wres: float, using_m_squared: bool = False,
+    def __init__(self, obs: ztyping.ObsTypeInput, mres: ztyping.ParamTypeInput, wres: ztyping.ParamTypeInput,
+                 using_m_squared: bool = False,
                  name: str = "RelativisticBreitWigner"):
         """Relativistic Breit Wigner Function
 
@@ -53,3 +54,16 @@ class RelativisticBreitWigner(zfit.func.BaseFunc):
         mres = self.params['mres']
         wres = self.params['wres']
         return relativistic_breit_wigner(m_sq, mres, wres)
+
+
+class RelativisticBreitWignerSquared(RelativisticBreitWigner):
+
+    def __init__(self, obs: ztyping.ObsTypeInput, mres: ztyping.ParamTypeInput, wres: ztyping.ParamTypeInput,
+                 using_m_squared: bool = False, name="RelativisticBreitWignerPDF"):
+        super().__init__(obs=obs, mres=mres, wres=wres, using_m_squared=using_m_squared, name=name)
+
+    def _func(self, x):
+        propagator = super()._func(x)
+        val = propagator * tf.math.conj(propagator)
+        val = ztf.to_real(val)
+        return val
