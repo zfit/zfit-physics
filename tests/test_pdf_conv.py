@@ -1,5 +1,5 @@
 """Example test for a pdf or function"""
-
+import pytest
 import zfit
 # Important, do the imports below
 from zfit.core.testing import setup_function, teardown_function, tester
@@ -22,7 +22,9 @@ def test_conv_simple():
 
     x = np.linspace(-5, 5, 1000)
     probs = conv.pdf(x=x)
+    integral = conv.integrate(limits=obs)
     probs_np = zfit.run(probs)
+    assert pytest.approx(1, rel=1e-3) == zfit.run(integral)
     assert len(probs_np) == 1000
 
 
