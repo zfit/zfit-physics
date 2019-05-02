@@ -9,13 +9,13 @@ from zfit.util.exception import DueToLazynessNotImplementedError
 
 
 class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kernel
-    def __init__(self, data: tf.Tensor, sigma: ztyping.ParamTypeInput, obs: ztyping.ObsTypeInput,
+    def __init__(self, data: tf.Tensor, bandwidth: ztyping.ParamTypeInput, obs: ztyping.ObsTypeInput,
                  name: str = "GaussianKDE"):
         """Gaussian Kernel Density Estimation using Silverman's rule of thumb
 
         Args:
             data: Data points to build a kernel around
-            sigma: sigmas for the covariance matrix of the multivariate gaussian
+            bandwidth: sigmas for the covariance matrix of the multivariate gaussian
             obs:
             name: Name of the PDF
         """
@@ -36,11 +36,11 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
             shape_data = tf.shape(data)
             size = tf.cast(shape_data[0], dtype=dtype)
             dims = tf.cast(shape_data[-1], dtype=dtype)
-        sigma = convert_to_container(sigma)
+        bandwidth = convert_to_container(bandwidth)
 
         # Bandwidth definition, use silverman's rule of thumb for nd
         cov = tf.diag(
-            [tf.square((4. / (dims + 2.)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in sigma])
+            [tf.square((4. / (dims + 2.)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in bandwidth])
         # kernel prob output shape: (n,)
         kernel = tfd.MultivariateNormalFullCovariance(loc=data, covariance_matrix=cov)
         reshaped_kernel = tfd.Independent(kernel)

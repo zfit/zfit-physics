@@ -20,7 +20,7 @@ def test_simple_kde():
     upper = ((5, 5, 5),)
     obs = zfit.Space(["obs1", "obs2", "obs3"], limits=(lower, upper))
 
-    kde = zphys.unstable.pdf.GaussianKDE(data=data, sigma=sigmas, obs=obs)
+    kde = zphys.unstable.pdf.GaussianKDE(data=data, bandwidth=sigmas, obs=obs)
 
     probs = kde.pdf(x=data + 0.03)
     probs_np = zfit.run(probs)
