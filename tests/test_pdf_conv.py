@@ -17,8 +17,8 @@ def test_conv_simple():
     obs = zfit.Space("obs1", limits=(-5, 5))
     gauss1 = zfit.pdf.Gauss(0., 1., obs=obs)
     uniform1 = zfit.pdf.Uniform(-1, 1., obs=obs)
-    conv = zphys.pdf.ConvPDF(func=lambda x: uniform1.pdf(x),
-                             kernel=lambda x: gauss1.pdf(x), obs=obs)
+    conv = zphys.unstable.pdf.ConvPDF(func=lambda x: uniform1.pdf(x),
+                                      kernel=lambda x: gauss1.pdf(x), obs=obs)
 
     x = np.linspace(-5, 5, 1000)
     probs = conv.pdf(x=x)
@@ -26,9 +26,3 @@ def test_conv_simple():
     probs_np = zfit.run(probs)
     assert pytest.approx(1, rel=1e-3) == zfit.run(integral)
     assert len(probs_np) == 1000
-
-
-
-
-
-

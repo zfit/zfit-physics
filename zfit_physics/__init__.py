@@ -19,3 +19,4 @@ __credits__ = ["Jonas Eschle <jonas.eschle@cern.ch>",
 __all__ = ["pdf"]
 
 from . import pdf
+from . import unstable

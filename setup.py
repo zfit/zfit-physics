@@ -54,7 +54,7 @@ setup(
     keywords='TensorFlow, model, fitting, scalable, HEP, physics',
     name='zfit_physics',
     python_requires=">=3.6",
-    packages=find_packages(include=['zfit_physics','zfit_physics.models']),
+    packages=find_packages(include=['zfit_physics','zfit_physics.models', "zfit_physics.unstable"]),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
