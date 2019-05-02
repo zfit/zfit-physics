@@ -1,4 +1,5 @@
 from functools import reduce
+from typing import Callable, Union
 
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -11,9 +12,25 @@ from zfit.util.exception import DueToLazynessNotImplementedError
 
 
 class ConvPDF(zfit.pdf.BasePDF):
-    def __init__(self, func, kernel, obs: ztyping.ObsTypeInput, ndraws=20000, name="Convolution"):
+    def __init__(self, func: Union[Callable, zfit.pdf.BasePDF], kernel: Union[Callable, zfit.pdf.BasePDF],
+                 limits: ztyping.ObsTypeInput, obs: ztyping.ObsTypeInput,
+                 ndraws: int = 20000, name: str = "Convolution"):
+        """Numerical Convolutional pdf of _func_ convoluted with _kernel_.
+
+
+
+        Args:
+            func (callable): Function that takes x and return the function value. Here x is a `Data` with the obs and limits
+                of _limits_. Can also be a PDF.
+            kernel (callable): Kernel function that takes x and return the function value. Here x is a `Data` with the obs and limits
+                of _limits_. Can also be a PDF.
+            limits (:py:class:`zfit.Space`): Limits of the numerical integration
+            obs (:py:class:`zfit.Space`):
+            ndraws (int): Number of draws for the mc integration
+            name (str):
+        """
         super().__init__(obs=obs, params={}, name=name)
-        limits = self.space
+        limits = self._check_input_limits(limits=limits)
         if limits.n_limits == 0:
             raise exception.LimitsNotSpecifiedError("obs have to have limits to define where to integrate over.")
         if limits.n_limits > 1:
@@ -31,7 +48,7 @@ class ConvPDF(zfit.pdf.BasePDF):
         samples_normed = tfp.mcmc.sample_halton_sequence(dim=limits.n_obs, num_results=ndraws, dtype=self.dtype,
                                                          randomized=False)
         samples = samples_normed * (upper - lower) + lower  # samples is [0, 1], stretch it
-        # sample_data = zfit.Data.from_tensor(obs=limits, tensor=samples)
+        samples = zfit.Data.from_tensor(obs=limits, tensor=samples)
 
         self._grid_points = samples  # true vars
         self._kernel_func = kernel  # callable func of reco - true vars
