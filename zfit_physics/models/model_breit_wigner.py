@@ -14,6 +14,32 @@ def relativistic_breit_wigner(m2, mres, wres):
     return 1. / below_div
 
 
+def _bw_func(self, x):
+    """The Breit Wigner function wrapped to be used within a PDF or a Func directly.
+
+    Args:
+        self:
+        x:
+
+    Returns:
+
+    """
+    var = x.unstack_x()
+    if isinstance(var, list):
+        m_sq = kinematics.mass_squared(tf.reduce_sum(
+            [kinematics.lorentz_vector(kinematics.vector(px, py, pz), pe)
+             for px, py, pz, pe in zip(*[iter(var)] * 4)],
+            axis=0))
+    elif self.using_m_squared:
+        m_sq = var
+    else:
+        m_sq = var * tf.math.conj(
+            var)  # TODO(Albert): this was squared, but should be mult with conj, right?
+    mres = self.params['mres']
+    wres = self.params['wres']
+    return relativistic_breit_wigner(m_sq, mres, wres)
+
+
 class RelativisticBreitWigner(zfit.func.BaseFunc):
 
     def __init__(self, obs: ztyping.ObsTypeInput, mres: ztyping.ParamTypeInput, wres: ztyping.ParamTypeInput,
@@ -41,29 +67,20 @@ class RelativisticBreitWigner(zfit.func.BaseFunc):
         # HACK end
 
     def _func(self, x):
-        var = x.unstack_x()
-        if isinstance(var, list):
-            m_sq = kinematics.mass_squared(tf.reduce_sum(
-                [kinematics.lorentz_vector(kinematics.vector(px, py, pz), pe)
-                 for px, py, pz, pe in zip(*[iter(var)] * 4)],
-                axis=0))
-        elif self.using_m_squared:
-            m_sq = var
-        else:
-            m_sq = var * tf.math.conj(var)  # TODO(Albert): this was squared, but should be mult with conj, right?
-        mres = self.params['mres']
-        wres = self.params['wres']
-        return relativistic_breit_wigner(m_sq, mres, wres)
+        return _bw_func(self, x)
 
 
-class RelativisticBreitWignerSquared(RelativisticBreitWigner):
+class RelativisticBreitWignerSquared(zfit.pdf.BasePDF):
 
     def __init__(self, obs: ztyping.ObsTypeInput, mres: ztyping.ParamTypeInput, wres: ztyping.ParamTypeInput,
                  using_m_squared: bool = False, name="RelativisticBreitWignerPDF"):
-        super().__init__(obs=obs, mres=mres, wres=wres, using_m_squared=using_m_squared, name=name)
+        self.using_m_squared = using_m_squared
 
-    def _func(self, x):
-        propagator = super()._func(x)
+        super().__init__(obs=obs, name=name, dtype=zfit.settings.ztypes.float,
+                         params={'mres': mres, 'wres': wres})
+
+    def _unnormalized_pdf(self, x):
+        propagator = _bw_func(self, x)
         val = propagator * tf.math.conj(propagator)
         val = ztf.to_real(val)
         return val
