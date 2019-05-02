@@ -20,7 +20,7 @@ def test_simple_kde():
     upper = ((5, 5, 5),)
     obs = zfit.Space(["obs1", "obs2", "obs3"], limits=(lower, upper))
 
-    kde = zphys.pdf.GaussianKDE(data=data, sigma=sigmas, obs=obs)
+    kde = zphys.unstable.pdf.GaussianKDE(data=data, sigma=sigmas, obs=obs)
 
     probs = kde.pdf(x=data + 0.03)
     probs_np = zfit.run(probs)
@@ -37,4 +37,4 @@ def _kde_params_factory():
     return {"data": data, "sigma": sigmas, "obs": obs}
 
 
-tester.register_pdf(pdf_class=zphys.pdf.GaussianKDE, params_factories=_kde_params_factory())
+tester.register_pdf(pdf_class=zphys.unstable.pdf.GaussianKDE, params_factories=_kde_params_factory())
