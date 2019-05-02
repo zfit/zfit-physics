@@ -5,6 +5,7 @@ from zfit import ztf
 from zfit.models.dist_tfp import WrapDistribution
 from zfit.util import ztyping
 from zfit.util.container import convert_to_container
+from zfit.util.exception import DueToLazynessNotImplementedError
 
 
 class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kernel
@@ -19,12 +20,22 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
             name: Name of the PDF
         """
         dtype = zfit.settings.ztypes.float
-        data = ztf.convert_to_tensor(value=data)
-        data = ztf.to_real(data)
+        if isinstance(data, zfit.core.interfaces.ZfitData):
 
-        shape_data = tf.shape(data)
-        size = tf.cast(shape_data[0], dtype=dtype)
-        dims = tf.cast(shape_data[-1], dtype=dtype)
+            raise DueToLazynessNotImplementedError("Currently, no dataset supported yet")
+            # size = data.nevents
+            # dims = data.n_obs
+            # with data.
+            # data = data.value()
+            # if data.weights is not None:
+
+        else:
+            data = ztf.convert_to_tensor(value=data)
+            data = ztf.to_real(data)
+
+            shape_data = tf.shape(data)
+            size = tf.cast(shape_data[0], dtype=dtype)
+            dims = tf.cast(shape_data[-1], dtype=dtype)
         sigma = convert_to_container(sigma)
 
         # Bandwidth definition, use silverman's rule of thumb for nd
