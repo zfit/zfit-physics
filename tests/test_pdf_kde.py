@@ -12,7 +12,7 @@ param1_true = 0.3
 param2_true = 1.2
 
 
-def test_simple_kde():
+def test_simple_kde_3d():
     # test special properties  here
     data = np.random.normal(size=(100, 3))
     sigmas = [0.5, 1., 2]
@@ -24,6 +24,29 @@ def test_simple_kde():
 
     probs = kde.pdf(x=data + 0.03)
     probs_np = zfit.run(probs)
+
+
+def test_simple_kde_1d():
+    # test special properties  here
+    data = np.random.normal(size=(100, 1))
+    sigma = zfit.Parameter("sigma", 0.5)
+    lower = ((-5,),)
+    upper = ((5,),)
+    obs = zfit.Space(["obs1"], limits=(lower, upper))
+
+    kde = zphys.unstable.pdf.GaussianKDE(data=data, bandwidth=sigma, obs=obs)
+
+    probs = kde.pdf(x=data + 0.03)
+    probs_np = zfit.run(probs)
+
+    from zfit.core.loss import UnbinnedNLL
+    data = zfit.Data.from_numpy(array=data, obs=obs)
+    nll = UnbinnedNLL(model=kde, data=data)
+
+    from zfit.minimizers.minimizer_minuit import MinuitMinimizer
+    minimizer = MinuitMinimizer()
+
+    minimum = minimizer.minimize(loss=nll)
 
 
 # register the pdf here and provide sets of working parameter configurations

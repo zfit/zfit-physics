@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import tensorflow as tf
 import tensorflow_probability.python.distributions as tfd
 import zfit
@@ -52,5 +54,6 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
                            components_distribution=reshaped_kernel)
         distribution = tfd.MixtureSameFamily
         # TODO lambda for params
-        super().__init__(distribution=distribution, dist_params={}, dist_kwargs=dist_kwargs,
+        params = OrderedDict((f"bandwidth_{i}", h) for i, h in enumerate(bandwidth))
+        super().__init__(distribution=distribution, dist_params={}, dist_kwargs=dist_kwargs, params=params,
                          obs=obs, name=name)
