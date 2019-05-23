@@ -27,3 +27,4 @@ def test_conv_simple():
     probs_np = zfit.run(probs)
     assert pytest.approx(1, rel=1e-3) == zfit.run(integral)
     assert len(probs_np) == 1000
+    assert len(conv.get_dependents(only_floating=False)) == 4
