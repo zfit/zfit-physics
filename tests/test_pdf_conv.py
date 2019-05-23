@@ -17,8 +17,8 @@ def test_conv_simple():
     obs = zfit.Space("obs1", limits=(-5, 5))
     gauss1 = zfit.pdf.Gauss(0., 1., obs=obs)
     uniform1 = zfit.pdf.Uniform(-1, 1., obs=obs)
-    conv = zphys.unstable.pdf.ConvPDF(func=lambda x: uniform1.pdf(x),
-                                      kernel=lambda x: gauss1.pdf(x),
+    conv = zphys.unstable.pdf.ConvPDF(func=uniform1,
+                                      kernel=gauss1,
                                       limits=obs, obs=obs)
 
     x = np.linspace(-5, 5, 1000)
