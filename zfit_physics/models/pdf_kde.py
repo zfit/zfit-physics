@@ -41,7 +41,7 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         bandwidth = convert_to_container(bandwidth)
 
         # Bandwidth definition, use silverman's rule of thumb for nd
-        cov = tf.diag(
+        cov = tf.linalg.diag(
             [tf.square((4. / (dims + 2.)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in bandwidth])
         # kernel prob output shape: (n,)
         kernel = tfd.MultivariateNormalFullCovariance(loc=data, covariance_matrix=cov)

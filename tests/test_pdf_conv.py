@@ -15,8 +15,10 @@ param2_true = 1.2
 def test_conv_simple():
     # test special properties  here
     obs = zfit.Space("obs1", limits=(-5, 5))
-    gauss1 = zfit.pdf.Gauss(0., 1., obs=obs)
-    uniform1 = zfit.pdf.Uniform(-1, 1., obs=obs)
+    param1 = zfit.Parameter('param1', -1)
+    param2 = zfit.Parameter('param2', 1)
+    gauss1 = zfit.pdf.Gauss(0., param2, obs=obs)
+    uniform1 = zfit.pdf.Uniform(param1, param2, obs=obs)
     conv = zphys.unstable.pdf.ConvPDF(func=uniform1,
                                       kernel=gauss1,
                                       limits=obs, obs=obs)
@@ -27,4 +29,4 @@ def test_conv_simple():
     probs_np = zfit.run(probs)
     assert pytest.approx(1, rel=1e-3) == zfit.run(integral)
     assert len(probs_np) == 1000
-    assert len(conv.get_dependents(only_floating=False)) == 4
+    assert len(conv.get_dependents(only_floating=False)) == 2

@@ -43,8 +43,8 @@ def test_simple_kde_1d():
     data = zfit.Data.from_numpy(array=data, obs=obs)
     nll = UnbinnedNLL(model=kde, data=data)
 
-    from zfit.minimizers.minimizer_minuit import MinuitMinimizer
-    minimizer = MinuitMinimizer()
+    from zfit.minimizers.minimizer_minuit import Minuit
+    minimizer = Minuit()
 
     minimum = minimizer.minimize(loss=nll)
 
