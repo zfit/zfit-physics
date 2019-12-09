@@ -26,7 +26,7 @@ def test_conv_simple():
     x = np.linspace(-5, 5, 1000)
     probs = conv.pdf(x=x)
     integral = conv.integrate(limits=obs)
-    probs_np = zfit.run(probs)
-    assert pytest.approx(1, rel=1e-3) == zfit.run(integral)
+    probs_np = probs.numpy()
+    assert pytest.approx(1, rel=1e-3) == integral.numpy()
     assert len(probs_np) == 1000
     # assert len(conv.get_dependents(only_floating=False)) == 2  # TODO: activate again with fixed params

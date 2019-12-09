@@ -7,7 +7,7 @@ import zfit
 from zfit import ztf
 from zfit.util import ztyping
 from zfit.util import exception
-from zfit.util.exception import DueToLazynessNotImplementedError
+from zfit.util.exception import WorkInProgressError
 
 import zfit.models.functor
 
@@ -33,7 +33,7 @@ class ConvPDF(zfit.models.functor.BaseFunctor):
         if limits.n_limits == 0:
             raise exception.LimitsNotSpecifiedError("obs have to have limits to define where to integrate over.")
         if limits.n_limits > 1:
-            raise DueToLazynessNotImplementedError("Multiple Limits not implemented")
+            raise WorkInProgressError("Multiple Limits not implemented")
 
 #        if not isinstance(func, zfit.pdf.BasePDF):
 #            raise TypeError(f"func has to be a PDF, not {type(func)}")
@@ -54,7 +54,8 @@ class ConvPDF(zfit.models.functor.BaseFunctor):
 
         samples = self._grid_points
         func_values = self._func_values
-        if func_values is None:
+        # if func_values is None:
+        if True:
             # create sample for numerical integral
             lower = limits.lower[0]
             upper = limits.upper[0]

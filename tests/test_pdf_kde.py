@@ -1,5 +1,5 @@
 """Example test for a pdf or function"""
-
+import tensorflow as tf
 import zfit
 import numpy as np
 # Important, do the imports below
@@ -23,12 +23,14 @@ def test_simple_kde_3d():
     kde = zphys.unstable.pdf.GaussianKDE(data=data, bandwidth=sigmas, obs=obs)
 
     probs = kde.pdf(x=data + 0.03)
-    probs_np = zfit.run(probs)
+    probs_np = probs.numpy()
 
 
 def test_simple_kde_1d():
     # test special properties  here
-    data = np.random.normal(size=(100, 1))
+    zfit.settings.options['numerical_grad'] = True
+    data = tf.random.normal(shape=(100, 1))
+    # data = np.random.normal(size=(100, 1))
     sigma = zfit.Parameter("sigma", 0.5)
     lower = ((-5,),)
     upper = ((5,),)
@@ -37,16 +39,15 @@ def test_simple_kde_1d():
     kde = zphys.unstable.pdf.GaussianKDE(data=data, bandwidth=sigma, obs=obs)
 
     probs = kde.pdf(x=data + 0.03)
-    probs_np = zfit.run(probs)
 
     from zfit.core.loss import UnbinnedNLL
-    data = zfit.Data.from_numpy(array=data, obs=obs)
+    data = zfit.Data.from_tensor(tensor=data, obs=obs)
     nll = UnbinnedNLL(model=kde, data=data)
 
-    from zfit.minimizers.minimizer_minuit import Minuit
-    minimizer = Minuit()
+    minimizer = zfit.minimize.Minuit(verbosity=10)
 
     minimum = minimizer.minimize(loss=nll)
+    assert minimum.converged
 
 
 # register the pdf here and provide sets of working parameter configurations
