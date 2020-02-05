@@ -12,8 +12,22 @@ simply integrated into the zfit namespace (given that zfit-physics is installed)
 Installing
 ----------
 
-zfit-physics is currently only available as a github version.
-To install it, run this command in your terminal:
+zfit-physics is available on conda-forge and pip. If possible, use a conda or virtual environment and do:
+
+For conda:
+
+.. code-block:: console
+
+    $ conda install zfit-physics -c conda-forge
+
+For pip (if you don't use conda):
+
+.. code-block:: console
+
+    $ pip install zfit-physics
+
+
+For the newest development version, you can install the version from git with
 
 .. code-block:: console
 
