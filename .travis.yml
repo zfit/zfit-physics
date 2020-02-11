@@ -10,6 +10,8 @@ script:
 - pip install -e .
 - bash utils/ci/test_examples.sh
 - pip install -r requirements_dev.txt
+- ls
+- ls /home/travis/build
 - coverage run --source=/home/travis/build/zfit_physics/ --branch -m pytest --basetemp={envtmpdir}
 - coverage report
 after_success:
