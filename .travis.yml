@@ -9,11 +9,12 @@ matrix:
   - python: 3.6
 install: pip install -U tox-travis
 script:
-- tox
-- pip install git+https://github.com/zfit/zfit
+#- pip install git+https://github.com/zfit/zfit
 - pip install -U .
 - bash utils/ci/test_examples.sh
 - pip install -r requirements_dev.txt
+- coverage run --source=/home/travis/build/zfit-physics/ --omit=".tox/*,*/test* --branch -m py.test --basetemp={envtmpdir}
+- coverage report
 after_success:
 - pip install coveralls
 - coveralls
