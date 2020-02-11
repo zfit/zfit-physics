@@ -1,19 +1,16 @@
 language: python
 os:
 - linux
-matrix:
-  include:
-  - python: 3.7
-    dist: xenial
-    sudo: true
-  - python: 3.6
-install: pip install -U tox-travis
+python:
+    - "3.6"
+    - "3.7"
+install: pip install -U pip
 script:
 #- pip install git+https://github.com/zfit/zfit
 - pip install -e .
 - bash utils/ci/test_examples.sh
 - pip install -r requirements_dev.txt
-- coverage run --source=/home/travis/build/zfit-physics/ --branch -m py.test --basetemp={envtmpdir}
+- coverage run --source=/home/travis/build/zfit-physics/ --branch -m pytest --basetemp={envtmpdir}
 - coverage report
 after_success:
 - pip install coveralls
