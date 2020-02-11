@@ -12,7 +12,7 @@ script:
 - pip install -r requirements_dev.txt
 - ls
 - ls /home/travis/build
-- coverage run --source=/home/travis/build/zfit/zfit_physics --branch -m pytest --basetemp={envtmpdir}
+- coverage run --source=/home/travis/build/zfit --branch -m pytest --basetemp={envtmpdir}
 - coverage report
 after_success:
 - pip install coveralls
