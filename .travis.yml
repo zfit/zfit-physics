@@ -10,7 +10,7 @@ matrix:
 install: pip install -U tox-travis
 script:
 #- pip install git+https://github.com/zfit/zfit
-- pip install -U .
+- pip install -e .
 - bash utils/ci/test_examples.sh
 - pip install -r requirements_dev.txt
 - coverage run --source=/home/travis/build/zfit-physics/ --omit=".tox/*,*/test*" --branch -m py.test --basetemp={envtmpdir}
