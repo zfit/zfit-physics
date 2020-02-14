@@ -122,10 +122,10 @@ if __name__ == '__main__':
     integral = sp.integrate(
         (N * m * (1 - (m / m0) ** 2) ** p * sp.exp(c * (1 - (m / m0) ** 2))) *
         sp.exp((m - t - mu) ** 2 / sigma ** 2), t)
-    # print(integral)
-    # func1 = sp.lambdify(integral.free_symbols, integral, 'tensorflow')
-    # import inspect
-    #
-    # source = inspect.getsource(func1)
-    # print(source)
+    print(integral)
+    func1 = sp.lambdify(integral.free_symbols, integral, 'tensorflow')
+    import inspect
+
+    source = inspect.getsource(func1)
+    print(source)
     # sp.lambdify()
