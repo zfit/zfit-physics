@@ -2,7 +2,7 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 import zfit
 import zfit.models.functor
-from zfit import ztf
+from zfit import ztf, z
 from zfit.util import exception
 from zfit.util import ztyping
 from zfit.util.exception import WorkInProgressError
@@ -45,6 +45,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         self._ndraws = ndraws
         self._experimental_pdf_normalized = experimental_pdf_normalized
 
+    @z.function
     def _unnormalized_pdf(self, x):
         limits = self.conv_limits
         area = limits.area()
@@ -68,10 +69,11 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
             func_values = self.pdfs[0].unnormalized_pdf(samples)  # func of true vars
             self._func_values = func_values
 
-        return tf.vectorized_map(
+        return tf.map_fn(
             lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].unnormalized_pdf(xi - samples)),
             x.value())  # func of reco vars
 
+    @z.function
     def _pdf(self, x, norm_range):
         if not self._experimental_pdf_normalized:
             raise NotImplementedError
@@ -98,6 +100,6 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
             func_values = self.pdfs[0].pdf(samples)  # func of true vars
             self._func_values = func_values
 
-        return tf.vectorized_map(
+        return tf.map_fn(
             lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples)),
             x.value())
