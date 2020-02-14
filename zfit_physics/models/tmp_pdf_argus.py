@@ -1,6 +1,6 @@
 """ARGUS PDF (https://en.wikipedia.org/wiki/ARGUS_distribution)"""
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 import zfit
 from zfit import z
 
@@ -57,11 +57,13 @@ def argus_cdf_p_half(lim, c, m0):
     lim_square = z.square(lim)
     m0_squared = z.square(m0)
     return (-0.5 * m0_squared * z.pow(-c * (1 - lim_square / m0_squared), -0.5)
-            * z.sqrt(1 - lim_square / m0_squared) * uppergamma((z.constant(1.5)), -c * (1 - lim_square / m0_squared)) / c)
+            * z.sqrt(1 - lim_square / m0_squared) * uppergamma((z.constant(1.5)),
+                                                               -c * (1 - lim_square / m0_squared)) / c)
 
 
 def argus_integral_p_half_func(lower, upper, c, m0):
     return argus_cdf_p_half(upper, c=c, m0=m0) - argus_cdf_p_half(lower, c=c, m0=m0)
+
 
 def argus_integral_p_half(limits, params, model):
     p = params["p"]
@@ -79,9 +81,6 @@ def argus_integral_p_half(limits, params, model):
 argus_integral_limits = zfit.Space.from_axes(axes=(0,), limits=(((zfit.Space.ANY_LOWER,),), ((zfit.Space.ANY_UPPER,),)))
 Argus.register_analytic_integral(func=argus_integral_p_half, limits=argus_integral_limits)
 
-
-
-
 # TODO: works for negative c, but for positive?
 # require limits for parameters in pdf?
 # TODO: analytic integral is off
@@ -97,6 +96,10 @@ if __name__ == '__main__':
     m = sp.Symbol('m')
     m0 = sp.Symbol('m0')
     c = sp.Symbol('c')
+    t = sp.Symbol('t')
+    mu = sp.Symbol('mu')
+    sigma = sp.Symbol('sigma')
+
     # p = sp.Symbol('p')
     p = 0.5
     low = sp.Symbol('low')
@@ -106,6 +109,8 @@ if __name__ == '__main__':
 
     global_assumptions.add(sp.Q.positive(N))
     global_assumptions.add(sp.Q.finite(N))
+    global_assumptions.add(sp.Q.positive(sigma))
+    global_assumptions.add(sp.Q.finite(sigma))
     global_assumptions.add(sp.Q.positive(m))
     global_assumptions.add(sp.Q.finite(m))
     global_assumptions.add(sp.Q.positive(m / m0))
@@ -114,7 +119,9 @@ if __name__ == '__main__':
     global_assumptions.add(sp.Q.finite(p))
     global_assumptions.add(sp.Q.integer(p))
     global_assumptions.add(sp.Q.finite(c))
-    # integral = sp.integrate(N * m * (1 - (m / m0) ** 2) ** p * sp.exp(c * (1 - (m / m0) ** 2)), m)
+    integral = sp.integrate(
+        (N * m * (1 - (m / m0) ** 2) ** p * sp.exp(c * (1 - (m / m0) ** 2))) *
+        sp.exp((m - t - mu) ** 2 / sigma ** 2), t)
     # print(integral)
     # func1 = sp.lambdify(integral.free_symbols, integral, 'tensorflow')
     # import inspect
