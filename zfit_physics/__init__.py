@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Top-level package for zfit."""
+from pkg_resources import get_distribution
 
-__version__ = '0.0.1'
+__version__ = get_distribution(__name__).version
 
 __license__ = "BSD 3-Clause"
 __copyright__ = "Copyright 2019, zfit"

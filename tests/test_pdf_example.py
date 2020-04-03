@@ -18,10 +18,10 @@ def test_special_property1():
 
 # register the pdf here and provide sets of working parameter configurations
 
-def _gauss_params_factory():
-    mu_ = zfit.Parameter('mu_cb', param1_true)
-    sigma_ = zfit.Parameter('sigma_cb', param2_true)
-    return {"mu": mu_, "sigma": sigma_}
+def gauss_params_factory():
+    mu = zfit.Parameter('mu', param1_true)
+    sigma = zfit.Parameter('sigma', param2_true)
+    return {"mu": mu, "sigma": sigma}
 
 
-tester.register_pdf(pdf_class=zfit.pdf.Gauss, params_factories=_gauss_params_factory())
+tester.register_pdf(pdf_class=zfit.pdf.Gauss, params_factories=gauss_params_factory)
