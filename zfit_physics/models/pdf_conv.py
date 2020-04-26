@@ -6,6 +6,7 @@ from zfit import ztf, z
 from zfit.util import exception
 from zfit.util import ztyping
 from zfit.util.exception import WorkInProgressError
+from zfit.exception import FunctionNotImplementedError
 
 
 class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
@@ -48,15 +49,15 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
     @z.function
     def _unnormalized_pdf(self, x):
         limits = self.conv_limits
-        area = limits.area()
+        # area = limits.area()  # new spaces
+        area = limits.rect_area()[0]  # new spaces
 
         samples = self._grid_points
         func_values = self._func_values
         # if func_values is None:
         if True:
             # create sample for numerical integral
-            lower = limits.lower[0]
-            upper = limits.upper[0]
+            lower, upper = limits.rect_limits
             lower = ztf.convert_to_tensor(lower, dtype=self.dtype)
             upper = ztf.convert_to_tensor(upper, dtype=self.dtype)
             samples_normed = tfp.mcmc.sample_halton_sequence(dim=limits.n_obs, num_results=self._ndraws,
@@ -71,23 +72,24 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
 
         return tf.map_fn(
             lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].unnormalized_pdf(xi - samples)),
-            x.value())  # func of reco vars
+            x.value())
+        # func of reco vars
 
     @z.function
     def _pdf(self, x, norm_range):
         if not self._experimental_pdf_normalized:
-            raise NotImplementedError
+            raise FunctionNotImplementedError
 
         limits = self.conv_limits
-        area = limits.area()
+        # area = limits.area()  # new spaces
+        area = limits.rect_area[0]  # new spaces
 
         samples = self._grid_points
         func_values = self._func_values
         # if func_values is None:
         if True:
             # create sample for numerical integral
-            lower = limits.lower[0]
-            upper = limits.upper[0]
+            lower, upper = limits.rect_limits
             lower = ztf.convert_to_tensor(lower, dtype=self.dtype)
             upper = ztf.convert_to_tensor(upper, dtype=self.dtype)
             samples_normed = tfp.mcmc.sample_halton_sequence(dim=limits.n_obs, num_results=self._ndraws,
