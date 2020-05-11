@@ -18,7 +18,7 @@ def test_standard():
     # test special properties  here
     obs = zfit.Space('obs1', (-2, 6))
 
-    argus = zphys.pdf.ArgusPDF(m0=5., c=-3., p=0.5, obs=obs)
+    argus = zphys.pdf.Argus(m0=5., c=-3., p=0.5, obs=obs)
     assert not any(np.isnan(argus.pdf(tf.linspace(0.1, 15., 100))))
     lower = 0.
     upper = 5.
@@ -38,4 +38,4 @@ def argus_params_factory():
     return {'m0':m0, 'c': c, 'p': p}
 
 
-tester.register_pdf(pdf_class=zphys.pdf.ArgusPDF, params_factories=argus_params_factory)
+tester.register_pdf(pdf_class=zphys.pdf.Argus, params_factories=argus_params_factory)

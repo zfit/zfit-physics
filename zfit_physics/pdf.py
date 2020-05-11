@@ -1,1 +1,1 @@
-from .models.pdf_argus import ArgusPDF
+from .models.pdf_argus import Argus

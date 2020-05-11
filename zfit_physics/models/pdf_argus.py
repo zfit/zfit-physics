@@ -40,7 +40,7 @@ def argus_func(m: ztyping.NumericalType, m0: ztyping.NumericalType,
     return argus
 
 
-class ArgusPDF(zfit.pdf.BasePDF):
+class Argus(zfit.pdf.BasePDF):
 
     def __init__(self, obs: ztyping.ObsTypeInput, m0, c, p, name: str = "ArgusPDF"):
         r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle in a
@@ -163,7 +163,7 @@ def argus_integral_p_half(limits, params, model):
 
 argus_integral_limits = zfit.Space(axes=(0,),
                                    limits=(zfit.Space.ANY_LOWER,zfit.Space.ANY_UPPER))
-ArgusPDF.register_analytic_integral(func=argus_integral_p_half, limits=argus_integral_limits)
+Argus.register_analytic_integral(func=argus_integral_p_half, limits=argus_integral_limits)
 
 if __name__ == '__main__':
     # create the integral
