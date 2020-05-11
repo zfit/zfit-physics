@@ -13,6 +13,7 @@ script:
 - bash utils/ci/test_examples.sh
 - ls
 - ls /home/travis/build
+- ls /home/travis/build/zfit
 - coverage run --source=/home/travis/build/zfit_physics --branch -m pytest --basetemp={envtmpdir}
 - coverage report
 after_success:
