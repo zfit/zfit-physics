@@ -1,2 +1,2 @@
-zfit>=0.3.7
+zfit>=0.5.1
 numpy
