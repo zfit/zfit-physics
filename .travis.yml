@@ -8,7 +8,7 @@ python:
 install: pip install -U pip
 script:
 #- pip install git+https://github.com/zfit/zfit
-- pip install -e .
+- pip install -e -U .
 - pip install -r requirements_dev.txt
 #- bash utils/ci/test_examples.sh
 - ls
