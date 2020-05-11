@@ -7,7 +7,7 @@ from zfit import z
 from zfit.util import ztyping
 
 
-@z.function
+@z.function(wraps='tensor')
 def argus_func(m: ztyping.NumericalType, m0: ztyping.NumericalType,
                c: ztyping.NumericalType,
                p: ztyping.NumericalType) -> tf.Tensor:
@@ -94,7 +94,7 @@ def uppergamma(s, x):
     return tf.math.igammac(s, x=x) * z.exp(tf.math.lgamma(x))
 
 
-# @z.function_tf
+@z.function(wraps='tensor')
 def argus_cdf_p_half_nonpositive(lim, c, m0):
     lim = tf.clip_by_value(lim, 0., m0)
     cdf = tf.cond(tf.math.less(c, 0.),
@@ -116,7 +116,7 @@ def argus_cdf_p_half_nonpositive(lim, c, m0):
 #             * z.sqrt(1 - lim_square / m0_squared) * uppergamma((z.constant(1.5)),
 #                                                                -c * (1 - lim_square / m0_squared)) / c)
 
-@z.function
+@z.function(wraps='tensor')
 def argus_cdf_p_half_c_neg(lim, c, m0):
     f1 = 1 - z.square(lim / m0)
     cdf = -0.5 * z.square(m0)
@@ -125,7 +125,7 @@ def argus_cdf_p_half_c_neg(lim, c, m0):
     return cdf
 
 
-@z.function
+@z.function(wraps='tensor')
 def argus_cdf_p_half_c_zero(lim, c, m0):
     del c
     f1 = 1 - z.square(lim / m0)
@@ -140,7 +140,7 @@ def argus_cdf_p_half_c_zero(lim, c, m0):
 #     # cdf *= (0.5 * z.sqrt(z.pi) * (RooMath::faddeeva(sqrt(c * f1))).imag() - z.sqrt(c * f1))
 #     return cdf
 
-@z.function
+@z.function(wraps='tensor')
 def argus_integral_p_half_func(lower, upper, c, m0):
     return argus_cdf_p_half_nonpositive(upper, c=c, m0=m0) - argus_cdf_p_half_nonpositive(lower, c=c, m0=m0)
 
