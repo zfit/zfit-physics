@@ -7,7 +7,7 @@ from zfit import ztf, z
 from zfit.models.dist_tfp import WrapDistribution
 from zfit.util import ztyping
 from zfit.util.container import convert_to_container
-from zfit.util.exception import WorkInProgressError
+from zfit.util.exception import WorkInProgressError, AnalyticIntegralNotImplementedError
 
 
 class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kernel
@@ -43,11 +43,15 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
 
         # Bandwidth definition, use silverman's rule of thumb for nd
         def reshaped_kerner_factory():
-            cov = tf.linalg.diag(
-                [tf.square((4. / (dims + 2.)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in bandwidth])
+            cov_diag = [tf.square((4. / (dims + 2.)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in
+                          bandwidth]
+            # cov = tf.linalg.diag(cov_diag)
             # kernel prob output shape: (n,)
-            kernel = tfd.MultivariateNormalFullCovariance(loc=data, covariance_matrix=cov)
-            return tfd.Independent(kernel)
+            # kernel = tfd.MultivariateNormalFullCovariance(loc=data, covariance_matrix=cov)
+            kernel = tfd.MultivariateNormalDiag(loc=data, scale_diag=cov_diag)
+
+            return kernel
+            # return tfd.Independent(kernel)
         # reshaped_kernel = kernel
 
         probs = tf.broadcast_to(1 / size, shape=(tf.cast(size, tf.int32),))
@@ -59,3 +63,9 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         params = OrderedDict((f"bandwidth_{i}", h) for i, h in enumerate(bandwidth))
         super().__init__(distribution=distribution, dist_params={}, dist_kwargs=dist_kwargs, params=params,
                          obs=obs, name=name)
+
+    @zfit.supports()
+    def _analytic_integrate(self, limits, norm_range):
+        raise AnalyticIntegralNotImplementedError
+
+
