@@ -18,7 +18,6 @@ after_success:
 - pip install coveralls
 - coveralls
 deploy:
-  matrix:
   - provider: pypi
     distributions: sdist bdist_wheel
     user: zfit
