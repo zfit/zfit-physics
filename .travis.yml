@@ -24,6 +24,7 @@ deploy:
     user: zfit
     password:
       secure: f1yhswsBcXVYRpoZTakScl1gpc5bdWibEiPrYsJy+pfUiJ0tpfQIwYbSr1G+M9egl14wFF23OYQdyl7hdl8T2vuB5jw5SUwWVQOzNI/VctCtXmEahi7PaxEHME0OAZoRQU7uNySPu/Dt//42UkdLjwB77x25KAjRP8quRauy4pSgXWpTrDpwAm6+aVj6EkDvMn9cGY5etVuCpMYUx0YFs47BZI9wH5YvGaX8pz/Gw25H7aXYqaYKzLsol08l459fOe2M2NLE/KJLjYazKHWtL/1HMxKUSOuXMIt+Lb9MoRGTuVmEJupRF+I8e9bRSH37MneT9THc+kwZ2Bg57yb2xTZcJt4JQ7WdeKnTG6aGcw/2xHDE3/YISzWfvQ0pPF9byJscGbe5OJdoKgirNWYzhuui/qEuJGNrjP8FSrtGH3kFqpRg0FErcRZhfVlMlm6GL8XuR/AGvA3eCAQL2gN8Az3tJzVNps8Fmo/XKCKaO63U62USsezkmD611OJvaR8HcQlcFZBK7y+3go0t+1CXM0NmvRG3OrN6x7e79Psin8T+7eCAhpU5oc+gb+ooBWUmNYnoblipkTXv+3Dp8qSaTJ9aiWzpkCUkvGxzlnwjvV5RtYEHlan6C/Paj3clg7aQ1+W8o2L41x8og2MuCr/d6+HnCIAnGm4bQAaUK4+tOp0=
+    on:
       branch: master
       tags: true
       repo: zfit/zfit-physics
