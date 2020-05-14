@@ -24,12 +24,11 @@ deploy:
   distributions: sdist bdist_wheel
   user: zfit
   password:
-    secure: ARUio2lGnsOSIvkQFA/eY1FDk+WTv9z3lPoD34BPx/RM3oRIjv3RgtF9XWRL3upB3Yn2Dcy5vzSrGmfeJYMrX6n6E86boR9nTUua1CTG+TRiOuCM1Nr0UeWL69AYWXn3jp2xYsKY4G2n8f+fLAHcwg4fqLNELO4JX57usHAz0eiBI50rYhbacREMcDg/s5NjoynK1ENMyjx09PXCFLcZoKhE/T38Qpkq8xL2q5N8KCzjgiRxhafZK45nma2fhVLgh3hBslMNEpjR7Ka3U+bq1VtLST/VksOVhGmRg9S6W3VoYQogsjLAR9qGE2Z6gt8H//OLifvEgrSxFCNNVf9Lun+9sv0DtgVVunr4h66rcbQKU94igD2iwEp/V9N3A5qPR8nbJ1kLZBG4543W0gbs75knR3LhEIaC6/lukDfRDYhrbB8088+0bX2JqXJIv1zoapdi1SBSDYfiwWk8ZS6uUp7ZCAlcXRUuMDMhDbhGPfDQMf14CCJw5W5oC/C895SpofDxXhuugYb65V6jENEA8ZdaXYxteK1B2VDfxqLEQOrJuWknDmFIiTrQccXeYtTCDCGznc696gag0Oo00vXOPFiG58nxX1320ToaQinxCPuBFrBkIuzw9OqSZ/NHGpl5MtJDNO5Xb4WYMMOxuhLmNEG9zcYds4wwxsjMc/WMtcc=
-  on:
+    secure: cF//6Ssabb/w427Ff3NBRj7sCujkKGF8i+UTfW+XTkvijPT8rpKe367h9gJ8swMV9DqmuCc8cftfp9VknrrVJwFcjWbWpHV4MekvBhTc5foMxGsjT34PA7ircTAr0UAC0Og+T+z0g/V8bVfyt7U2wzs2raO9E21twtqeaXZ/K0nTDEr83fjOiBhAQmh79XCr20HCBnzTvZU9GV9vVbYGNS+Uq2Riyh4/ry7Rh7WgvMegk9e3/GEZ2TMQXWdGIW8Fu+8XwVCSSstbHNxFci8GtzWMl2zBbaxcAJikzVmpP56hgIbwJzxxCeoVnRucAIkpIqaI5AMbL1hxu9uYeaEGVi9qrpHOpEwC46cmVMIVmk3mm9UY1tOTEXf2IwAYg8bJXFovj7kU1fJfLfa7PbCViQ29OXfZKpSoyBYiIGZ2XRG22OcsUK5K8KIq23+OtCGLt2jbloNXR5QOnSenw/LByNoutvuV545wrbjRyWCVygcONRfO7g9c0pSOk6mxqjqhK9nUKBVsEz88BNVnriExsjOyp4ch/42TLmheDE0BVcPTRiqSysrkDzmwBBe/HkTJZRczbwYIs4G9skTiuazWu4tbNQaRrxavFqL6kZUQFTmN7pb7Ig2M91sLnVe5uxHCVXveKOMHNctmU4us1zBiWGbHsfmt9l6z0WzVxnlhnWs=
     branch: master
     tags: true
     repo: zfit/zfit-physics
-    python: 3.7
+    python: 3.8
 - provider: pages
   skip_cleanup: true
   github_token:
@@ -38,4 +37,4 @@ deploy:
   keep-history: true
   on:
     branch: develop
-    condition: $TRAVIS_PYTHON_VERSION = "3.7" && $TRAVIS_OS_NAME = "linux"
+    condition: $TRAVIS_PYTHON_VERSION = "3.8" && $TRAVIS_OS_NAME = "linux"
