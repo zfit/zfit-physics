@@ -14,7 +14,7 @@ script:
 - ls
 - ls /home/travis/build
 - ls /home/travis/build/zfit
-- coverage run --source=/home/travis/build/zfit/zfit_physics --branch -m pytest --basetemp={envtmpdir}
+- coverage run --source=/home/travis/build/zfit --branch -m pytest --basetemp={envtmpdir}
 - coverage report
 after_success:
 - pip install coveralls
