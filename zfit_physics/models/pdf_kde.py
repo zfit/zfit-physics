@@ -64,8 +64,8 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         super().__init__(distribution=distribution, dist_params={}, dist_kwargs=dist_kwargs, params=params,
                          obs=obs, name=name)
 
-    @zfit.supports()
-    def _analytic_integrate(self, limits, norm_range):
-        raise AnalyticIntegralNotImplementedError
+    # @zfit.supports()
+    # def _analytic_integrate(self, limits, norm_range):
+    #     raise AnalyticIntegralNotImplementedError
 
 
