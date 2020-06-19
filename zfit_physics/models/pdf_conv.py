@@ -82,7 +82,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
 
         limits = self.conv_limits
         # area = limits.area()  # new spaces
-        area = limits.rect_area[0]  # new spaces
+        area = limits.rect_area()[0]  # new spaces
 
         samples = self._grid_points
         func_values = self._func_values
