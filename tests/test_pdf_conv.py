@@ -1,12 +1,13 @@
-"""Example test for a pdf or function"""
+"""Example test for a pdf or function."""
+import numpy as np
 import pytest
-import zfit
 import tensorflow as tf
+import zfit
+
 # Important, do the imports below
 from zfit.core.testing import setup_function, teardown_function, tester
 
 import zfit_physics as zphys
-import numpy as np
 
 # specify globals here. Do NOT add any TensorFlow but just pure python
 param1_true = 0.3
@@ -17,15 +18,15 @@ def test_conv_simple():
     # test special properties  here
     n_points = 2000
     obs = zfit.Space("obs1", limits=(-5, 5))
-    param1 = zfit.Parameter('param1', -3)
-    param2 = zfit.Parameter('param2', 0.3)
-    gauss1 = zfit.pdf.Gauss(0., param2, obs=obs)
+    param1 = zfit.Parameter("param1", -3)
+    param2 = zfit.Parameter("param2", 0.3)
+    gauss1 = zfit.pdf.Gauss(0.0, param2, obs=obs)
     uniform1 = zfit.pdf.Uniform(param1, param2, obs=obs)
-    conv = zphys.unstable.pdf.NumConvPDFUnbinnedV1(func=uniform1,
-                                                   kernel=gauss1,
-                                                   limits=obs, obs=obs)
+    conv = zphys.unstable.pdf.NumConvPDFUnbinnedV1(
+        func=uniform1, kernel=gauss1, limits=obs, obs=obs
+    )
 
-    x = tf.linspace(-5., 5., n_points)
+    x = tf.linspace(-5.0, 5.0, n_points)
     probs = conv.pdf(x=x)
     integral = conv.integrate(limits=obs)
     probs_np = probs.numpy()

@@ -1,7 +1,8 @@
-"""Example test for a pdf or function"""
+"""Example test for a pdf or function."""
+import numpy as np
 import tensorflow as tf
 import zfit
-import numpy as np
+
 # Important, do the imports below
 from zfit.core.testing import setup_function, teardown_function, tester
 
@@ -17,7 +18,7 @@ def test_simple_kde_3d():
     data = np.random.normal(size=(100, 3))
     sigma = zfit.Parameter("sigma", 0.5)
 
-    sigmas = [sigma, 1., 2]
+    sigmas = [sigma, 1.0, 2]
     lower = ((-5, -5, -5),)
     upper = ((5, 5, 5),)
     obs = zfit.Space(["obs1", "obs2", "obs3"], limits=(lower, upper))
@@ -27,6 +28,7 @@ def test_simple_kde_3d():
     probs = kde.pdf(x=data + 0.03)
     probs_np = probs.numpy()
     from zfit.loss import UnbinnedNLL
+
     data = np.random.normal(size=(100, 3))
 
     data = zfit.Data.from_tensor(tensor=data, obs=obs)
@@ -53,6 +55,7 @@ def test_simple_kde_1d():
     probs = kde.pdf(x=data + 0.03)
 
     from zfit.loss import UnbinnedNLL
+
     data = tf.random.normal(shape=(100, 1))
     data = zfit.Data.from_tensor(tensor=data, obs=obs)
     nll = UnbinnedNLL(model=kde, data=data)
@@ -65,13 +68,16 @@ def test_simple_kde_1d():
 
 # register the pdf here and provide sets of working parameter configurations
 
+
 def _kde_params_factory():
     data = np.random.normal(size=(100, 3))
-    sigmas = [0.5, 1., 2]
+    sigmas = [0.5, 1.0, 2]
     lower = ((-5, -5, -5),)
     upper = ((5, 5, 5),)
     obs = zfit.Space(["obs1", "obs2", "obs3"], limits=(lower, upper))
     return {"data": data, "sigma": sigmas, "obs": obs}
 
 
-tester.register_pdf(pdf_class=zphys.unstable.pdf.GaussianKDE, params_factories=_kde_params_factory())
+tester.register_pdf(
+    pdf_class=zphys.unstable.pdf.GaussianKDE, params_factories=_kde_params_factory()
+)
