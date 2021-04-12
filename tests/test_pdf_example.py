@@ -1,8 +1,7 @@
-"""Example test for a pdf or function"""
+"""Example test for a pdf or function."""
 
 import zfit
-# Important, do the imports below
-from zfit.core.testing import setup_function, teardown_function, tester
+from zfit.core.testing import tester
 
 import zfit_physics as zphys
 
@@ -18,9 +17,10 @@ def test_special_property1():
 
 # register the pdf here and provide sets of working parameter configurations
 
+
 def gauss_params_factory():
-    mu = zfit.Parameter('mu', param1_true)
-    sigma = zfit.Parameter('sigma', param2_true)
+    mu = zfit.Parameter("mu", param1_true)
+    sigma = zfit.Parameter("sigma", param2_true)
     return {"mu": mu, "sigma": sigma}
 
 

@@ -19,6 +19,3 @@ pep8:
 
 doc-warnings: true
 max-line-length: 110
-
-
-

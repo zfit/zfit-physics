@@ -7,10 +7,13 @@ from zfit import z
 from zfit.util import ztyping
 
 
-@z.function(wraps='tensor')
-def argus_func(m: ztyping.NumericalType, m0: ztyping.NumericalType,
-               c: ztyping.NumericalType,
-               p: ztyping.NumericalType) -> tf.Tensor:
+@z.function(wraps="tensor")
+def argus_func(
+    m: ztyping.NumericalType,
+    m0: ztyping.NumericalType,
+    c: ztyping.NumericalType,
+    p: ztyping.NumericalType,
+) -> tf.Tensor:
     r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle in a
     continuous background.
 
@@ -32,7 +35,7 @@ def argus_func(m: ztyping.NumericalType, m0: ztyping.NumericalType,
     Returns:
         `tf.Tensor`: the values matching the (broadcasted) shapes of the input
     """
-    m = tfp.math.clip_by_value_preserve_gradient(m, 0., m0)
+    m = tfp.math.clip_by_value_preserve_gradient(m, 0.0, m0)
     m_frac = m / m0
 
     m_factor = 1 - z.square(m_frac)
@@ -41,7 +44,6 @@ def argus_func(m: ztyping.NumericalType, m0: ztyping.NumericalType,
 
 
 class Argus(zfit.pdf.BasePDF):
-
     def __init__(self, obs: ztyping.ObsTypeInput, m0, c, p, name: str = "ArgusPDF"):
         r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle in a
         continuous background.
@@ -66,11 +68,7 @@ class Argus(zfit.pdf.BasePDF):
         Returns:
             `tf.Tensor`: the values matching the (broadcasted) shapes of the input
         """
-        params = {
-            'm0': m0,
-            'c': c,
-            'p': p
-        }
+        params = {"m0": m0, "c": c, "p": p}
         super().__init__(obs=obs, name=name, params=params)
 
     _N_OBS = 1
@@ -80,7 +78,7 @@ class Argus(zfit.pdf.BasePDF):
         Calculation of ARGUS PDF value
         (Docs: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.argus.html)
         """
-        m = zfit.ztf.unstack_x(x)
+        m = zfit.z.unstack_x(x)
 
         m0 = self.params["m0"]
         c = self.params["c"]
@@ -94,13 +92,14 @@ def uppergamma(s, x):
     return tf.math.igammac(s, x=x) * z.exp(tf.math.lgamma(x))
 
 
-@z.function(wraps='tensor')
+@z.function(wraps="tensor")
 def argus_cdf_p_half_nonpositive(lim, c, m0):
-    lim = tf.clip_by_value(lim, 0., m0)
-    cdf = tf.cond(tf.math.less(c, 0.),
-                  lambda: argus_cdf_p_half_c_neg(lim=lim, c=c, m0=m0),
-                  lambda: argus_cdf_p_half_c_zero(lim=lim, c=c, m0=m0)
-                  )
+    lim = tf.clip_by_value(lim, 0.0, m0)
+    cdf = tf.cond(
+        tf.math.less(c, 0.0),
+        lambda: argus_cdf_p_half_c_neg(lim=lim, c=c, m0=m0),
+        lambda: argus_cdf_p_half_c_zero(lim=lim, c=c, m0=m0),
+    )
     return cdf
 
 
@@ -116,20 +115,20 @@ def argus_cdf_p_half_nonpositive(lim, c, m0):
 #             * z.sqrt(1 - lim_square / m0_squared) * uppergamma((z.constant(1.5)),
 #                                                                -c * (1 - lim_square / m0_squared)) / c)
 
-@z.function(wraps='tensor')
+
+@z.function(wraps="tensor")
 def argus_cdf_p_half_c_neg(lim, c, m0):
     f1 = 1 - z.square(lim / m0)
     cdf = -0.5 * z.square(m0)
-    cdf *= (z.exp(c * f1) * z.sqrt(f1) / c
-            + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * tf.math.erf(z.sqrt(-c * f1)))
+    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * tf.math.erf(z.sqrt(-c * f1))
     return cdf
 
 
-@z.function(wraps='tensor')
+@z.function(wraps="tensor")
 def argus_cdf_p_half_c_zero(lim, c, m0):
     del c
     f1 = 1 - z.square(lim / m0)
-    cdf = -z.square(m0) / 3. * f1 * z.sqrt(f1)
+    cdf = -z.square(m0) / 3.0 * f1 * z.sqrt(f1)
     return cdf
 
 
@@ -140,7 +139,8 @@ def argus_cdf_p_half_c_zero(lim, c, m0):
 #     # cdf *= (0.5 * z.sqrt(z.pi) * (RooMath::faddeeva(sqrt(c * f1))).imag() - z.sqrt(c * f1))
 #     return cdf
 
-@z.function(wraps='tensor')
+
+@z.function(wraps="tensor")
 def argus_integral_p_half_func(lower, upper, c, m0):
     return argus_cdf_p_half_nonpositive(upper, c=c, m0=m0) - argus_cdf_p_half_nonpositive(lower, c=c, m0=m0)
 
@@ -161,26 +161,25 @@ def argus_integral_p_half(limits, params, model):
     return integral
 
 
-argus_integral_limits = zfit.Space(axes=(0,),
-                                   limits=(zfit.Space.ANY_LOWER,zfit.Space.ANY_UPPER))
+argus_integral_limits = zfit.Space(axes=(0,), limits=(zfit.Space.ANY_LOWER, zfit.Space.ANY_UPPER))
 Argus.register_analytic_integral(func=argus_integral_p_half, limits=argus_integral_limits)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # create the integral
     import sympy as sp
 
-    N = sp.Symbol('N')
-    m = sp.Symbol('m')
-    m0 = sp.Symbol('m0')
-    c = sp.Symbol('c')
-    t = sp.Symbol('t')
-    mu = sp.Symbol('mu')
-    sigma = sp.Symbol('sigma')
+    N = sp.Symbol("N")
+    m = sp.Symbol("m")
+    m0 = sp.Symbol("m0")
+    c = sp.Symbol("c")
+    t = sp.Symbol("t")
+    mu = sp.Symbol("mu")
+    sigma = sp.Symbol("sigma")
 
     # p = sp.Symbol('p')
     p = 0.5
-    low = sp.Symbol('low')
-    lim = sp.Symbol('up')
+    low = sp.Symbol("low")
+    lim = sp.Symbol("up")
 
     from sympy.assumptions.assume import global_assumptions
 
@@ -202,7 +201,7 @@ if __name__ == '__main__':
     # integral_expression = (N * m * (1 - (m / m0) ** 2) ** p * sp.exp(c * (1 - (m / m0) ** 2)))
     integral = sp.integrate(integral_expression, m)
     print(integral)
-    func1 = sp.lambdify(integral.free_symbols, integral, 'tensorflow')
+    func1 = sp.lambdify(integral.free_symbols, integral, "tensorflow")
     import inspect
 
     source = inspect.getsource(func1)
