@@ -1,9 +1,7 @@
 """Example test for a pdf or function."""
 
 import zfit
-
-# Important, do the imports below
-from zfit.core.testing import setup_function, teardown_function, tester
+from zfit.core.testing import tester
 
 import zfit_physics as zphys
 

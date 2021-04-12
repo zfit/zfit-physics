@@ -4,9 +4,6 @@ import pytest
 import tensorflow as tf
 import zfit
 
-# Important, do the imports below
-from zfit.core.testing import setup_function, teardown_function, tester
-
 import zfit_physics as zphys
 
 # specify globals here. Do NOT add any TensorFlow but just pure python
@@ -22,9 +19,7 @@ def test_conv_simple():
     param2 = zfit.Parameter("param2", 0.3)
     gauss1 = zfit.pdf.Gauss(0.0, param2, obs=obs)
     uniform1 = zfit.pdf.Uniform(param1, param2, obs=obs)
-    conv = zphys.unstable.pdf.NumConvPDFUnbinnedV1(
-        func=uniform1, kernel=gauss1, limits=obs, obs=obs
-    )
+    conv = zphys.unstable.pdf.NumConvPDFUnbinnedV1(func=uniform1, kernel=gauss1, limits=obs, obs=obs)
 
     x = tf.linspace(-5.0, 5.0, n_points)
     probs = conv.pdf(x=x)

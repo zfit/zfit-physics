@@ -1,10 +1,9 @@
 """Example test for a pdf or function."""
 import numpy as np
+import pytest
 import tensorflow as tf
 import zfit
-
-# Important, do the imports below
-from zfit.core.testing import setup_function, teardown_function, tester
+from zfit.core.testing import tester
 
 import zfit_physics as zphys
 
@@ -13,6 +12,7 @@ param1_true = 0.3
 param2_true = 1.2
 
 
+@pytest.mark.skip  # TODO: remove from package
 def test_simple_kde_3d():
     # test special properties  here
     data = np.random.normal(size=(100, 3))
@@ -40,6 +40,7 @@ def test_simple_kde_3d():
     assert minimum.converged
 
 
+@pytest.mark.skip  # TODO: remove from package
 def test_simple_kde_1d():
     # test special properties  here
     # zfit.settings.options['numerical_grad'] = True
@@ -78,6 +79,4 @@ def _kde_params_factory():
     return {"data": data, "sigma": sigmas, "obs": obs}
 
 
-tester.register_pdf(
-    pdf_class=zphys.unstable.pdf.GaussianKDE, params_factories=_kde_params_factory()
-)
+tester.register_pdf(pdf_class=zphys.unstable.pdf.GaussianKDE, params_factories=_kde_params_factory())

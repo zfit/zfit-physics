@@ -78,7 +78,7 @@ class Argus(zfit.pdf.BasePDF):
         Calculation of ARGUS PDF value
         (Docs: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.argus.html)
         """
-        m = zfit.ztf.unstack_x(x)
+        m = zfit.z.unstack_x(x)
 
         m0 = self.params["m0"]
         c = self.params["c"]
@@ -120,9 +120,7 @@ def argus_cdf_p_half_nonpositive(lim, c, m0):
 def argus_cdf_p_half_c_neg(lim, c, m0):
     f1 = 1 - z.square(lim / m0)
     cdf = -0.5 * z.square(m0)
-    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(
-        z.pi
-    ) * tf.math.erf(z.sqrt(-c * f1))
+    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * tf.math.erf(z.sqrt(-c * f1))
     return cdf
 
 
@@ -144,16 +142,12 @@ def argus_cdf_p_half_c_zero(lim, c, m0):
 
 @z.function(wraps="tensor")
 def argus_integral_p_half_func(lower, upper, c, m0):
-    return argus_cdf_p_half_nonpositive(
-        upper, c=c, m0=m0
-    ) - argus_cdf_p_half_nonpositive(lower, c=c, m0=m0)
+    return argus_cdf_p_half_nonpositive(upper, c=c, m0=m0) - argus_cdf_p_half_nonpositive(lower, c=c, m0=m0)
 
 
 def argus_integral_p_half(limits, params, model):
     p = params["p"]
-    if not isinstance(p, zfit.param.ConstantParameter) or not np.isclose(
-        p.static_value, 0.5
-    ):
+    if not isinstance(p, zfit.param.ConstantParameter) or not np.isclose(p.static_value, 0.5):
         raise zfit.exception.AnalyticIntegralNotImplementedError()
     c = params["c"]
     if not isinstance(c, zfit.param.ConstantParameter) or c.static_value > 0:
@@ -167,12 +161,8 @@ def argus_integral_p_half(limits, params, model):
     return integral
 
 
-argus_integral_limits = zfit.Space(
-    axes=(0,), limits=(zfit.Space.ANY_LOWER, zfit.Space.ANY_UPPER)
-)
-Argus.register_analytic_integral(
-    func=argus_integral_p_half, limits=argus_integral_limits
-)
+argus_integral_limits = zfit.Space(axes=(0,), limits=(zfit.Space.ANY_LOWER, zfit.Space.ANY_UPPER))
+Argus.register_analytic_integral(func=argus_integral_p_half, limits=argus_integral_limits)
 
 if __name__ == "__main__":
     # create the integral

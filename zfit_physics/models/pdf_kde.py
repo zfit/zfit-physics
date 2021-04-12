@@ -3,11 +3,11 @@ from collections import OrderedDict
 import tensorflow as tf
 import tensorflow_probability.python.distributions as tfd
 import zfit
-from zfit import z, ztf
+from zfit import z
 from zfit.models.dist_tfp import WrapDistribution
 from zfit.util import ztyping
 from zfit.util.container import convert_to_container
-from zfit.util.exception import AnalyticIntegralNotImplementedError, WorkInProgressError
+from zfit.util.exception import AnalyticIntegralNotImplemented, WorkInProgressError
 
 
 class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kernel
@@ -38,8 +38,8 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
 
         else:
             if not isinstance(data, tf.Tensor):
-                data = ztf.convert_to_tensor(value=data)
-            data = ztf.to_real(data)
+                data = z.convert_to_tensor(value=data)
+            data = z.to_real(data)
 
             shape_data = tf.shape(data)
             size = tf.cast(shape_data[0], dtype=dtype)
@@ -49,12 +49,7 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         # Bandwidth definition, use silverman's rule of thumb for nd
         def reshaped_kerner_factory():
             cov_diag = [
-                tf.square(
-                    (4.0 / (dims + 2.0)) ** (1 / (dims + 4))
-                    * size ** (-1 / (dims + 4))
-                    * s
-                )
-                for s in bandwidth
+                tf.square((4.0 / (dims + 2.0)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in bandwidth
             ]
             # cov = tf.linalg.diag(cov_diag)
             # kernel prob output shape: (n,)
