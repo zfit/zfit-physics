@@ -17,14 +17,6 @@ repos:
       #          - id: name-tests-test
       - id: fix-byte-order-marker
       - id: check-ast
-  - repo: local
-    hooks:
-      - id: doc arg replacer
-        name: docarg
-        entry: utils/api/replace_argdocs.py
-        language: python
-        always_run: true
-        additional_dependencies: [ pyyaml ]
 
   - repo: https://github.com/myint/docformatter
     rev: v1.4
