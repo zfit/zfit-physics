@@ -31,8 +31,6 @@ Thanks
 0.1.0
 =======
 
-
-
 Upgrade to zfit >= 0.6
 
 

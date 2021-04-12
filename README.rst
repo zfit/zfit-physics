@@ -8,12 +8,7 @@ zfit physics
 .. image:: https://img.shields.io/pypi/v/zfit_physics.svg
    :target: https://pypi.python.org/pypi/zfit_physics
 
-.. image:: https://img.shields.io/conda/vn/conda-forge/zfit-physics
-   :alt: conda-forge
-   :target: https://anaconda.org/conda-forge/zfit-physics
 
-.. image:: https://travis-ci.org/zfit/zfit-physics.svg?branch=master
-   :target: https://travis-ci.org/zfit/zfit-physics
 
 |zfit_logo|
 
@@ -39,15 +34,8 @@ Installing
 ==========
 
 
-zfit-physics is available on conda-forge and pip. If possible, use a conda or virtual environment and do:
+zfit-physics is available on pip. If possible, use a conda or virtual environment and do:
 
-For conda:
-
-.. code-block:: console
-
-    $ conda install zfit-physics -c conda-forge
-
-For pip (if you don't use conda):
 
 .. code-block:: console
 
