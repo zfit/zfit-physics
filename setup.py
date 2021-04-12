@@ -7,14 +7,10 @@ from setuptools import find_packages, setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with open(
-    os.path.join(here, "requirements.txt"), encoding="utf-8"
-) as requirements_file:
+with open(os.path.join(here, "requirements.txt"), encoding="utf-8") as requirements_file:
     requirements = requirements_file.read().splitlines()
 
-with open(
-    os.path.join(here, "requirements_dev.txt"), encoding="utf-8"
-) as requirements_dev_file:
+with open(os.path.join(here, "requirements_dev.txt"), encoding="utf-8") as requirements_dev_file:
     requirements_dev = requirements_dev_file.read().splitlines()
 
 with open(os.path.join(here, "README.rst"), encoding="utf-8") as readme_file:
@@ -32,9 +28,7 @@ if not requirements_dev.count("") == 1 or requirements_dev.index("") == 0:
 requirements_dev_split = requirements_dev.index("")
 
 setup_requirements = ["pip>9", "setuptools_scm", "setuptools_scm_git_archive"]
-test_requirements = requirements_dev[
-    requirements_dev_split + 1 :
-]  # +1: skip empty line
+test_requirements = requirements_dev[requirements_dev_split + 1 :]  # +1: skip empty line
 
 setup(
     classifiers=[
@@ -59,9 +53,7 @@ setup(
     include_package_data=True,
     keywords="TensorFlow, model, fitting, scalable, HEP, physics",
     python_requires=">=3.6",
-    packages=find_packages(
-        include=["zfit_physics", "zfit_physics.models", "zfit_physics.unstable"]
-    ),
+    packages=find_packages(include=["zfit_physics", "zfit_physics.models", "zfit_physics.unstable"]),
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,

@@ -24,10 +24,7 @@ def test_standard():
     lower = 0.0
     upper = 5.0
     argus_pdf = argus.pdf(tf.linspace(lower, upper, 1000001))
-    assert (
-        pytest.approx(zfit.run(tf.reduce_mean(argus_pdf) * (upper - lower)), 4e-2)
-        == 1.0
-    )
+    assert pytest.approx(zfit.run(tf.reduce_mean(argus_pdf) * (upper - lower)), 4e-2) == 1.0
     analytic_integral = zfit.run(argus.analytic_integrate(obs, norm_range=False))
     numeric_integral = zfit.run(argus.numeric_integrate(obs, norm_range=False))
     assert pytest.approx(analytic_integral, 4e-2) == numeric_integral
