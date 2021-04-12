@@ -1,7 +1,6 @@
 *********
 Changelog
 *********
-
 Develop
 =======
 
@@ -27,6 +26,14 @@ Requirement changes
 
 Thanks
 ------
+
+
+0.1.0
+=======
+
+
+
+Upgrade to zfit >= 0.6
 
 
 0.0.3 (14.05.2020)
