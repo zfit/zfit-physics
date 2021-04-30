@@ -54,7 +54,7 @@ repos:
       - id: isort
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.12.0
+    rev: v2.13.0
     hooks:
       - id: pyupgrade
         args: [ --py37-plus ]
@@ -66,7 +66,7 @@ repos:
 
   # Notebook formatting
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 0.6.0
+    rev: 0.7.0
     hooks:
       - id: nbqa-isort
         additional_dependencies: [ isort==5.6.4 ]
@@ -87,8 +87,8 @@ repos:
   #      - id: upgrade-type-hints
   #        args: [ '--futures=true' ]
 
-  - repo: https://github.com/ambv/black
-    rev: 20.8b1
+  - repo: https://github.com/psf/black
+    rev: 21.4b0
     hooks:
       - id: black
         language_version: python3.7
