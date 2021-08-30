@@ -1,9 +1,9 @@
 import numpy as np
 import tensorflow as tf
 import zfit
-from zfit.util import ztyping
 from zfit import z
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
+from zfit.util import ztyping
 
 
 @z.function
@@ -65,8 +65,7 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
 
 @z.function
 def relbw_cdf_func(x, m, Gamma):
-    """
-    Analytical function for the CDF of the relativistic Breit-Wigner distribution.
+    """Analytical function for the CDF of the relativistic Breit-Wigner distribution.
 
     Args:
          x: value(s) for which the CDF will be calculated.
@@ -99,8 +98,7 @@ def relbw_cdf_func(x, m, Gamma):
 
 
 def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
-    """
-    Calculates the analytic integral of the relativistic Breit-Wigner PDF.
+    """Calculates the analytic integral of the relativistic Breit-Wigner PDF.
 
     Args:
         limits: An object with attribute rect_limits.
