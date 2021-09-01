@@ -35,10 +35,14 @@ def test_relbw_integral():
     # Test CDF and integral here
     relbw, obs = create_relbw(m_true, gamma_true, limits=(0, 200))
 
-    analytic_integral = zfit.run(relbw.analytic_integrate(obs, norm_range=False))
-    numeric_integral = zfit.run(relbw.numeric_integrate(obs, norm_range=False))
-    assert analytic_integral == pytest.approx(1.0, 1e-4)
-    assert numeric_integral == pytest.approx(1.0, 2e-3)
+    full_interval_analytic = zfit.run(relbw.analytic_integrate(obs, norm_range=False))
+    full_interval_numeric = zfit.run(relbw.numeric_integrate(obs, norm_range=False))
+    assert full_interval_analytic == pytest.approx(1.0, 1e-4)
+    assert full_interval_numeric == pytest.approx(1.0, 2e-3)
+
+    analytic_integral = zfit.run(relbw.analytic_integrate(limits=(50, 100), norm_range=False))
+    numeric_integral = zfit.run(relbw.numeric_integrate(limits=(50, 100), norm_range=False))
+    assert analytic_integral == pytest.approx(numeric_integral, 0.01)
 
 
 # register the pdf here and provide sets of working parameter configurations
