@@ -49,7 +49,7 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
         Returns:
             `tf.Tensor`: The value(s) of the unnormalized PDF at x.
         """
-        x = zfit.z.unstack_x(x)
+        x = z.unstack_x(x)
         alpha = self.params["gamma"] / self.params["m"]
         gamma = self.params["m"] ** 2 * (1.0 + alpha ** 2) ** 0.5
         k = (
@@ -81,7 +81,7 @@ def relbw_cdf_func(x, m, gamma):
     """
     gamma = z.to_complex(gamma)
     m = z.to_complex(m)
-    x = z.to_complex(x)
+    x = z.to_complex(z.unstack_x(x))
 
     alpha = gamma / m
     gamma2 = m ** 2 * (1.0 + alpha ** 2) ** 0.5
