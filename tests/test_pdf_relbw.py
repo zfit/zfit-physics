@@ -10,18 +10,18 @@ import zfit_physics as zphys
 
 # specify globals here. Do NOT add any TensorFlow but just pure python
 m_true = 125.0
-Gamma_true = 0.05
+gamma_true = 0.05
 
 
-def create_relbw(m, Gamma, limits):
+def create_relbw(m, gamma, limits):
     obs = zfit.Space("obs1", limits)
-    relbw = zphys.pdf.RelativisticBreitWigner(m=m, Gamma=Gamma, obs=obs)
+    relbw = zphys.pdf.RelativisticBreitWigner(m=m, gamma=gamma, obs=obs)
     return relbw, obs
 
 
 def test_relbw_pdf():
     # Test PDF here
-    relbw, _ = create_relbw(m_true, Gamma_true, limits=(0, 200))
+    relbw, _ = create_relbw(m_true, gamma_true, limits=(0, 200))
     assert zfit.run(relbw.pdf(125.0)) == pytest.approx(12.732396211295313, rel=1e-4)
     assert relbw.pdf(tf.range(0.0, 200, 10_000)) <= relbw.pdf(125.0)
 
@@ -33,7 +33,7 @@ def test_relbw_pdf():
 
 def test_relbw_integral():
     # Test CDF and integral here
-    relbw, obs = create_relbw(m_true, Gamma_true, limits=(0, 200))
+    relbw, obs = create_relbw(m_true, gamma_true, limits=(0, 200))
 
     analytic_integral = zfit.run(relbw.analytic_integrate(obs, norm_range=False))[0]
     numeric_integral = zfit.run(relbw.numeric_integrate(obs, norm_range=False))[0]
@@ -44,8 +44,8 @@ def test_relbw_integral():
 # register the pdf here and provide sets of working parameter configurations
 def relbw_params_factory():
     m = zfit.Parameter("m", m_true)
-    Gamma = zfit.Parameter("Gamma", Gamma_true)
-    return {"m": m, "Gamma": Gamma}
+    gamma = zfit.Parameter("gamma", gamma_true)
+    return {"m": m, "gamma": gamma}
 
 
 tester.register_pdf(pdf_class=zphys.pdf.RelativisticBreitWigner, params_factories=relbw_params_factory)

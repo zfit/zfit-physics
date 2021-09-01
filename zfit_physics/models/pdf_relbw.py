@@ -1,9 +1,9 @@
 import numpy as np
 import tensorflow as tf
 import zfit
+from zfit.util import ztyping
 from zfit import z
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
-from zfit.util import ztyping
 
 
 @z.function
@@ -34,11 +34,11 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
 
     Args:
         m: the average value
-        Gamma: the width of the distribution
+        gamma: the width of the distribution
     """
 
     _N_OBS = 1
-    _PARAMS = ["m", "Gamma"]
+    _PARAMS = ["m", "gamma"]
 
     def _unnormalized_pdf(self, x: tf.Tensor) -> tf.Tensor:
         """Calculate the PDF at value(s) x.
@@ -50,7 +50,7 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
             `tf.Tensor`: The value(s) of the unnormalized PDF at x.
         """
         x = zfit.z.unstack_x(x)
-        alpha = self.params["Gamma"] / self.params["m"]
+        alpha = self.params["gamma"] / self.params["m"]
         gamma = self.params["m"] ** 2 * (1.0 + alpha ** 2) ** 0.5
         k = (
             2.0 ** (3.0 / 2.0)
@@ -64,13 +64,14 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
 
 
 @z.function
-def relbw_cdf_func(x, m, Gamma):
-    """Analytical function for the CDF of the relativistic Breit-Wigner distribution.
+def relbw_cdf_func(x, m, gamma):
+    """
+    Analytical function for the CDF of the relativistic Breit-Wigner distribution.
 
     Args:
          x: value(s) for which the CDF will be calculated.
          m: Mean value
-         Gamma: width
+         gamma: width
 
     Returns:
         `tf.Tensor`: The calculated CDF values.
@@ -78,13 +79,13 @@ def relbw_cdf_func(x, m, Gamma):
     Notes:
         Based on code from this [github gist](https://gist.github.com/andrewfowlie/cd0ed7e6c96f7c9e88f85eb3b9665b97#file-bw-py-L112-L154)
     """
-    Gamma = z.to_complex(Gamma)
+    gamma = z.to_complex(gamma)
     m = z.to_complex(m)
     x = z.to_complex(x)
 
-    alpha = Gamma / m
-    gamma = m ** 2 * (1.0 + alpha ** 2) ** 0.5
-    k = 2.0 ** (3.0 / 2.0) * m ** 2 * alpha * gamma / (np.pi * (m ** 2 + gamma) ** 0.5)
+    alpha = gamma / m
+    gamma2 = m ** 2 * (1.0 + alpha ** 2) ** 0.5
+    k = 2.0 ** (3.0 / 2.0) * m ** 2 * alpha * gamma2 / (np.pi * (m ** 2 + gamma2) ** 0.5)
 
     arg_1 = z.to_complex(-1) ** (1.0 / 4.0) / (-1j + alpha) ** 0.5 * x / m
     arg_2 = z.to_complex(-1) ** (3.0 / 4.0) / (1j + alpha) ** 0.5 * x / m
@@ -98,7 +99,8 @@ def relbw_cdf_func(x, m, Gamma):
 
 
 def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
-    """Calculates the analytic integral of the relativistic Breit-Wigner PDF.
+    """
+    Calculates the analytic integral of the relativistic Breit-Wigner PDF.
 
     Args:
         limits: An object with attribute rect_limits.
@@ -109,8 +111,8 @@ def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
         The calculated integral.
     """
     lower, upper = limits.rect_limits
-    lower_cdf = relbw_cdf_func(x=lower, m=params["m"], Gamma=params["Gamma"])
-    upper_cdf = relbw_cdf_func(x=upper, m=params["m"], Gamma=params["Gamma"])
+    lower_cdf = relbw_cdf_func(x=lower, m=params["m"], gamma=params["gamma"])
+    upper_cdf = relbw_cdf_func(x=upper, m=params["m"], gamma=params["gamma"])
     return upper_cdf - lower_cdf
 
 
