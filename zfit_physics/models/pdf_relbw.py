@@ -7,24 +7,33 @@ from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
 
 
 @z.function(wraps='tensor')
-def arctan_complex(x):
-    r"""Function that evaluates arctan(x) using tensorflow but also supports complex numbers.
-    It is defined as
-    .. math::
-
-        \mathrm{arctan}(x) = \frac{i}{2} \left(\ln(1-ix) - \ln(1+ix)\right)
+def relbw_pdf_func(x, m, gamma):
+    """
+    Calculate the relativistic Breit-Wigner PDF.
 
     Args:
-        x: tf.Tensor
+         x: value(s) for which the CDF will be calculated.
+         m: Mean value
+         gamma: width
 
     Returns:
-        .. math:: \mathrm{arctan}(x)
+        `tf.Tensor`: The calculated PDF values.
 
     Notes:
-        Formula is taken from https://www.wolframalpha.com/input/?i=arctan%28a%2Bb*i%29
-    TODO: move somewhere?
+        Based on code from this [github gist](https://gist.github.com/andrewfowlie/cd0ed7e6c96f7c9e88f85eb3b9665b97#file-bw-py-L87-L110)
     """
-    return 1 / 2 * 1j * (tf.math.log(1 - 1j * x) - tf.math.log(1 + 1j * x))
+    x = z.unstack_x(x)
+    alpha = gamma / m
+    gamma2 = m ** 2 * (1.0 + alpha ** 2) ** 0.5
+    k = (
+            2.0 ** (3.0 / 2.0)
+            * m ** 2
+            * alpha
+            * gamma2
+            / (np.pi * (m ** 2 + gamma2) ** 0.5)
+    )
+
+    return k / ((x ** 2 - m ** 2) ** 2 + m ** 4 * alpha ** 2)
 
 
 class RelativisticBreitWigner(zfit.pdf.ZPDF):
@@ -49,18 +58,28 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
         Returns:
             `tf.Tensor`: The value(s) of the unnormalized PDF at x.
         """
-        x = z.unstack_x(x)
-        alpha = self.params["gamma"] / self.params["m"]
-        gamma = self.params["m"] ** 2 * (1.0 + alpha ** 2) ** 0.5
-        k = (
-            2.0 ** (3.0 / 2.0)
-            * self.params["m"] ** 2
-            * alpha
-            * gamma
-            / (np.pi * (self.params["m"] ** 2 + gamma) ** 0.5)
-        )
+        return relbw_pdf_func(x, m=self.params['m'], gamma=self.params['gamma'])
 
-        return k / ((x ** 2 - self.params["m"] ** 2) ** 2 + self.params["m"] ** 4 * alpha ** 2)
+
+@z.function(wraps='tensor')
+def arctan_complex(x):
+    r"""Function that evaluates arctan(x) using tensorflow but also supports complex numbers.
+    It is defined as
+    .. math::
+
+        \mathrm{arctan}(x) = \frac{i}{2} \left(\ln(1-ix) - \ln(1+ix)\right)
+
+    Args:
+        x: tf.Tensor
+
+    Returns:
+        .. math:: \mathrm{arctan}(x)
+
+    Notes:
+        Formula is taken from https://www.wolframalpha.com/input/?i=arctan%28a%2Bb*i%29
+    TODO: move somewhere?
+    """
+    return 1 / 2 * 1j * (tf.math.log(1 - 1j * x) - tf.math.log(1 + 1j * x))
 
 
 @z.function(wraps='tensor')
