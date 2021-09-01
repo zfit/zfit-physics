@@ -35,6 +35,15 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "olantwin",
+      "name": "Oliver Lantwin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3578823?v=4",
+      "profile": "https://github.com/olantwin",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "projectName": "zfit-physics",
