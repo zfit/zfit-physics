@@ -6,7 +6,7 @@ from zfit import z
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
 
 
-@z.function
+@z.function(wraps='tensor)
 def arctan_complex(x):
     r"""Function that evaluates arctan(x) using tensorflow but also supports complex numbers.
     It is defined as
@@ -63,7 +63,7 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
         return k / ((x ** 2 - self.params["m"] ** 2) ** 2 + self.params["m"] ** 4 * alpha ** 2)
 
 
-@z.function
+@z.function(wraps='tensor')
 def relbw_cdf_func(x, m, gamma):
     """
     Analytical function for the CDF of the relativistic Breit-Wigner distribution.
