@@ -7,6 +7,7 @@ Develop
 
 Major Features and Improvements
 -------------------------------
+- Added relativistic Breit-Wigner PDF
 
 Breaking changes
 ------------------
