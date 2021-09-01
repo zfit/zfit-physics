@@ -55,5 +55,7 @@ You can contact us directly:
  - via e-mail: zfit@physik.uzh.ch
  - join our `Gitter channel <https://gitter.im/zfit/zfit>`_
  
- Contributors
- ============
+Contributors
+============
+ 
+ 
