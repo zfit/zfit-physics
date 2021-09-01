@@ -6,7 +6,7 @@ from zfit import z
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
 
 
-@z.function(wraps='tensor)
+@z.function(wraps='tensor')
 def arctan_complex(x):
     r"""Function that evaluates arctan(x) using tensorflow but also supports complex numbers.
     It is defined as
