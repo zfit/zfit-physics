@@ -7,7 +7,6 @@ Develop
 
 Major Features and Improvements
 -------------------------------
-- Added relativistic Breit-Wigner PDF
 
 Breaking changes
 ------------------
@@ -28,6 +27,12 @@ Requirement changes
 Thanks
 ------
 
+0.2.0
+=======
+
+Added relativistic Breit-Wigner PDF
+
+Many thanks to Simon Thor <simon11.thor@hotmail.se> for contributing the Relativistic BW
 
 0.1.0
 =======
