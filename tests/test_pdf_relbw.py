@@ -10,7 +10,7 @@ import zfit_physics as zphys
 
 # specify globals here. Do NOT add any TensorFlow but just pure python
 m_true = 125.0
-gamma_true = 0.05
+gamma_true = 1.5
 
 
 def create_relbw(m, gamma, limits):
@@ -34,11 +34,11 @@ def test_relbw_pdf():
 def test_relbw_integral():
     # Test CDF and integral here
     relbw, obs = create_relbw(m_true, gamma_true, limits=(0, 200))
-
     full_interval_analytic = zfit.run(relbw.analytic_integrate(obs, norm_range=False))
     full_interval_numeric = zfit.run(relbw.numeric_integrate(obs, norm_range=False))
-    assert full_interval_analytic == pytest.approx(1.0, 1e-4)
-    assert full_interval_numeric == pytest.approx(1.0, 2e-3)
+    true_integral = 0.99888
+    assert full_interval_analytic == pytest.approx(true_integral, 1e-4)
+    assert full_interval_numeric == pytest.approx(true_integral, 1e-2)
 
     analytic_integral = zfit.run(relbw.analytic_integrate(limits=(50, 100), norm_range=False))
     numeric_integral = zfit.run(relbw.numeric_integrate(limits=(50, 100), norm_range=False))
