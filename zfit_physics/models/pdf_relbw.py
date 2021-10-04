@@ -1,15 +1,14 @@
 import numpy as np
 import tensorflow as tf
 import zfit
-from zfit.util import ztyping
 from zfit import z
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
+from zfit.util import ztyping
 
 
-@z.function(wraps='tensor')
+@z.function(wraps="tensor")
 def relbw_pdf_func(x, m, gamma):
-    """
-    Calculate the relativistic Breit-Wigner PDF.
+    """Calculate the relativistic Breit-Wigner PDF.
 
     Args:
          x: value(s) for which the CDF will be calculated.
@@ -25,13 +24,7 @@ def relbw_pdf_func(x, m, gamma):
     x = z.unstack_x(x)
     alpha = gamma / m
     gamma2 = m ** 2 * (1.0 + alpha ** 2) ** 0.5
-    k = (
-            2.0 ** (3.0 / 2.0)
-            * m ** 2
-            * alpha
-            * gamma2
-            / (np.pi * (m ** 2 + gamma2) ** 0.5)
-    )
+    k = 2.0 ** (3.0 / 2.0) * m ** 2 * alpha * gamma2 / (np.pi * (m ** 2 + gamma2) ** 0.5)
 
     return k / ((x ** 2 - m ** 2) ** 2 + m ** 4 * alpha ** 2)
 
@@ -58,10 +51,10 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
         Returns:
             `tf.Tensor`: The value(s) of the unnormalized PDF at x.
         """
-        return relbw_pdf_func(x, m=self.params['m'], gamma=self.params['gamma'])
+        return relbw_pdf_func(x, m=self.params["m"], gamma=self.params["gamma"])
 
 
-@z.function(wraps='tensor')
+@z.function(wraps="tensor")
 def arctan_complex(x):
     r"""Function that evaluates arctan(x) using tensorflow but also supports complex numbers.
     It is defined as
@@ -82,10 +75,9 @@ def arctan_complex(x):
     return 1 / 2 * 1j * (tf.math.log(1 - 1j * x) - tf.math.log(1 + 1j * x))
 
 
-@z.function(wraps='tensor')
+@z.function(wraps="tensor")
 def relbw_cdf_func(x, m, gamma):
-    """
-    Analytical function for the CDF of the relativistic Breit-Wigner distribution.
+    """Analytical function for the CDF of the relativistic Breit-Wigner distribution.
 
     Args:
          x: value(s) for which the CDF will be calculated.
@@ -118,8 +110,7 @@ def relbw_cdf_func(x, m, gamma):
 
 
 def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
-    """
-    Calculates the analytic integral of the relativistic Breit-Wigner PDF.
+    """Calculates the analytic integral of the relativistic Breit-Wigner PDF.
 
     Args:
         limits: An object with attribute rect_limits.
