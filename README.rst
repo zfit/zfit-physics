@@ -57,5 +57,3 @@ You can contact us directly:
 
 Contributors
 ============
-
-
