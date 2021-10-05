@@ -63,7 +63,7 @@ repos:
         args: [ --py37-plus ]
 
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.17.0
+    rev: v1.18.0
     hooks:
       - id: setup-cfg-fmt
 
@@ -94,4 +94,3 @@ repos:
     rev: 21.9b0
     hooks:
       - id: black
-        language_version: python3.7

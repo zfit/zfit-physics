@@ -22,7 +22,7 @@ def create_relbw(m, gamma, limits):
 def test_relbw_pdf():
     # Test PDF here
     relbw, _ = create_relbw(m_true, gamma_true, limits=(0, 200))
-    assert zfit.run(relbw.pdf(125.0)) == pytest.approx(12.732396211295313, rel=1e-4)
+    assert zfit.run(relbw.pdf(125.0)) == pytest.approx(0.4249, rel=1e-4)
     assert relbw.pdf(tf.range(0.0, 200, 10_000)) <= relbw.pdf(125.0)
 
     sample = relbw.sample(1000)
