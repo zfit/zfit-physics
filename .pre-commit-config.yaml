@@ -52,7 +52,7 @@ repos:
   #          - id: pydocstyle
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.9.3
+    rev: 5.10.1
     hooks:
       - id: isort
 
@@ -63,7 +63,7 @@ repos:
         args: [ --py37-plus ]
 
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.18.0
+    rev: v1.19.0
     hooks:
       - id: setup-cfg-fmt
 
@@ -83,14 +83,13 @@ repos:
     hooks:
       - id: check-manifest
         stages: [ manual ]
-  # TODO(py37): add the following once 3.6 is gone. Changes the Type hints.
-  #  - repo: https://github.com/sondrelg/pep585-upgrade
-  #    rev: '5f7033a0d0174c65105b041500060b993c1bc211'  # Use the sha / tag you want to point at
-  #    hooks:
-  #      - id: upgrade-type-hints
-  #        args: [ '--futures=true' ]
+  - repo: https://github.com/sondrelg/pep585-upgrade
+    rev: 'v1'  # Use the sha / tag you want to point at
+    hooks:
+    - id: upgrade-type-hints
+      args: [ '--futures=true' ]
 
   - repo: https://github.com/psf/black
-    rev: 21.9b0
+    rev: 21.10b0
     hooks:
       - id: black
