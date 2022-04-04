@@ -23,10 +23,10 @@ def relbw_pdf_func(x, m, gamma):
     """
     x = z.unstack_x(x)
     alpha = gamma / m
-    gamma2 = m ** 2 * (1.0 + alpha ** 2) ** 0.5
-    k = 2.0 ** (3.0 / 2.0) * m ** 2 * alpha * gamma2 / (np.pi * (m ** 2 + gamma2) ** 0.5)
+    gamma2 = m**2 * (1.0 + alpha**2) ** 0.5
+    k = 2.0 ** (3.0 / 2.0) * m**2 * alpha * gamma2 / (np.pi * (m**2 + gamma2) ** 0.5)
 
-    return k / ((x ** 2 - m ** 2) ** 2 + m ** 4 * alpha ** 2)
+    return k / ((x**2 - m**2) ** 2 + m**4 * alpha**2)
 
 
 class RelativisticBreitWigner(zfit.pdf.ZPDF):
@@ -95,14 +95,14 @@ def relbw_cdf_func(x, m, gamma):
     x = z.to_complex(z.unstack_x(x))
 
     alpha = gamma / m
-    gamma2 = m ** 2 * (1.0 + alpha ** 2) ** 0.5
-    k = 2.0 ** (3.0 / 2.0) * m ** 2 * alpha * gamma2 / (np.pi * (m ** 2 + gamma2) ** 0.5)
+    gamma2 = m**2 * (1.0 + alpha**2) ** 0.5
+    k = 2.0 ** (3.0 / 2.0) * m**2 * alpha * gamma2 / (np.pi * (m**2 + gamma2) ** 0.5)
 
     arg_1 = z.to_complex(-1) ** (1.0 / 4.0) / (-1j + alpha) ** 0.5 * x / m
     arg_2 = z.to_complex(-1) ** (3.0 / 4.0) / (1j + alpha) ** 0.5 * x / m
 
     shape = -1j * arctan_complex(arg_1) / (-1j + alpha) ** 0.5 - arctan_complex(arg_2) / (1j + alpha) ** 0.5
-    norm = z.to_complex(-1) ** (1.0 / 4.0) * k / (2.0 * alpha * m ** 3)
+    norm = z.to_complex(-1) ** (1.0 / 4.0) * k / (2.0 * alpha * m**3)
 
     cdf_ = shape * norm
     cdf_ = z.to_real(cdf_)
