@@ -197,7 +197,7 @@ if __name__ == "__main__":
     global_assumptions.add(sp.Q.finite(c))
     global_assumptions.add(sp.Q.positive(c))
     m_factor = 1 - (m / m0) ** 2
-    integral_expression = m * m_factor ** p * (sp.exp(c * m_factor))
+    integral_expression = m * m_factor**p * (sp.exp(c * m_factor))
     # integral_expression = (N * m * (1 - (m / m0) ** 2) ** p * sp.exp(c * (1 - (m / m0) ** 2)))
     integral = sp.integrate(integral_expression, m)
     print(integral)
