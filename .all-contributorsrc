@@ -5,10 +5,7 @@
   "imageSize": 100,
   "contributorsPerLine": 7,
   "contributorsSortAlphabetically": false,
-  "badgeTemplate": "|All Contributors|
-
-.. |All Contributors| image:: https://img.shields.io/badge/all_contributors-%3C%=%20contributors.length%20%%3E-orange.svg?style=flat-square
-   :target: #contributors",
+  "badgeTemplate": "<img src="https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square" alt="All contributors">",
   "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
   "types": {
     "custom": {
