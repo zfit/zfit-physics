@@ -14,8 +14,8 @@ def argus_func(
     c: ztyping.NumericalType,
     p: ztyping.NumericalType,
 ) -> tf.Tensor:
-    r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle in a
-    continuous background.
+    r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle in
+    a continuous background.
 
     It is defined as
 
@@ -45,8 +45,8 @@ def argus_func(
 
 class Argus(zfit.pdf.BasePDF):
     def __init__(self, obs: ztyping.ObsTypeInput, m0, c, p, name: str = "ArgusPDF"):
-        r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle in a
-        continuous background.
+        r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle
+        in a continuous background.
 
         The ARGUS shaped function describes the reconstructed invariant mass of a decayed particle, especially at the
         kinematic boundaries of the maximum beam energy. It is defined as

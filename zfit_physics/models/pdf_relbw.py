@@ -56,8 +56,8 @@ class RelativisticBreitWigner(zfit.pdf.ZPDF):
 
 @z.function(wraps="tensor")
 def arctan_complex(x):
-    r"""Function that evaluates arctan(x) using tensorflow but also supports complex numbers.
-    It is defined as
+    r"""Function that evaluates arctan(x) using tensorflow but also supports complex numbers. It is defined as.
+
     .. math::
 
         \mathrm{arctan}(x) = \frac{i}{2} \left(\ln(1-ix) - \ln(1+ix)\right)
