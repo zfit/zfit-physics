@@ -19,7 +19,7 @@ jobs:
       max-parallel: 4
       fail-fast: False
       matrix:
-        python-version: [ 3.7, 3.8 ]
+        python-version: [ "3.7", "3.8", "3.10" ]
     name: JIT compiled tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v3
@@ -33,7 +33,7 @@ jobs:
           python -m pip install --upgrade pip
       - name: Test with pytest
         run: |
-          pip install --use-feature=2020-resolver .[dev]
+          pip install .[dev]
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
           coverage report
 
@@ -45,7 +45,7 @@ jobs:
       max-parallel: 4
       fail-fast: False
       matrix:
-        python-version: [ 3.7, 3.8 ]
+        python-version: [ "3.7", "3.8", "3.10" ]
     name: Eager mode tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v3
@@ -59,7 +59,7 @@ jobs:
           python -m pip install --upgrade pip
       - name: Test with pytest
         run: |
-          pip install --use-feature=2020-resolver .[dev]
+          pip install .[dev]
           ZFIT_DO_JIT=0
           coverage run --source=. --omit=".tox/*,*/test*," --branch -m pytest .
           coverage report
