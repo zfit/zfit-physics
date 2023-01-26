@@ -27,6 +27,11 @@ Requirement changes
 Thanks
 ------
 
+0.3.0
+=======
+
+Compability with zfit >= 0.10
+
 0.2.0
 =======
 
