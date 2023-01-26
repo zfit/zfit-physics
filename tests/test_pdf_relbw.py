@@ -26,9 +26,9 @@ def test_relbw_pdf():
     assert relbw.pdf(tf.range(0.0, 200, 10_000)) <= relbw.pdf(125.0)
 
     sample = relbw.sample(1000)
-    tf.debugging.assert_all_finite(sample, "Some samples from the relbw PDF are NaN or infinite")
+    tf.debugging.assert_all_finite(sample.value(), "Some samples from the relbw PDF are NaN or infinite")
     assert sample.n_events == 1000
-    assert all(tf.logical_and(0 <= sample, sample <= 200))
+    assert all(tf.logical_and(0 <= sample.value(), sample.value() <= 200))
 
 
 def test_relbw_integral():

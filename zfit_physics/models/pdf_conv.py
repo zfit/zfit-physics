@@ -76,11 +76,11 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
             samples = zfit.Data.from_tensor(obs=limits, tensor=samples)
             self._grid_points = samples
 
-            func_values = self.pdfs[0].unnormalized_pdf(samples)  # func of true vars
+            func_values = self.pdfs[0].pdf(samples, norm=False)  # func of true vars
             self._func_values = func_values
 
         return tf.map_fn(
-            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].unnormalized_pdf(xi - samples)),
+            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples.value(), norm=False)),
             x.value(),
         )
         # func of reco vars
@@ -116,6 +116,6 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
             self._func_values = func_values
 
         return tf.map_fn(
-            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples)),
+            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples.value())),
             x.value(),
         )
