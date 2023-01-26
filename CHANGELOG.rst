@@ -1,7 +1,6 @@
 *********
 Changelog
 *********
-
 Develop
 =======
 
@@ -27,6 +26,23 @@ Requirement changes
 
 Thanks
 ------
+
+0.3.0 (26 Jan 2023)
+===================
+
+Compability with zfit >= 0.10
+
+0.2.0
+=======
+
+Added relativistic Breit-Wigner PDF
+
+Many thanks to Simon Thor <simon11.thor@hotmail.se> for contributing the Relativistic BW
+
+0.1.0
+=======
+
+Upgrade to zfit >= 0.6
 
 
 0.0.3 (14.05.2020)

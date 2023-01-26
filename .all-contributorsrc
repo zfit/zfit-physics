@@ -1,0 +1,53 @@
+{
+  "files": [
+    "README.rst"
+  ],
+  "imageSize": 100,
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": false,
+  "badgeTemplate": "<img src="https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square" alt="All contributors">",
+  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
+  "types": {
+    "custom": {
+      "symbol": "🔭",
+      "description": "A custom contribution type.",
+      "link": "[<%= symbol %>](<%= url %> \"<%= description %>\"),"
+    }
+  },
+  "skipCi": true,
+  "contributors": [
+    {
+      "login": "simonthor",
+      "name": "simonthor",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45770021?v=4",
+      "profile": "https://github.com/simonthor",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "chm-ipmu",
+      "name": "Colm Harold Murphy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56914538?v=4",
+      "profile": "https://github.com/chm-ipmu",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "olantwin",
+      "name": "Oliver Lantwin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3578823?v=4",
+      "profile": "https://github.com/olantwin",
+      "contributions": [
+        "ideas"
+      ]
+    }
+  ],
+  "projectName": "zfit-physics",
+  "projectOwner": "zfit",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}

@@ -2,17 +2,23 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 import zfit
 import zfit.models.functor
-from zfit import ztf, z
-from zfit.util import exception
-from zfit.util import ztyping
-from zfit.util.exception import WorkInProgressError
+from zfit import z
 from zfit.exception import FunctionNotImplementedError
+from zfit.util import exception, ztyping
+from zfit.util.exception import WorkInProgressError
 
 
 class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
-    def __init__(self, func: zfit.pdf.BasePDF, kernel: zfit.pdf.BasePDF,
-                 limits: ztyping.ObsTypeInput, obs: ztyping.ObsTypeInput,
-                 ndraws: int = 20000, name: str = "Convolution", experimental_pdf_normalized=False):
+    def __init__(
+        self,
+        func: zfit.pdf.BasePDF,
+        kernel: zfit.pdf.BasePDF,
+        limits: ztyping.ObsTypeInput,
+        obs: ztyping.ObsTypeInput,
+        ndraws: int = 20000,
+        name: str = "Convolution",
+        experimental_pdf_normalized=False,
+    ):
         """Numerical Convolution pdf of *func* convoluted with *kernel*.
 
         Args:
@@ -58,21 +64,25 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         if True:
             # create sample for numerical integral
             lower, upper = limits.rect_limits
-            lower = ztf.convert_to_tensor(lower, dtype=self.dtype)
-            upper = ztf.convert_to_tensor(upper, dtype=self.dtype)
-            samples_normed = tfp.mcmc.sample_halton_sequence(dim=limits.n_obs, num_results=self._ndraws,
-                                                             dtype=self.dtype,
-                                                             randomized=False)
+            lower = z.convert_to_tensor(lower, dtype=self.dtype)
+            upper = z.convert_to_tensor(upper, dtype=self.dtype)
+            samples_normed = tfp.mcmc.sample_halton_sequence(
+                dim=limits.n_obs,
+                num_results=self._ndraws,
+                dtype=self.dtype,
+                randomized=False,
+            )
             samples = samples_normed * (upper - lower) + lower  # samples is [0, 1], stretch it
             samples = zfit.Data.from_tensor(obs=limits, tensor=samples)
             self._grid_points = samples
 
-            func_values = self.pdfs[0].unnormalized_pdf(samples)  # func of true vars
+            func_values = self.pdfs[0].pdf(samples, norm=False)  # func of true vars
             self._func_values = func_values
 
         return tf.map_fn(
-            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].unnormalized_pdf(xi - samples)),
-            x.value())
+            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples.value(), norm=False)),
+            x.value(),
+        )
         # func of reco vars
 
     @z.function
@@ -82,7 +92,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
 
         limits = self.conv_limits
         # area = limits.area()  # new spaces
-        area = limits.rect_area[0]  # new spaces
+        area = limits.rect_area()[0]  # new spaces
 
         samples = self._grid_points
         func_values = self._func_values
@@ -90,11 +100,14 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         if True:
             # create sample for numerical integral
             lower, upper = limits.rect_limits
-            lower = ztf.convert_to_tensor(lower, dtype=self.dtype)
-            upper = ztf.convert_to_tensor(upper, dtype=self.dtype)
-            samples_normed = tfp.mcmc.sample_halton_sequence(dim=limits.n_obs, num_results=self._ndraws,
-                                                             dtype=self.dtype,
-                                                             randomized=False)
+            lower = z.convert_to_tensor(lower, dtype=self.dtype)
+            upper = z.convert_to_tensor(upper, dtype=self.dtype)
+            samples_normed = tfp.mcmc.sample_halton_sequence(
+                dim=limits.n_obs,
+                num_results=self._ndraws,
+                dtype=self.dtype,
+                randomized=False,
+            )
             samples = samples_normed * (upper - lower) + lower  # samples is [0, 1], stretch it
             samples = zfit.Data.from_tensor(obs=limits, tensor=samples)
             self._grid_points = samples
@@ -103,5 +116,6 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
             self._func_values = func_values
 
         return tf.map_fn(
-            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples)),
-            x.value())
+            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples.value())),
+            x.value(),
+        )
