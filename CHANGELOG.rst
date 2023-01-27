@@ -27,10 +27,16 @@ Requirement changes
 Thanks
 ------
 
+
+0.4.0 (27 Jan 2023)
+===================
+
+Compability with zfit >= 0.11, < 0.13
+
 0.3.0 (26 Jan 2023)
 ===================
 
-Compability with zfit >= 0.10
+Compability with zfit >= 0.10, < 0.11
 
 0.2.0
 =======
