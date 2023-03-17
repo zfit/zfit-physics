@@ -1,3 +1,5 @@
+from typing import Optional
+
 import tensorflow as tf
 import tensorflow_probability as tfp
 import zfit
@@ -16,6 +18,8 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         limits: ztyping.ObsTypeInput,
         obs: ztyping.ObsTypeInput,
         ndraws: int = 20000,
+        *,
+        extended: Optional[ztyping.ParamTypeInput] = None,
         name: str = "Convolution",
         experimental_pdf_normalized=False,
     ):
@@ -28,10 +32,11 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
                 Here x is a `Data` with the obs and limits of *limits*.
             limits (:py:class:`zfit.Space`): Limits for the numerical integration.
             obs (:py:class:`zfit.Space`): Observables of the class
+            extended: If the PDF should be extended, i.e. a yield.
             ndraws (int): Number of draws for the mc integration
             name (str): Human readable name of the pdf
         """
-        super().__init__(obs=obs, pdfs=[func, kernel], params={}, name=name)
+        super().__init__(obs=obs, pdfs=[func, kernel], params={}, name=name, extended=extended)
         limits = self._check_input_limits(limits=limits)
         if limits.n_limits == 0:
             raise exception.LimitsNotSpecifiedError("obs have to have limits to define where to integrate over.")

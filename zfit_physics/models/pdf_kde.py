@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import Optional
 
 import tensorflow as tf
 import tensorflow_probability.python.distributions as tfd
@@ -17,6 +18,8 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         bandwidth: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         name: str = "GaussianKDE",
+        *,
+        extended: Optional[ztyping.ParamTypeInput] = None,
     ):
         """Gaussian Kernel Density Estimation using Silverman's rule of thumb.
 
@@ -28,7 +31,6 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         """
         dtype = zfit.settings.ztypes.float
         if isinstance(data, zfit.core.interfaces.ZfitData):
-
             raise WorkInProgressError("Currently, no dataset supported yet")
             # size = data.nevents
             # dims = data.n_obs
@@ -77,6 +79,7 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
             params=params,
             obs=obs,
             name=name,
+            extended=extended,
         )
 
     # @zfit.supports()

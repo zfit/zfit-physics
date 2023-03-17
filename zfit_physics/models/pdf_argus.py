@@ -1,4 +1,6 @@
 """ARGUS PDF (https://en.wikipedia.org/wiki/ARGUS_distribution)"""
+from typing import Optional
+
 import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -44,7 +46,15 @@ def argus_func(
 
 
 class Argus(zfit.pdf.BasePDF):
-    def __init__(self, obs: ztyping.ObsTypeInput, m0, c, p, name: str = "ArgusPDF"):
+    def __init__(
+        self,
+        obs: ztyping.ObsTypeInput,
+        m0,
+        c,
+        p,
+        name: str = "ArgusPDF",
+        extended: Optional[ztyping.ParamTypeInput] = None,
+    ):
         r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle
         in a continuous background.
 
@@ -61,6 +71,7 @@ class Argus(zfit.pdf.BasePDF):
         The implementation follows the `RooFit version <https://root.cern.ch/doc/master/classRooArgusBG.html>`_
 
         Args:
+            obs: Observable the PDF is defined on
             m0: Maximal energetically allowed mass, cutoff
             c: Shape parameter; "peakiness" of the distribution
             p: Generalization of the ARGUS shape, for p = 0.5, the normal ARGUS shape is recovered
@@ -69,7 +80,7 @@ class Argus(zfit.pdf.BasePDF):
             `tf.Tensor`: the values matching the (broadcasted) shapes of the input
         """
         params = {"m0": m0, "c": c, "p": p}
-        super().__init__(obs=obs, name=name, params=params)
+        super().__init__(obs=obs, name=name, params=params, extended=extended)
 
     _N_OBS = 1
 

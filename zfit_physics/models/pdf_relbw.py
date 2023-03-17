@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import tensorflow as tf
 import zfit
@@ -29,18 +31,27 @@ def relbw_pdf_func(x, m, gamma):
     return k / ((x**2 - m**2) ** 2 + m**4 * alpha**2)
 
 
-class RelativisticBreitWigner(zfit.pdf.ZPDF):
-    """Relativistic Breit-Wigner distribution.
-
-    Formula for PDF and CDF are based on https://gist.github.com/andrewfowlie/cd0ed7e6c96f7c9e88f85eb3b9665b97
-
-    Args:
-        m: the average value
-        gamma: the width of the distribution
-    """
-
+class RelativisticBreitWigner(zfit.pdf.BasePDF):
     _N_OBS = 1
-    _PARAMS = ["m", "gamma"]
+
+    def __init__(
+        self,
+        m: ztyping.ParamTypeInput,
+        gamma: ztyping.ParamTypeInput,
+        obs: ztyping.ObsTypeInput,
+        name: str = "RelativisticBreitWigner",
+        extended: Optional[ztyping.ParamTypeInput] = None,
+    ):
+        """Relativistic Breit-Wigner distribution.
+
+        Formula for PDF and CDF are based on https://gist.github.com/andrewfowlie/cd0ed7e6c96f7c9e88f85eb3b9665b97
+
+        Args:
+            m: the average value
+            gamma: the width of the distribution
+        """
+        params = dict(m=m, gamma=gamma)
+        super().__init__(obs=obs, params=params, name=name, extended=extended)
 
     def _unnormalized_pdf(self, x: tf.Tensor) -> tf.Tensor:
         """Calculate the PDF at value(s) x.
