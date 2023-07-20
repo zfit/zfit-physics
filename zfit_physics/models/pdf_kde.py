@@ -8,7 +8,7 @@ from zfit import z
 from zfit.models.dist_tfp import WrapDistribution
 from zfit.util import ztyping
 from zfit.util.container import convert_to_container
-from zfit.util.exception import AnalyticIntegralNotImplemented, WorkInProgressError
+from zfit.util.exception import WorkInProgressError
 
 
 class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kernel

@@ -26,7 +26,10 @@ Requirement changes
 
 Thanks
 ------
+0.6.0 (20 Jul 2023)
+===================
 
+Upgrade to zfit >= 0.12, support Python 3.8-3.11
 
 0.4.0 (27 Jan 2023)
 ===================
