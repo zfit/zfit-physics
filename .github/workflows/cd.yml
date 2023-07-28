@@ -32,15 +32,15 @@ jobs:
 
   publish:
     needs: [ dist ]
+    environment: pypi
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-
+    if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.8.7
-        with:
-          password: ${{ secrets.PYPI_ZFIT_PHYSICS_TOKEN }}
+      - uses: pypa/gh-action-pypi-publish@release/v1
