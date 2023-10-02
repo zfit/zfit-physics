@@ -29,7 +29,7 @@ jobs:
         python-version: [ "3.8", "3.9", "3.10", "3.11" ]
     name: JIT compiled tests for Python ${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4.7.0
         name: Set up Python ${{ matrix.python-version }}
 
@@ -55,7 +55,7 @@ jobs:
         python-version: [ "3.8", "3.9", "3.10", "3.11" ]
     name: Eager mode tests for Python ${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4.7.0
         name: Set up Python ${{ matrix.python-version }}
 
