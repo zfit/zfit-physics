@@ -35,8 +35,8 @@ def cmsshape_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tens
     beta = params["beta"]
     gamma = params["gamma"]
     m = params["m"]
-    lower_cdf = cmsshape_cdf_func(lower, beta, gamma, m)
-    upper_cdf = cmsshape_cdf_func(upper, beta, gamma, m)
+    lower_cdf = cmsshape_cdf_func(x=lower, beta=beta, gamma=gamma, m=m)
+    upper_cdf = cmsshape_cdf_func(x=upper, beta=beta, gamma=gamma, m=m)
     return upper_cdf - lower_cdf
 
 
@@ -50,8 +50,8 @@ class CMSShape(zfit.pdf.BasePDF):
         m: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         *,
-        extended: ztyping.ExtendedInputType = None,
-        norm: ztyping.NormInputType = None,
+        extended: Optional[ztyping.ExtendedInputType] = None,
+        norm: Optional[ztyping.NormInputType] = None,
         name: str = "CMSShape",
     ):
         params = {"beta": beta, "gamma": gamma, "m": m}
