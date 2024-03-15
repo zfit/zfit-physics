@@ -1,4 +1,5 @@
 """Tests for CMSShape PDF."""
+import numpy as np
 import pytest
 import tensorflow as tf
 import zfit
@@ -25,7 +26,12 @@ def test_cmsshape_pdf():
     # Test PDF here
     cmsshape, _ = create_cmsshape(gamma=gamma_true, beta=beta_true, m=m_true, limits=(50, 130))
     assert zfit.run(cmsshape.pdf(90.0)) == pytest.approx(
-        cmsshape_numba.pdf(90.0, beta=beta_true, gamma=gamma_true, loc=m_true).item(), rel=1e-4
+        cmsshape_numba.pdf(90.0, beta=beta_true, gamma=gamma_true, loc=m_true).item(), rel=1e-5
+    )
+    np.testing.assert_allclose(
+        cmsshape.pdf(tf.range(50.0, 130, 10_000)),
+        cmsshape_numba.pdf(tf.range(50.0, 130, 10_000).numpy(), beta=beta_true, gamma=gamma_true, loc=m_true),
+        rtol=1e-5,
     )
     assert cmsshape.pdf(tf.range(50.0, 130, 10_000)) <= cmsshape.pdf(90.0)
 
@@ -41,12 +47,21 @@ def test_cmsshape_integral():
     full_interval_analytic = zfit.run(cmsshape.analytic_integrate(obs, norm_range=False))
     full_interval_numeric = zfit.run(cmsshape.numeric_integrate(obs, norm_range=False))
     true_integral = 0.99999
-    assert full_interval_analytic == pytest.approx(true_integral, 1e-4)
-    assert full_interval_numeric == pytest.approx(true_integral, 1e-2)
+    numba_stats_full_integral = cmsshape_numba.cdf(
+        130, beta=beta_true, gamma=gamma_true, loc=m_true
+    ) - cmsshape_numba.cdf(50, beta=beta_true, gamma=gamma_true, loc=m_true)
+    assert full_interval_analytic == pytest.approx(true_integral, 1e-5)
+    assert full_interval_numeric == pytest.approx(true_integral, 1e-5)
+    assert full_interval_analytic == pytest.approx(numba_stats_full_integral, 1e-8)
+    assert full_interval_numeric == pytest.approx(numba_stats_full_integral, 1e-8)
 
     analytic_integral = zfit.run(cmsshape.analytic_integrate(limits=(80, 100), norm_range=False))
     numeric_integral = zfit.run(cmsshape.numeric_integrate(limits=(80, 100), norm_range=False))
-    assert analytic_integral == pytest.approx(numeric_integral, 0.01)
+    numba_stats_integral = cmsshape_numba.cdf(100, beta=beta_true, gamma=gamma_true, loc=m_true) - cmsshape_numba.cdf(
+        80, beta=beta_true, gamma=gamma_true, loc=m_true
+    )
+    assert analytic_integral == pytest.approx(numeric_integral, 1e-8)
+    assert analytic_integral == pytest.approx(numba_stats_integral, 1e-8)
 
 
 # register the pdf here and provide sets of working parameter configurations
