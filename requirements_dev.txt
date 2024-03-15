@@ -2,7 +2,7 @@ bumpversion>=0.5.3
 coverage>=4.5.1
 coverage>=4.5.1
 flake8>=3.5.0
-numba-stats @ git+https://github.com/HDembinski/numba-stats.git
+numba-stats @ git+https://github.com/HDembinski/numba-stats.git  # CMSShape not yet released (expected 1.8.0)
 pip>=9.0.1
 pre-commit
 pytest>=3.4.2
