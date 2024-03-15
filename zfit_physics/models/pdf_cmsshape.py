@@ -21,8 +21,8 @@ def cmsshape_pdf_func(x, m, beta, gamma):
         `tf.Tensor`: The calculated PDF values.
 
     Notes:
-        Based on code from [spark_tnp](https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooCMSShape.cc)
-        and [numba-stats](https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py).
+        Based on code from `spark_tnp <https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooCMSShape.cc>`_ and
+        `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py>`_.
     """
     x = z.unstack_x(x)
     half = 0.5
@@ -47,8 +47,8 @@ def cmsshape_cdf_func(x, m, beta, gamma):
         `tf.Tensor`: The calculated CDF values.
 
     Notes:
-        Based on code from [spark_tnp](https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooCMSShape.cc)
-        and [numba-stats](https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py).
+        Based on code from `spark_tnp <https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooCMSShape.cc>`_ and
+        `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py>`_
     """
     half = 0.5
     two = 2.0
@@ -102,8 +102,8 @@ class CMSShape(zfit.pdf.BasePDF):
         of Z to ll decay candidates.
 
         Formula for the PDF and CDF are based on code from
-        [spark_tnp](https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooCMSShape.cc)
-        and [numba-stats](https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py)
+        `spark_tnp <https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooCMSShape.cc>`_ and
+        `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py>`_
 
         Args:
             m: Approximate center of the distribution.
