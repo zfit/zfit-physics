@@ -31,16 +31,6 @@ def cmsshape_pdf_func(x, m, beta, gamma):
     t2 = tf.math.erfc(-beta * (x - m))
     t3 = half * gamma * tf.math.exp(-((half * gamma / beta) ** two))
     return t1 * t2 * t3
-    """Calculates the analytic integral of the relativistic Breit-Wigner PDF.
-
-    Args:
-        limits: An object with attribute rect_limits.
-        params: A hashmap from which the parameters that defines the PDF will be extracted.
-        model: Will be ignored.
-
-    Returns:
-        The calculated integral.
-    """
 
 
 @z.function(wraps="tensor")
