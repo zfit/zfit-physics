@@ -7,6 +7,7 @@ Develop
 
 Major Features and Improvements
 -------------------------------
+- added CMSShape PDF
 
 Breaking changes
 ------------------
