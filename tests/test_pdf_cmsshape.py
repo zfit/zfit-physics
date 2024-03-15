@@ -11,20 +11,20 @@ from zfit.core.testing import tester
 import zfit_physics as zphys
 
 # specify globals here. Do NOT add any TensorFlow but just pure python
+m_true = 90.0
 beta_true = 0.2
 gamma_true = 0.3
-m_true = 90.0
 
 
-def create_cmsshape(gamma, beta, m, limits):
+def create_cmsshape(m, beta, gamma, limits):
     obs = zfit.Space("obs1", limits)
-    cmsshape = zphys.pdf.CMSShape(gamma=gamma, beta=beta, m=m, obs=obs)
+    cmsshape = zphys.pdf.CMSShape(m=m, beta=beta, gamma=gamma, obs=obs)
     return cmsshape, obs
 
 
 def test_cmsshape_pdf():
     # Test PDF here
-    cmsshape, _ = create_cmsshape(gamma=gamma_true, beta=beta_true, m=m_true, limits=(50, 130))
+    cmsshape, _ = create_cmsshape(m=m_true, beta=beta_true, gamma=gamma_true, limits=(50, 130))
     assert zfit.run(cmsshape.pdf(90.0)) == pytest.approx(
         cmsshape_numba.pdf(90.0, beta=beta_true, gamma=gamma_true, loc=m_true).item(), rel=1e-5
     )
@@ -43,7 +43,7 @@ def test_cmsshape_pdf():
 
 def test_cmsshape_integral():
     # Test CDF and integral here
-    cmsshape, obs = create_cmsshape(gamma=gamma_true, beta=beta_true, m=m_true, limits=(50, 130))
+    cmsshape, obs = create_cmsshape(m=m_true, beta=beta_true, gamma=gamma_true, limits=(50, 130))
     full_interval_analytic = zfit.run(cmsshape.analytic_integrate(obs, norm_range=False))
     full_interval_numeric = zfit.run(cmsshape.numeric_integrate(obs, norm_range=False))
     true_integral = 0.99999
@@ -66,10 +66,11 @@ def test_cmsshape_integral():
 
 # register the pdf here and provide sets of working parameter configurations
 def cmsshape_params_factory():
+    m = zfit.Parameter("m", m_true)
     beta = zfit.Parameter("beta", beta_true)
     gamma = zfit.Parameter("gamma", gamma_true)
-    m = zfit.Parameter("m", m_true)
-    return {"beta": beta, "gamma": gamma, "m": m}
+
+    return {"m": m, "beta": beta, "gamma": gamma}
 
 
 tester.register_pdf(pdf_class=zphys.pdf.CMSShape, params_factories=cmsshape_params_factory)

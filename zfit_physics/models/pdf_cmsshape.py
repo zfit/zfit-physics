@@ -8,14 +8,14 @@ from zfit.util import ztyping
 
 
 @z.function(wraps="tensor")
-def cmsshape_pdf_func(x, beta, gamma, m):
+def cmsshape_pdf_func(x, m, beta, gamma):
     """Calculate the CMSShape PDF.
 
     Args:
         x: value(s) for which the PDF will be calculated.
+        m: approximate center of the disribution.
         beta: steepness of the error function.
         gamma: steepness of the exponential distribution.
-        m: approximate center of the distribution.
 
     Returns:
         `tf.Tensor`: The calculated PDF values.
@@ -44,14 +44,14 @@ def cmsshape_pdf_func(x, beta, gamma, m):
 
 
 @z.function(wraps="tensor")
-def cmsshape_cdf_func(x, beta, gamma, m):
+def cmsshape_cdf_func(x, m, beta, gamma):
     """Analtical function for the CDF of the CMSShape distribution.
 
     Args:
         x: value(s) for which the CDF will be calculated.
+        m: approximate center of the distribution.
         beta: steepness of the error function.
         gamma: steepness of the exponential distribution.
-        m: approximate center of the distribution.
 
     Returns:
         `tf.Tensor`: The calculated CDF values.
@@ -81,11 +81,11 @@ def cmsshape_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tens
         The calculated integral.
     """
     lower, upper = limits.limit1d
+    m = params["m"]
     beta = params["beta"]
     gamma = params["gamma"]
-    m = params["m"]
-    lower_cdf = cmsshape_cdf_func(x=lower, beta=beta, gamma=gamma, m=m)
-    upper_cdf = cmsshape_cdf_func(x=upper, beta=beta, gamma=gamma, m=m)
+    lower_cdf = cmsshape_cdf_func(x=lower, m=m, beta=beta, gamma=gamma)
+    upper_cdf = cmsshape_cdf_func(x=upper, m=m, beta=beta, gamma=gamma)
     return upper_cdf - lower_cdf
 
 
@@ -94,9 +94,9 @@ class CMSShape(zfit.pdf.BasePDF):
 
     def __init__(
         self,
+        m: ztyping.ParamTypeInput,
         beta: ztyping.ParamTypeInput,
         gamma: ztyping.ParamTypeInput,
-        m: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         *,
         extended: Optional[ztyping.ExtendedInputType] = None,
@@ -116,9 +116,9 @@ class CMSShape(zfit.pdf.BasePDF):
         and [numba-stats](https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py)
 
         Args:
+            m: Approximate center of the distribution.
             beta: Steepness of the error function.
             gamma: Steepness of the exponential distribution.
-            m: Approximate center of the distribution.
             obs: |@doc:pdf.init.obs| Observables of the
                model. This will be used as the default space of the PDF and,
                if not given explicitly, as the normalization range.
@@ -140,14 +140,14 @@ class CMSShape(zfit.pdf.BasePDF):
                the PDF for better identification.
                Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
         """
-        params = {"beta": beta, "gamma": gamma, "m": m}
+        params = {"m": m, "beta": beta, "gamma": gamma}
         super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm)
 
     def _unnormalized_pdf(self, x: tf.Tensor) -> tf.Tensor:
+        m = self.params["m"]
         beta = self.params["beta"]
         gamma = self.params["gamma"]
-        m = self.params["m"]
-        return cmsshape_pdf_func(x, beta, gamma, m)
+        return cmsshape_pdf_func(x=x, m=m, beta=beta, gamma=gamma)
 
 
 cmsshape_integral_limits = Space(axes=(0,), limits=(((ANY_LOWER,),), ((ANY_UPPER,),)))
