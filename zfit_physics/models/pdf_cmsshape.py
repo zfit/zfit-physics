@@ -31,7 +31,7 @@ def cmsshape_cdf_func(x, beta, gamma, m):
 
 
 def cmsshape_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
-    lower, upper = limits.rect_limits
+    lower, upper = limits.limit1d
     beta = params["beta"]
     gamma = params["gamma"]
     m = params["m"]
