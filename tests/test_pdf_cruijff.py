@@ -27,7 +27,7 @@ def create_cruijff(mu, sigmal, alphal, sigmar, alphar, limits):
 
 
 def test_cruijff_pdf():
-    # Test PDF hereA
+    # Test PDF here
     cruijff, _ = create_cruijff(
         mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
     )
