@@ -8,7 +8,7 @@ from zfit.z import numpy as znp
 
 @z.function(wraps="tensor")
 def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
-    """Caltulate the Cruijff PDF.
+    """Calculate the Cruijff PDF.
 
     Args:
         x: value(s) for which the PDF will be calculated.
@@ -22,7 +22,7 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
         `tf.Tensor`: The calculated PDF values.
 
     Notes:
-        Implementation from https://arxiv.org/abs/1005.4087
+        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and http://hdl.handle.net/1794/9022, Equation IV.3
     """
     cond = znp.less(x, mu)
 
@@ -50,9 +50,9 @@ class Cruijff(zfit.pdf.BasePDF):
         norm: Optional[ztyping.NormInputType] = None,
         name: str = "Cruijff",
     ):
-        """Cruijff PDF.
+        """Cruijff PDF, a Gaussian with two width, left and right, and non-Gaussian tails.
 
-        Implementation from https://arxiv.org/abs/1005.4087
+        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and http://hdl.handle.net/1794/9022, Equation IV.3
 
         .. math:
 
