@@ -26,16 +26,16 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
     """
     cond = znp.less(x, mu)
 
-# compute only once (in graph this _may_ be optimized anyways, but surely not in eager)
-xminmu = (x - mu)
-tleft = znp.square(xminmu / sigmal)
-tright = znp.square(xminmu / sigmar)
-exponent = znp.where(
-    cond,
-    tleft / (1 + alphal * tleft),
-    tright / (1 + alphar * tright),
-)
-value = znp.exp(-0.5 * exponent)
+    # compute only once (in graph this _may_ be optimized anyways, but surely not in eager)
+    xminmu = x - mu
+    tleft = znp.square(xminmu / sigmal)
+    tright = znp.square(xminmu / sigmar)
+    exponent = znp.where(
+        cond,
+        tleft / (1 + alphal * tleft),
+        tright / (1 + alphar * tright),
+    )
+    value = znp.exp(-0.5 * exponent)
     return value
 
 
