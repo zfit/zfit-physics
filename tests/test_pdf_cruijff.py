@@ -6,13 +6,10 @@ import tensorflow as tf
 import zfit
 from numba_stats import cruijff as cruijff_numba
 from scipy import integrate
-
-# Important, do the imports below
 from zfit.core.testing import tester
 
 import zfit_physics as zphys
 
-# specify globals here. Do NOT add any TensorFlow but just pure python
 mu_true = 90.0
 sigmal_true = 5.0
 alphal_true = 3.0
@@ -31,7 +28,7 @@ def test_cruijff_pdf():
     cruijff, _ = create_cruijff(
         mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
     )
-    assert zfit.run(cruijff.pdf(90.0)) == pytest.approx(
+    assert cruijff.pdf(90.0).numpy() == pytest.approx(
         cruijff_numba.density(
             90.0,
             beta_left=alphal_true,
@@ -62,7 +59,7 @@ def test_cruihff_integral():
     cruijff, obs = create_cruijff(
         mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
     )
-    full_interval_numeric = zfit.run(cruijff.numeric_integrate(obs, norm_range=False))
+    full_interval_numeric = cruijff.numeric_integrate(obs, norm=False).numpy()
     true_integral = 67.71494
     numba_stats_full_integral = integrate.quad(
         cruijff_numba.density, 50, 130, args=(alphal_true, alphar_true, mu_true, sigmal_true, sigmar_true)
@@ -70,7 +67,7 @@ def test_cruihff_integral():
     assert full_interval_numeric == pytest.approx(true_integral, 1e-7)
     assert full_interval_numeric == pytest.approx(numba_stats_full_integral, 1e-7)
 
-    numeric_integral = zfit.run(cruijff.numeric_integrate(limits=(80, 100), norm_range=False))
+    numeric_integral = cruijff.numeric_integrate(limits=(80, 100), norm=False).numpy()
     numba_stats_integral = integrate.quad(
         cruijff_numba.density, 80, 100, args=(alphal_true, alphar_true, mu_true, sigmal_true, sigmar_true)
     )[0]
