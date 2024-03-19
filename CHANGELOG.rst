@@ -8,6 +8,7 @@ Develop
 Major Features and Improvements
 -------------------------------
 - added CMSShape PDF
+- added Cruijff PDF
 
 Breaking changes
 ------------------
