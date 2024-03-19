@@ -26,12 +26,17 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
     """
     cond = znp.less(x, mu)
 
-    func = znp.where(
-        cond,
-        znp.exp(-0.5 * znp.square((x - mu) / sigmal) / (1 + alphal * znp.square((x - mu) / sigmal))),
-        znp.exp(-0.5 * znp.square((x - mu) / sigmar) / (1 + alphar * znp.square((x - mu) / sigmar))),
-    )
-    return func
+# compute only once (in graph this _may_ be optimized anyways, but surely not in eager)
+xminmu = (x - mu)
+tleft = znp.square(xminmu / sigmal)
+tright = znp.square(xminmu / sigmar)
+exponent = znp.where(
+    cond,
+    tleft / (1 + alphal * tleft),
+    tright / (1 + alphar * tright),
+)
+value = znp.exp(-0.5 * exponent)
+    return value
 
 
 class Cruijff(zfit.pdf.BasePDF):
