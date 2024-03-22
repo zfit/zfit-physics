@@ -62,8 +62,8 @@ class Cruijff(zfit.pdf.BasePDF):
         .. math:
 
             f(x; \\mu, \\sigma_{L}, \\alpha_{L}, \\sigma_{R}, \\alpha_{R}) = \\begin{cases}
-            \\exp(- \\frac{(x-\\mu)^2}{2 \\sigma_{L}^2 + \\alpha_{L} (x-\\mu)^2)}, \\mbox{for} x \\leqslant mu \\newline
-            \\exp(- \\frac{(x-\\mu)^2}{2 \\sigma_{R}^2 + \\alpha_{R} (x-\\mu)^2)}, \\mbox{for} x > mu \\end{cases}
+            \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{L}^2 + \\alpha_{L} (x-\\mu)^2}\\right)}, \\mbox{for} x \\leqslant mu \\newline
+            \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{R}^2 + \\alpha_{R} (x-\\mu)^2}\\right)}, \\mbox{for} x > mu
 
         Args:
             mu: Mean value

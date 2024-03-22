@@ -54,7 +54,7 @@ def test_cruijff_pdf():
     assert cruijff.pdf(tf.range(50.0, 130, 10_000)) <= cruijff.pdf(90.0)
 
 
-def test_cruihff_integral():
+def test_cruijff_integral():
     # Test CDF and integral here
     cruijff, obs = create_cruijff(
         mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
