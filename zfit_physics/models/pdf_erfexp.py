@@ -30,6 +30,14 @@ def erfexp_pdf_func(x, alpha, beta, gamma, n):
 
 # Note: There is no analytic integral for the ErfExp PDF
 # We tried with sympy, Mathematica, Wolfram Alpha and https://www.integral-calculator.com/
+# import sympy as sp
+#
+# # Define symbols
+# x, alpha, beta, gamma, n = sp.symbols('x alpha beta gamma n', real=True)
+#
+# # Define the function
+# func = sp.erfc((x - alpha) * beta) * sp.exp(-gamma * (x**n - alpha**n))
+# sp.integrate(func, x)
 class ErfExp(zfit.pdf.BasePDF):
     _N_OBS = 1
 
