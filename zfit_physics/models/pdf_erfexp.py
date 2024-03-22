@@ -28,6 +28,8 @@ def erfexp_pdf_func(x, alpha, beta, gamma, n):
     return tf.math.erfc((x - alpha) * beta) * znp.exp(-gamma * (znp.power(x, n) - znp.power(alpha, n)))
 
 
+# Note: There is no analytic integral for the ErfExp PDF
+# We tried with sympy, Mathematica, Wolfram Alpha and https://www.integral-calculator.com/
 class ErfExp(zfit.pdf.BasePDF):
     _N_OBS = 1
 
