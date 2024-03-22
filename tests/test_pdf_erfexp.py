@@ -39,6 +39,9 @@ def test_erfexp_pdf():
     assert erfexp.pdf(90.0, norm=False).numpy().item() == pytest.approx(
         erfexp_numpy(90.0, alpha=alpha_true, beta=beta_true, gamma=gamma_true, n=n_true), rel=1e-8
     )
+    assert erfexp.pdf(90.0).numpy().item() == pytest.approx(
+        erfexp_numpy(90.0, alpha=alpha_true, beta=beta_true, gamma=gamma_true, n=n_true) / 71.18838, rel=1e-8
+    )
     np.testing.assert_allclose(
         erfexp.pdf(tf.range(50.0, 130, 10_000), norm=False),
         erfexp_numpy(tf.range(50.0, 130, 10_000), alpha=alpha_true, beta=beta_true, gamma=gamma_true, n=n_true),
