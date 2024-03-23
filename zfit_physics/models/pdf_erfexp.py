@@ -8,12 +8,12 @@ from zfit.z import numpy as znp
 
 
 @z.function(wraps="tensor")
-def erfexp_pdf_func(x, alpha, beta, gamma, n):
+def erfexp_pdf_func(x, mu, beta, gamma, n):
     """Calculate the ErfExp PDF.
 
     Args:
         x: value(s) for which the PDF will be calculated.
-        alpha: Location parameter.
+        mu: Location parameter.
         beta: Scale parameter.
         gamma: Shape parameter.
         n: Shape parameter.
@@ -25,7 +25,7 @@ def erfexp_pdf_func(x, alpha, beta, gamma, n):
         Implementation from https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooErfExp.cc
         The parameters beta and gamma are given in reverse order in this c++ implementation.
     """
-    return tf.math.erfc((x - alpha) * beta) * znp.exp(-gamma * (znp.power(x, n) - znp.power(alpha, n)))
+    return tf.math.erfc((x - mu) * beta) * znp.exp(-gamma * (znp.power(x, n) - znp.power(mu, n)))
 
 
 # Note: There is no analytic integral for the ErfExp PDF
@@ -33,17 +33,17 @@ def erfexp_pdf_func(x, alpha, beta, gamma, n):
 # import sympy as sp
 #
 # # Define symbols
-# x, alpha, beta, gamma, n = sp.symbols('x alpha beta gamma n', real=True)
+# x, mu, beta, gamma, n = sp.symbols('x mu beta gamma n', real=True)
 #
 # # Define the function
-# func = sp.erfc((x - alpha) * beta) * sp.exp(-gamma * (x**n - alpha**n))
+# func = sp.erfc((x - mu) * beta) * sp.exp(-gamma * (x**n - mu**n))
 # sp.integrate(func, x)
 class ErfExp(zfit.pdf.BasePDF):
     _N_OBS = 1
 
     def __init__(
         self,
-        alpha: ztyping.ParamTypeInput,
+        mu: ztyping.ParamTypeInput,
         beta: ztyping.ParamTypeInput,
         gamma: ztyping.ParamTypeInput,
         n: ztyping.ParamTypeInput,
@@ -59,10 +59,10 @@ class ErfExp(zfit.pdf.BasePDF):
 
         .. math:
 
-            f(x; \\alpha, \\beta, \\gamma, n) = \\text{erfc}(\\beta (x - \\alpha)) \\exp{(-\\gamma (x^n - \\alpha^n))}
+            f(x; \\mu, \\beta, \\gamma, n) = \\text{erfc}(\\beta (x - \\mu)) \\exp{(-\\gamma (x^n - \\mu^n))}
 
         Args:
-            alpha: Location parameter.
+            mu: Location parameter.
             beta: Scale parameter.
             gamma: Shape parameter.
             n: Shape parameter.
@@ -87,13 +87,13 @@ class ErfExp(zfit.pdf.BasePDF):
                the PDF for better identification.
                Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
         """
-        params = {"alpha": alpha, "beta": beta, "gamma": gamma, "n": n}
+        params = {"mu": mu, "beta": beta, "gamma": gamma, "n": n}
         super().__init__(obs=obs, params=params, extended=extended, norm=norm)
 
     def _unnormalized_pdf(self, x):
-        alpha = self.params["alpha"]
+        mu = self.params["mu"]
         beta = self.params["beta"]
         gamma = self.params["gamma"]
         n = self.params["n"]
         x = z.unstack_x(x)
-        return erfexp_pdf_func(x=x, alpha=alpha, beta=beta, gamma=gamma, n=n)
+        return erfexp_pdf_func(x=x, mu=mu, beta=beta, gamma=gamma, n=n)
