@@ -55,7 +55,7 @@ class ErfExp(zfit.pdf.BasePDF):
     ):
         """ErfExp PDF, the product of a complementary error function and an exponential function.
 
-        Implementation from https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooErfExp.cc
+        Implementation following closely `C++ version of custom RooErfExp.cc <https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooErfExp.cc>`_
 
         .. math:
 
@@ -64,8 +64,8 @@ class ErfExp(zfit.pdf.BasePDF):
         Args:
             mu: Location parameter.
             beta: Scale parameter.
-            gamma: Shape parameter.
-            n: Shape parameter.
+            gamma: Shape parameter, scale of exponential term.
+            n: Shape parameter, power in exponential term.
             obs: |@doc:pdf.init.obs| Observables of the
                model. This will be used as the default space of the PDF and,
                if not given explicitly, as the normalization range.
