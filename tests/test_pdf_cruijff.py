@@ -19,7 +19,7 @@ alphar_true = 2.0
 
 def create_cruijff(mu, sigmal, alphal, sigmar, alphar, limits):
     obs = zfit.Space("obs1", limits=limits)
-    cruijff = zphys.pdf.Cruijff(mu=mu, sigmal=sigmal, alphal=alphal, sigmar=sigmar, alphar=alphar, obs=obs, norm=False)
+    cruijff = zphys.pdf.Cruijff(mu=mu, sigmal=sigmal, alphal=alphal, sigmar=sigmar, alphar=alphar, obs=obs)
     return cruijff, obs
 
 
@@ -28,7 +28,7 @@ def test_cruijff_pdf():
     cruijff, _ = create_cruijff(
         mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
     )
-    assert cruijff.pdf(90.0).numpy() == pytest.approx(
+    assert cruijff.pdf(90.0, norm=False).numpy() == pytest.approx(
         cruijff_numba.density(
             90.0,
             beta_left=alphal_true,
@@ -39,8 +39,20 @@ def test_cruijff_pdf():
         ).item(),
         rel=1e-8,
     )
+    assert cruijff.pdf(90.0).numpy() == pytest.approx(
+        cruijff_numba.density(
+            90.0,
+            beta_left=alphal_true,
+            beta_right=alphar_true,
+            loc=mu_true,
+            scale_left=sigmal_true,
+            scale_right=sigmar_true,
+        ).item()
+        / 67.71494,
+        rel=1e-7,
+    )
     np.testing.assert_allclose(
-        cruijff.pdf(tf.range(50.0, 130, 10_000)),
+        cruijff.pdf(tf.range(50.0, 130, 10_000), norm=False),
         cruijff_numba.density(
             tf.range(50.0, 130, 10_000).numpy(),
             beta_left=alphal_true,
@@ -51,10 +63,23 @@ def test_cruijff_pdf():
         ),
         rtol=1e-8,
     )
+    np.testing.assert_allclose(
+        cruijff.pdf(tf.range(50.0, 130, 10_000)),
+        cruijff_numba.density(
+            tf.range(50.0, 130, 10_000).numpy(),
+            beta_left=alphal_true,
+            beta_right=alphar_true,
+            loc=mu_true,
+            scale_left=sigmal_true,
+            scale_right=sigmar_true,
+        )
+        / 67.71494,
+        rtol=1e-8,
+    )
     assert cruijff.pdf(tf.range(50.0, 130, 10_000)) <= cruijff.pdf(90.0)
 
 
-def test_cruihff_integral():
+def test_cruijff_integral():
     # Test CDF and integral here
     cruijff, obs = create_cruijff(
         mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
