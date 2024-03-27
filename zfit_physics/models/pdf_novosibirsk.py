@@ -115,7 +115,7 @@ class Novosibirsk(zfit.pdf.BasePDF):
         Lambda,
         obs,
         *,
-        extended: Optional[ztyping.ExtendedInputType] = None,
+        extended: Optional[ztyping.ExtendedInputType] = False,
         norm: Optional[ztyping.NormInputType] = None,
         name: str = "Novosibirsk",
     ):
