@@ -30,12 +30,18 @@ jobs:
     name: JIT compiled tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5.0.0
-        name: Set up Python ${{ matrix.python-version }}
+      - uses: conda-incubator/setup-miniconda@v2
 
+        name: Set up Conda environment
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          create-environment: test-env
+          conda-channels: conda-forge
+      - name: Install ROOT
+        run: |
+          conda install -c conda-forge root
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install .[dev]
@@ -43,7 +49,6 @@ jobs:
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
           coverage report
-
 
   tests_eager:
     runs-on: ubuntu-latest
@@ -56,12 +61,18 @@ jobs:
     name: Eager mode tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5.0.0
-        name: Set up Python ${{ matrix.python-version }}
+      - uses: conda-incubator/setup-miniconda@v2
 
+        name: Set up Conda environment
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          create-environment: test-env
+          conda-channels: conda-forge
+      - name: Install ROOT
+        run: |
+          conda install -c conda-forge root
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install .[dev]
