@@ -18,6 +18,13 @@ on:
     types:
       - published
 
+defaults:
+  run:
+    # The login shell is necessary for the setup-micromamba setup
+    # to work in subsequent jobs.
+    # https://github.com/mamba-org/setup-micromamba#about-login-shells
+    shell: bash -e -l {0}
+
 jobs:
   tests_graph:
     runs-on: ubuntu-latest
@@ -30,20 +37,24 @@ jobs:
     name: JIT compiled tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5.0.0
-        name: Set up Python ${{ matrix.python-version }}
-
+      - uses: mamba-org/setup-micromamba@v1
+        name: Set up Micromamba environment
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          environment-name: test-env
+          create-args: >-
+            python=${{ matrix.python-version }}
+            pip
+            root
+      - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
+          which python
+          python -V
+          python -m pip install uv
+          python -m uv pip install -e ".[dev]"
       - name: Test with pytest
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
           coverage report
-
 
   tests_eager:
     runs-on: ubuntu-latest
@@ -56,15 +67,20 @@ jobs:
     name: Eager mode tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5.0.0
-        name: Set up Python ${{ matrix.python-version }}
-
+      - uses: mamba-org/setup-micromamba@v1
+        name: Set up Micromamba environment
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          environment-name: test-env
+          create-args: >-
+            python=${{ matrix.python-version }}
+            pip
+            root
+      - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
+          which python
+          python -V
+          python -m pip install uv
+          python -m uv pip install -e ".[dev]"
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=0
