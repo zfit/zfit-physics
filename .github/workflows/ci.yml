@@ -18,6 +18,13 @@ on:
     types:
       - published
 
+defaults:
+  run:
+    # The login shell is necessary for the setup-micromamba setup
+    # to work in subsequent jobs.
+    # https://github.com/mamba-org/setup-micromamba#about-login-shells
+    shell: bash -e -l {0}
+
 jobs:
   tests_graph:
     runs-on: ubuntu-latest
@@ -43,12 +50,10 @@ jobs:
           which python
           python -V
           pip install .[dev]
-        shell: micromamba-shell {0}
       - name: Test with pytest
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
           coverage report
-        shell: micromamba-shell {0}
 
   tests_eager:
     runs-on: ubuntu-latest
@@ -74,10 +79,8 @@ jobs:
           which python
           python -V
           pip install .[dev]
-        shell: micromamba-shell {0}
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=0
           coverage run --source=. --omit=".tox/*,*/test*," --branch -m pytest .
           coverage report
-        shell: micromamba-shell {0}
