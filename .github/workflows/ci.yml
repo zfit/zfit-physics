@@ -49,8 +49,7 @@ jobs:
         run: |
           which python
           python -V
-          pip install uv
-          uv pip install ".[dev]"
+          python -m pip install ".[dev]"
       - name: Test with pytest
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
@@ -79,8 +78,7 @@ jobs:
         run: |
           which python
           python -V
-          pip install uv
-          uv pip install ".[dev]"
+          python -m pip install ".[dev]"
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=0
