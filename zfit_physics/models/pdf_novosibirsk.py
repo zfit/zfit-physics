@@ -58,7 +58,7 @@ def novosibirsk_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.T
     lower, upper = limits.limit1d
     peak = params["mu"]
     width = params["sigma"]
-    tail = params["Lambda"]
+    tail = params["lambd"]
 
     return novosibirsk_integral_func(peak=peak, width=width, tail=tail, lower=lower, upper=upper)
 
@@ -112,7 +112,7 @@ class Novosibirsk(zfit.pdf.BasePDF):
         self,
         mu,
         sigma,
-        Lambda,
+        lambd,
         obs,
         *,
         extended: Optional[ztyping.ExtendedInputType] = False,
@@ -133,7 +133,7 @@ class Novosibirsk(zfit.pdf.BasePDF):
         Args:
             mu: The peak of the distribution.
             sigma: The width of the distribution.
-            Lambda: The tail of the distribution.
+            lambd: The tail of the distribution.
             obs: |@doc:pdf.init.obs| Observables of the
                model. This will be used as the default space of the PDF and,
                if not given explicitly, as the normalization range.
@@ -155,14 +155,14 @@ class Novosibirsk(zfit.pdf.BasePDF):
                the PDF for better identification.
                Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
         """
-        params = {"mu": mu, "sigma": sigma, "Lambda": Lambda}
+        params = {"mu": mu, "sigma": sigma, "lambd": lambd}
         super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm)
 
     def _unnormalized_pdf(self, x):
         mu = self.params["mu"]
         sigma = self.params["sigma"]
-        Lambda = self.params["Lambda"]
-        return novosibirsk_pdf(x, peak=mu, width=sigma, tail=Lambda)
+        lambd = self.params["lambd"]
+        return novosibirsk_pdf(x, peak=mu, width=sigma, tail=lambd)
 
 
 novosibirsk_integral_limits = Space(axes=0, limits=(ANY_LOWER, ANY_UPPER))
