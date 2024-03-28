@@ -40,7 +40,6 @@ jobs:
             root
       - name: Install Python dependencies
         run: |
-          pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
         run: |
@@ -68,7 +67,6 @@ jobs:
             root
       - name: Install Python dependencies
         run: |
-          pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
         run: |
