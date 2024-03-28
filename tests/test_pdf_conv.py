@@ -1,5 +1,4 @@
 """Example test for a pdf or function."""
-
 import numpy as np
 import pytest
 import tensorflow as tf

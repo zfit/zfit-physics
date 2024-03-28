@@ -1,5 +1,4 @@
 """Tests for relativistic Breit-Wigner PDF."""
-
 import pytest
 import tensorflow as tf
 import zfit

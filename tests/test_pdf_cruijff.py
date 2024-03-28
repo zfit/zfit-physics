@@ -87,20 +87,14 @@ def test_cruijff_integral():
     full_interval_numeric = cruijff.numeric_integrate(obs, norm=False).numpy()
     true_integral = 67.71494
     numba_stats_full_integral = integrate.quad(
-        cruijff_numba.density,
-        50,
-        130,
-        args=(alphal_true, alphar_true, mu_true, sigmal_true, sigmar_true),
+        cruijff_numba.density, 50, 130, args=(alphal_true, alphar_true, mu_true, sigmal_true, sigmar_true)
     )[0]
     assert full_interval_numeric == pytest.approx(true_integral, 1e-7)
     assert full_interval_numeric == pytest.approx(numba_stats_full_integral, 1e-7)
 
     numeric_integral = cruijff.numeric_integrate(limits=(80, 100), norm=False).numpy()
     numba_stats_integral = integrate.quad(
-        cruijff_numba.density,
-        80,
-        100,
-        args=(alphal_true, alphar_true, mu_true, sigmal_true, sigmar_true),
+        cruijff_numba.density, 80, 100, args=(alphal_true, alphar_true, mu_true, sigmal_true, sigmar_true)
     )[0]
     assert numeric_integral == pytest.approx(numba_stats_integral, 1e-7)
 
@@ -113,13 +107,7 @@ def cruijff_params_factory():
     sigmar = zfit.Parameter("sigmar", sigmar_true)
     alphar = zfit.Parameter("alphar", alphar_true)
 
-    return {
-        "mu": mu,
-        "sigmal": sigmal,
-        "alphal": alphal,
-        "sigmar": sigmar,
-        "alphar": alphar,
-    }
+    return {"mu": mu, "sigmal": sigmal, "alphal": alphal, "sigmar": sigmar, "alphar": alphar}
 
 
 tester.register_pdf(pdf_class=zphys.pdf.Cruijff, params_factories=cruijff_params_factory)
