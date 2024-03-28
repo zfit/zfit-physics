@@ -44,6 +44,8 @@ jobs:
         shell: micromamba-shell {0}
       - name: Install Python dependencies
         run: |
+          which python
+          python -V
           pip install .[dev]
       - name: Test with pytest
         run: |
@@ -75,6 +77,8 @@ jobs:
         shell: micromamba-shell {0}
       - name: Install Python dependencies
         run: |
+          which python
+          python -V
           pip install .[dev]
       - name: Test with pytest
         run: |
