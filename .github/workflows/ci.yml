@@ -50,7 +50,7 @@ jobs:
           which python
           python -V
           python -m pip install uv
-          python -m uv pip install ".[dev]"
+          uv pip install ".[dev]"
       - name: Test with pytest
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
@@ -80,7 +80,7 @@ jobs:
           which python
           python -V
           python -m pip install uv
-          python -m uv pip install ".[dev]"
+          uv pip install ".[dev]"
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=0
