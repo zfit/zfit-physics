@@ -38,6 +38,9 @@ jobs:
             python=${{ matrix.python-version }}
             pip
             root
+      - name: Check ROOT Version
+        run: |
+          python -c "import ROOT; print(ROOT.__version__)"
       - name: Install Python dependencies
         run: |
           pip install .[dev]
@@ -65,6 +68,9 @@ jobs:
             python=${{ matrix.python-version }}
             pip
             root
+      - name: Check ROOT Version
+        run: |
+          python -c "import ROOT; print(ROOT.__version__)"
       - name: Install Python dependencies
         run: |
           pip install .[dev]
