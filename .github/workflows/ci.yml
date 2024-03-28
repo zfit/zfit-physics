@@ -34,13 +34,16 @@ jobs:
         name: Set up Micromamba environment
         with:
           environment-name: test-env
+          create-args: >-
+            python=${{ matrix.python-version }}
+            pip
       # - name: Install ROOT
       #   run: |
-      #     micromamba install -c conda-forge root -y
-      - name: Install Python and dependencies
+      #     micromamba install -n test-env -c conda-forge root -y
+      - name: Install Python dependencies
         run: |
-          micromamba install python=${{ matrix.python-version }} pip -c conda-forge -y
-          python -m pip install --upgrade pip
+          micromamba install -n test-env -c conda-forge pip -y
+          pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
         run: |
@@ -62,13 +65,16 @@ jobs:
         name: Set up Micromamba environment
         with:
           environment-name: test-env
+          create-args: >-
+            python=${{ matrix.python-version }}
+            pip
       # - name: Install ROOT
       #   run: |
-      #     micromamba install -c conda-forge root -y
-      - name: Install Python and dependencies
+      #     micromamba install -n test-env -c conda-forge root -y
+      - name: Install Python dependencies
         run: |
-          micromamba install python=${{ matrix.python-version }} pip -c conda-forge -y
-          python -m pip install --upgrade pip
+          micromamba install -n test-env -c conda-forge pip -y
+          pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
         run: |
