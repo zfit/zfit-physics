@@ -46,25 +46,12 @@ def test_erfexp_pdf():
     )
     np.testing.assert_allclose(
         erfexp.pdf(tf.range(50.0, 130, 10_000), norm=False),
-        erfexp_numpy(
-            tf.range(50.0, 130, 10_000),
-            mu=mu_true,
-            beta=beta_true,
-            gamma=gamma_true,
-            n=n_true,
-        ),
+        erfexp_numpy(tf.range(50.0, 130, 10_000), mu=mu_true, beta=beta_true, gamma=gamma_true, n=n_true),
         rtol=1e-8,
     )
     np.testing.assert_allclose(
         erfexp.pdf(tf.range(50.0, 130, 10_000)),
-        erfexp_numpy(
-            tf.range(50.0, 130, 10_000),
-            mu=mu_true,
-            beta=beta_true,
-            gamma=gamma_true,
-            n=n_true,
-        )
-        / 71.18838,
+        erfexp_numpy(tf.range(50.0, 130, 10_000), mu=mu_true, beta=beta_true, gamma=gamma_true, n=n_true) / 71.18838,
         rtol=1e-8,
         atol=1e-8,
     )
@@ -81,13 +68,7 @@ def test_erfexp_pdf_random_params():
         erfexp, __ = create_erfexp(mu=mu_true, beta=beta_true, gamma=gamma_true, n=n_true, limits=(50, 130))
         np.testing.assert_allclose(
             erfexp.pdf(tf.range(50.0, 130, 10_000), norm=False),
-            erfexp_numpy(
-                tf.range(50.0, 130, 10_000),
-                mu=mu_true,
-                beta=beta_true,
-                gamma=gamma_true,
-                n=n_true,
-            ),
+            erfexp_numpy(tf.range(50.0, 130, 10_000), mu=mu_true, beta=beta_true, gamma=gamma_true, n=n_true),
             rtol=1e-5,
         )
 

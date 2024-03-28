@@ -26,12 +26,7 @@ def create_cruijff(mu, sigmal, alphal, sigmar, alphar, limits):
 def test_cruijff_pdf():
     # Test PDF here
     cruijff, _ = create_cruijff(
-        mu=mu_true,
-        sigmal=sigmal_true,
-        alphal=alphal_true,
-        sigmar=sigmar_true,
-        alphar=alphar_true,
-        limits=(50, 130),
+        mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
     )
     assert cruijff.pdf(90.0, norm=False).numpy() == pytest.approx(
         cruijff_numba.density(
@@ -87,12 +82,7 @@ def test_cruijff_pdf():
 def test_cruijff_integral():
     # Test CDF and integral here
     cruijff, obs = create_cruijff(
-        mu=mu_true,
-        sigmal=sigmal_true,
-        alphal=alphal_true,
-        sigmar=sigmar_true,
-        alphar=alphar_true,
-        limits=(50, 130),
+        mu=mu_true, sigmal=sigmal_true, alphal=alphal_true, sigmar=sigmar_true, alphar=alphar_true, limits=(50, 130)
     )
     full_interval_numeric = cruijff.numeric_integrate(obs, norm=False).numpy()
     true_integral = 67.71494

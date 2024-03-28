@@ -1,5 +1,4 @@
 """Tests for CMSShape PDF."""
-
 import numpy as np
 import pytest
 import tensorflow as tf
@@ -27,17 +26,11 @@ def test_cmsshape_pdf():
     # Test PDF here
     cmsshape, _ = create_cmsshape(m=m_true, beta=beta_true, gamma=gamma_true, limits=(50, 130))
     assert zfit.run(cmsshape.pdf(90.0)) == pytest.approx(
-        cmsshape_numba.pdf(90.0, beta=beta_true, gamma=gamma_true, loc=m_true).item(),
-        rel=1e-5,
+        cmsshape_numba.pdf(90.0, beta=beta_true, gamma=gamma_true, loc=m_true).item(), rel=1e-5
     )
     np.testing.assert_allclose(
         cmsshape.pdf(tf.range(50.0, 130, 10_000)),
-        cmsshape_numba.pdf(
-            tf.range(50.0, 130, 10_000).numpy(),
-            beta=beta_true,
-            gamma=gamma_true,
-            loc=m_true,
-        ),
+        cmsshape_numba.pdf(tf.range(50.0, 130, 10_000).numpy(), beta=beta_true, gamma=gamma_true, loc=m_true),
         rtol=1e-5,
     )
     assert cmsshape.pdf(tf.range(50.0, 130, 10_000)) <= cmsshape.pdf(90.0)

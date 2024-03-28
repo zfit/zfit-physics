@@ -93,13 +93,7 @@ class Cruijff(zfit.pdf.BasePDF):
            the PDF for better identification.
            Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
         """
-        params = {
-            "mu": mu,
-            "sigmal": sigmal,
-            "alphal": alphal,
-            "sigmar": sigmar,
-            "alphar": alphar,
-        }
+        params = {"mu": mu, "sigmal": sigmal, "alphal": alphal, "sigmar": sigmar, "alphar": alphar}
         super().__init__(obs=obs, params=params, extended=extended, norm=norm)
 
     def _unnormalized_pdf(self, x):
