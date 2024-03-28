@@ -38,10 +38,6 @@ jobs:
             python=${{ matrix.python-version }}
             pip
             root
-      - name: Check ROOT Version
-        run: |
-          python -c "import ROOT; print(ROOT.__version__)"
-        shell: micromamba-shell {0}
       - name: Install Python dependencies
         run: |
           which python
@@ -73,10 +69,6 @@ jobs:
             python=${{ matrix.python-version }}
             pip
             root
-      - name: Check ROOT Version
-        run: |
-          python -c "import ROOT; print(ROOT.__version__)"
-        shell: micromamba-shell {0}
       - name: Install Python dependencies
         run: |
           which python
