@@ -40,7 +40,7 @@ jobs:
             root
       - name: Install Python dependencies
         run: |
-          micromamba install -n test-env -c conda-forge pip -y
+          micromamba activate test-env
           pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
@@ -69,7 +69,7 @@ jobs:
             root
       - name: Install Python dependencies
         run: |
-          micromamba install -n test-env -c conda-forge pip -y
+          micromamba activate test-env
           pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
