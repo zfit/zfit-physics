@@ -1,4 +1,5 @@
 """ARGUS PDF (https://en.wikipedia.org/wiki/ARGUS_distribution)"""
+
 from typing import Optional
 
 import numpy as np
