@@ -30,19 +30,16 @@ jobs:
     name: JIT compiled tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: conda-incubator/setup-miniconda@v2
-
-        name: Set up Conda environment
+      - uses: mamba-org/setup-micromamba@v1
+        name: Set up Micromamba environment
         with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
-          create-environment: test-env
-          conda-channels: conda-forge
+          environment-name: test-env
       # - name: Install ROOT
       #   run: |
-      #     conda install -c conda-forge root
-      - name: Install Python dependencies
+      #     micromamba install -c conda-forge root -y
+      - name: Install Python and dependencies
         run: |
+          micromamba install python=${{ matrix.python-version }} pip -c conda-forge -y
           python -m pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
@@ -61,19 +58,16 @@ jobs:
     name: Eager mode tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: conda-incubator/setup-miniconda@v2
-
-        name: Set up Conda environment
+      - uses: mamba-org/setup-micromamba@v1
+        name: Set up Micromamba environment
         with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
-          create-environment: test-env
-          conda-channels: conda-forge
+          environment-name: test-env
       # - name: Install ROOT
       #   run: |
-      #     conda install -c conda-forge root
-      - name: Install Python dependencies
+      #     micromamba install -c conda-forge root -y
+      - name: Install Python and dependencies
         run: |
+          micromamba install python=${{ matrix.python-version }} pip -c conda-forge -y
           python -m pip install --upgrade pip
           pip install .[dev]
       - name: Test with pytest
