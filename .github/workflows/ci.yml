@@ -37,9 +37,7 @@ jobs:
           create-args: >-
             python=${{ matrix.python-version }}
             pip
-      # - name: Install ROOT
-      #   run: |
-      #     micromamba install -n test-env -c conda-forge root -y
+            root
       - name: Install Python dependencies
         run: |
           micromamba install -n test-env -c conda-forge pip -y
@@ -68,9 +66,7 @@ jobs:
           create-args: >-
             python=${{ matrix.python-version }}
             pip
-      # - name: Install ROOT
-      #   run: |
-      #     micromamba install -n test-env -c conda-forge root -y
+            root
       - name: Install Python dependencies
         run: |
           micromamba install -n test-env -c conda-forge pip -y
