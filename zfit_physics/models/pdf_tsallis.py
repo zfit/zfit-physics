@@ -32,10 +32,10 @@ def tsallis_pdf_func(x, m, t, n):
         tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
 
     x = z.unstack_x(x)
-    mt = znp.sqrt(m * m + x * x)
+    mt = znp.sqrt(znp.square(m) + znp.square(x))
     nt = n * t
     c = (n - 1) * (n - 2) / (nt * (nt + (n - 2) * m))
-    return c * x * (1 + (mt - m) / nt) ** -n
+    return c * x * znp.power(1 + (mt - m) / nt, -n)
 
 
 @z.function(wraps="tensor")
@@ -62,9 +62,9 @@ def tsallis_cdf_func(x, m, t, n):
         tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
 
     x = z.unstack_x(x)
-    mt = znp.sqrt(m * m + x * x)
+    mt = znp.sqrt(m * m + znp.square(x))
     nt = n * t
-    return ((mt - m) / nt + 1) ** (1 - n) * (m + mt - n * (mt + t)) / (m * (n - 2) + nt)
+    return znp.power((mt - m) / nt + 1, 1 - n) * (m + mt - n * (mt + t)) / (m * (n - 2) + nt)
 
 
 def tsallis_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
@@ -78,7 +78,7 @@ def tsallis_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tenso
     Returns:
         The calculated integral.
     """
-    lower, upper = limits.limit1d
+    lower, upper = limits._rect_limits_tf
     m = params["m"]
     t = params["t"]
     n = params["n"]
