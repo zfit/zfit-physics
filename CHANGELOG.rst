@@ -10,7 +10,7 @@ Major Features and Improvements
 - added CMSShape PDF
 - added Cruijff PDF
 - added ErfExp PDF
-- added Tsalis PDF
+- added Tsallis PDF
 
 Breaking changes
 ------------------
