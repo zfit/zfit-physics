@@ -136,6 +136,13 @@ class Tsallis(zfit.pdf.BasePDF):
                the PDF for better identification.
                Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
         """
+        if run.executing_eagerly():
+            if n <= 2:
+                msg = "n > 2 is required"
+                raise ValueError(msg)
+        elif run.numeric_checks:
+            tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
+
         params = {"m": m, "t": t, "n": n}
         super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm)
 
