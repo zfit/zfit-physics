@@ -62,7 +62,7 @@ def tsallis_cdf_func(x, m, t, n):
         tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
 
     x = z.unstack_x(x)
-    mt = znp.sqrt(m * m + znp.square(x))
+    mt = znp.sqrt(tf.math.squared_diff(m, x))
     nt = n * t
     return znp.power((mt - m) / nt + 1, 1 - n) * (m + mt - n * (mt + t)) / (m * (n - 2) + nt)
 
