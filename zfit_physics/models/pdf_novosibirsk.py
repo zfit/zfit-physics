@@ -78,7 +78,7 @@ def novosibirsk_integral_func(peak, width, tail, lower, upper):
         `tf.Tensor`: The calculated integral.
 
     Notes:
-        Based on code from `ROOT <https://root.cern.ch/doc/master/Novosibirsk_8cxx_source.html>`_
+        Based on code from `ROOT <https://root.cern.ch/doc/master/RooNovosibirsk_8cxx_source.html>`_
     """
     sqrt2 = np.sqrt(2)
     sqlog2 = np.sqrt(np.log(2))
