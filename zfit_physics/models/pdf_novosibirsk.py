@@ -38,10 +38,9 @@ def novosibirsk_pdf(x, peak, width, tail):
     width_zero = (2.0 / xi) * znp.arcsinh(tail * xi * 0.5)
     width_zero2 = width_zero**2
     exponent = (-0.5 / width_zero2 * log_arg**2) - (width_zero2 * 0.5)
+    gauss = -0.5 * ((x - peak) / width) ** 2
 
-    gauss_exponent = -0.5 * ((x - peak) / width) ** 2
-    exponents = znp.where(cond1, gauss_exponent, znp.where(cond2, 0.0, exponent))
-    return znp.exp(exponents)
+    return znp.where(cond1, gauss, znp.where(cond2, 0.0, znp.exp(exponent)))
 
 
 def novosibirsk_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
