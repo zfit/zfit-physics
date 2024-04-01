@@ -40,7 +40,7 @@ def novosibirsk_pdf(x, peak, width, tail):
     exponent = (-0.5 / width_zero2 * log_arg**2) - (width_zero2 * 0.5)
 
     gauss_exponent = -0.5 * ((x - peak) / width) ** 2
-    exponents = znp.where(cond1, gauss, znp.where(cond2, 0.0, exponent))
+    exponents = znp.where(cond1, gauss_exponent, znp.where(cond2, 0.0, exponent))
     return znp.exp(exponents)
 
 
