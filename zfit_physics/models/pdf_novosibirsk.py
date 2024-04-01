@@ -10,7 +10,7 @@ from zfit.util import ztyping
 
 
 @z.function(wraps="tensor")
-def novosibirsk_pdf(x, peak, width, tail):
+def novosibirsk_pdf(x, mu, sigma, lambd):
     """Calculate the Novosibirsk PDF.
 
     Args:
@@ -26,6 +26,10 @@ def novosibirsk_pdf(x, peak, width, tail):
         Function taken from H. Ikeda et al. NIM A441 (2000), p. 401 (Belle Collaboration)
         Based on code from `ROOT <https://root.cern.ch/doc/master/RooNovosibirsk_8cxx_source.html>`_
     """
+    # rename parameters to follow roofit implementation
+    peak = mu
+    width = sigma
+    tail = lambd
     x = z.unstack_x(x)
 
     cond1 = znp.less(znp.abs(tail), 1e-7)
@@ -55,15 +59,15 @@ def novosibirsk_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.T
         The calculated integral.
     """
     lower, upper = limits.limit1d
-    peak = params["mu"]
-    width = params["sigma"]
-    tail = params["lambd"]
+    mu = params["mu"]
+    sigma = params["sigma"]
+    lambd = params["lambd"]
 
-    return novosibirsk_integral_func(peak=peak, width=width, tail=tail, lower=lower, upper=upper)
+    return novosibirsk_integral_func(mu=mu, sigma=sigma, lambd=lambd, lower=lower, upper=upper)
 
 
 @z.function(wraps="tensor")
-def novosibirsk_integral_func(peak, width, tail, lower, upper):
+def novosibirsk_integral_func(mu, sigma, lambd, lower, upper):
     """Calculate the integral of the Novosibirsk PDF.
 
     Args:
@@ -79,6 +83,10 @@ def novosibirsk_integral_func(peak, width, tail, lower, upper):
     Notes:
         Based on code from `ROOT <https://root.cern.ch/doc/master/RooNovosibirsk_8cxx_source.html>`_
     """
+    # rename parameters to follow roofit implementation
+    peak = mu
+    width = sigma
+    tail = lambd
     sqrt2 = np.sqrt(2)
     sqlog2 = np.sqrt(np.log(2))
     sqlog4 = np.sqrt(np.log(4))
@@ -161,7 +169,7 @@ class Novosibirsk(zfit.pdf.BasePDF):
         mu = self.params["mu"]
         sigma = self.params["sigma"]
         lambd = self.params["lambd"]
-        return novosibirsk_pdf(x, peak=mu, width=sigma, tail=lambd)
+        return novosibirsk_pdf(x, mu=mu, sigma=sigma, lambd=lambd)
 
 
 novosibirsk_integral_limits = Space(axes=0, limits=(ANY_LOWER, ANY_UPPER))
