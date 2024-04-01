@@ -24,7 +24,7 @@ def novosibirsk_pdf(x, peak, width, tail):
 
     Notes:
         Function taken from H. Ikeda et al. NIM A441 (2000), p. 401 (Belle Collaboration)
-        Based on code from `ROOT <https://root.cern.ch/doc/master/Novosibirsk_8cxx_source.html>`_
+        Based on code from `ROOT <https://root.cern.ch/doc/master/RooNovosibirsk_8cxx_source.html>`_
     """
     x = z.unstack_x(x)
 
