@@ -38,7 +38,7 @@ def novosibirsk_pdf(x, peak, width, tail):
     width_zero = (2.0 / xi) * znp.arcsinh(tail * xi * 0.5)
     width_zero2 = width_zero**2
     exponent = (-0.5 / width_zero2 * log_arg**2) - (width_zero2 * 0.5)
-    gauss = -0.5 * ((x - peak) / width) ** 2
+    gauss = znp.exp(-0.5 * ((x - peak) / width) ** 2)
 
     return znp.where(cond1, gauss, znp.where(cond2, 0.0, znp.exp(exponent)))
 
