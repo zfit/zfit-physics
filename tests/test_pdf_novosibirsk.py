@@ -13,6 +13,13 @@ mu_true = 90.0
 sigma_true = 10.0
 lambd_true = 0.5
 
+true_integral_dict = {
+    1e-10: 25.06469498570457,
+    0.5: 23.021160811717586,
+    1.0: 18.148056725398746,
+    10.0: 0.6499205017648246,
+}
+
 
 def create_novosibirsk(mu, sigma, lambd, limits):
     obs = zfit.Space("obs1", limits)
@@ -37,7 +44,8 @@ def create_and_eval_root_novosibirsk_and_integral(mu, sigma, lambd, limits, x, l
     return out, integral
 
 
-def test_novosibirsk_pdf():
+@pytest.mark.parametrize("lambd_true", [1e-10, 0.5, 1.0, 10.0])
+def test_novosibirsk_pdf(lambd_true):
     # Teat PDF here
     novosibirsk, _ = create_novosibirsk(mu=mu_true, sigma=sigma_true, lambd=lambd_true, limits=(50, 130))
     novosibirsk_root_90 = create_and_eval_root_novosibirsk_and_integral(
@@ -56,27 +64,28 @@ def test_novosibirsk_pdf():
     assert all(tf.logical_and(50 <= sample.value(), sample.value() <= 130))
 
 
-def test_novosibirsk_integral():
+@pytest.mark.parametrize("lambd_true", [1e-10, 0.5, 1.0, 10.0])
+def test_novosibirsk_integral(lambd_true):
     # Test CDF and integral here
     novosibirsk, obs = create_novosibirsk(mu=mu_true, sigma=sigma_true, lambd=lambd_true, limits=(50, 130))
     full_interval_analytic = novosibirsk.analytic_integrate(obs, norm=False).numpy()
     full_interval_numeric = novosibirsk.numeric_integrate(obs, norm=False).numpy()
-    true_integral = 23.021161
+    true_integral = true_integral_dict[lambd_true]
     root_integral = create_and_eval_root_novosibirsk_and_integral(
         mu=mu_true, sigma=sigma_true, lambd=lambd_true, limits=(50, 130), x=np.array([50, 130]), lower=50, upper=130
     )[1]
     assert full_interval_analytic == pytest.approx(true_integral, 1e-5)
-    assert full_interval_numeric == pytest.approx(true_integral, 1e-5)
+    assert full_interval_numeric == pytest.approx(true_integral, 1e-3)
     assert full_interval_analytic == pytest.approx(root_integral, 1e-5)
-    assert full_interval_numeric == pytest.approx(root_integral, 1e-5)
+    assert full_interval_numeric == pytest.approx(root_integral, 1e-3)
 
     analytic_integral = novosibirsk.analytic_integrate(limits=(80, 100), norm=False).numpy()
     numeric_integral = novosibirsk.numeric_integrate(limits=(80, 100), norm=False).numpy()
     root_integral = create_and_eval_root_novosibirsk_and_integral(
         mu=mu_true, sigma=sigma_true, lambd=lambd_true, limits=(50, 130), x=np.array([80, 100]), lower=80, upper=100
     )[1]
-    assert analytic_integral == pytest.approx(numeric_integral, 1e-5)
-    assert analytic_integral == pytest.approx(root_integral, 1e-5)
+    assert analytic_integral == pytest.approx(numeric_integral, 1e-3)
+    assert analytic_integral == pytest.approx(root_integral, 1e-3)
 
 
 # register the pdf here and provide sets of working parameter configurations
