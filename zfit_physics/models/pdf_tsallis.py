@@ -23,6 +23,7 @@ def tsallis_pdf_func(x, m, t, n):
 
     Notes:
         Based on code from `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/tsallis.py>`_.
+        Formula from CMS, Eur. Phys. J. C (2012) 72:2164
     """
     if run.executing_eagerly():
         if n <= 2:
@@ -53,6 +54,7 @@ def tsallis_cdf_func(x, m, t, n):
 
     Notes:
         Based on code from `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/tsallis.py>`_.
+        Formula from CMS, Eur. Phys. J. C (2012) 72:2164
     """
     if run.executing_eagerly():
         if n <= 2:
@@ -108,8 +110,8 @@ class Tsallis(zfit.pdf.BasePDF):
         minimum bias particle collisions.
 
 
-        Formula for the PDF and CDF are based on code from
-        `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/tsallis.py>`_
+        Based on code from `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/tsallis.py>`_.
+        Formula from CMS, Eur. Phys. J. C (2012) 72:2164
 
         Args:
             m: Mass of the particle.
