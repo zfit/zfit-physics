@@ -11,6 +11,7 @@ Major Features and Improvements
 - added Cruijff PDF
 - added ErfExp PDF
 - added Novosibirsk PDF
+- added Tsallis PDF
 
 Breaking changes
 ------------------
