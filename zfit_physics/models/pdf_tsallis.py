@@ -32,7 +32,7 @@ def tsallis_pdf_func(x, m, t, n):
         tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
 
     x = z.unstack_x(x)
-    mt = znp.sqrt(znp.square(m) + znp.square(x))
+    mt = znp.sqrt(tf.math.squared_diff(m, x))
     nt = n * t
     c = (n - 1) * (n - 2) / (nt * (nt + (n - 2) * m))
     return c * x * znp.power(1 + (mt - m) / nt, -n)
