@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import zfit
 from zfit import z
@@ -35,8 +35,7 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
         tleft / (1 + alphal * tleft),
         tright / (1 + alphar * tright),
     )
-    value = znp.exp(-0.5 * exponent)
-    return value
+    return znp.exp(-0.5 * exponent)
 
 
 class Cruijff(zfit.pdf.BasePDF):
@@ -51,9 +50,10 @@ class Cruijff(zfit.pdf.BasePDF):
         alphar: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         *,
-        extended: Optional[ztyping.ExtendedInputType] = False,
-        norm: Optional[ztyping.NormInputType] = None,
+        extended: ztyping.ExtendedInputType | None = False,
+        norm: ztyping.NormInputType | None = None,
         name: str = "Cruijff",
+        label: str | None = None,
     ):
         """Cruijff PDF, a Gaussian with two width, left and right, and non-Gaussian tails.
 
@@ -92,9 +92,10 @@ class Cruijff(zfit.pdf.BasePDF):
            or label of
            the PDF for better identification.
            Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
+        label: |@doc:pdf.init.label| A human readable label to identify the PDF. |@docend:pdf.init.label|
         """
         params = {"mu": mu, "sigmal": sigmal, "alphal": alphal, "sigmar": sigmar, "alphar": alphar}
-        super().__init__(obs=obs, params=params, extended=extended, norm=norm)
+        super().__init__(obs=obs, params=params, extended=extended, norm=norm, name=name, label=label)
 
     def _unnormalized_pdf(self, x):
         mu = self.params["mu"]

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 
 import pytest
@@ -6,7 +8,7 @@ init_modules = sys.modules.keys()
 
 
 @pytest.fixture(autouse=True)
-def setup_teardown():
+def _setup_teardown():
     import zfit
 
     old_chunksize = zfit.run.chunking.max_n_points
@@ -14,7 +16,7 @@ def setup_teardown():
     old_graph_mode = zfit.run.get_graph_mode()
     old_autograd_mode = zfit.run.get_autograd_mode()
 
-    for m in sys.modules.keys():
+    for m in sys.modules:
         if m not in init_modules:
             del sys.modules[m]
 
@@ -32,7 +34,7 @@ def setup_teardown():
     zfit.run.chunking.max_n_points = old_chunksize
     zfit.run.set_graph_mode(old_graph_mode)
     zfit.run.set_autograd_mode(old_autograd_mode)
-    for m in sys.modules.keys():
+    for m in sys.modules:
         if m not in init_modules:
             del sys.modules[m]
     import gc

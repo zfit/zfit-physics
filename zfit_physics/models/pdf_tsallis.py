@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import tensorflow as tf
 import zfit
@@ -30,7 +30,7 @@ def tsallis_pdf_func(x, m, t, n):
             msg = "n > 2 is required"
             raise ValueError(msg)
     elif run.numeric_checks:
-        tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
+        tf.debugging.assert_greater(n, znp.array(2.0), message="n > 2 is required")
 
     x = z.unstack_x(x)
     mt = znp.hypot(m, x)
@@ -61,7 +61,7 @@ def tsallis_cdf_func(x, m, t, n):
             msg = "n > 2 is required"
             raise ValueError(msg)
     elif run.numeric_checks:
-        tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
+        tf.debugging.assert_greater(n, znp.asarray(2.0), "n > 2 is required")
 
     x = z.unstack_x(x)
     mt = znp.hypot(m, x)
@@ -80,6 +80,7 @@ def tsallis_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tenso
     Returns:
         The calculated integral.
     """
+    del model
     lower, upper = limits._rect_limits_tf
     m = params["m"]
     t = params["t"]
@@ -99,8 +100,8 @@ class Tsallis(zfit.pdf.BasePDF):
         n: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         *,
-        extended: Optional[ztyping.ExtendedInputType] = None,
-        norm: Optional[ztyping.NormInputType] = None,
+        extended: ztyping.ExtendedInputType | None = None,
+        norm: ztyping.NormInputType | None = None,
         name: str = "Tsallis",
     ):
         """Tsallis-Hagedorn PDF.

@@ -17,12 +17,12 @@
 
 
 # -- Project information -----------------------------------------------------
-import os
+from __future__ import annotations
+
 import sys
+from pathlib import Path
 
-import sphinx_bootstrap_theme
-
-sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, str(Path("..").resolve()))
 
 import zfit_physics
 

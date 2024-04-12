@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import tensorflow as tf
 import zfit
@@ -70,6 +70,7 @@ def cmsshape_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tens
     Returns:
         The calculated integral.
     """
+    del model
     lower, upper = limits.limit1d
     m = params["m"]
     beta = params["beta"]
@@ -89,8 +90,8 @@ class CMSShape(zfit.pdf.BasePDF):
         gamma: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         *,
-        extended: Optional[ztyping.ExtendedInputType] = None,
-        norm: Optional[ztyping.NormInputType] = None,
+        extended: ztyping.ExtendedInputType | None = None,
+        norm: ztyping.NormInputType | None = None,
         name: str = "CMSShape",
     ):
         """CMSShape PDF.

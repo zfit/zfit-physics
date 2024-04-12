@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import numpy as np
 import tensorflow as tf
@@ -58,6 +58,7 @@ def novosibirsk_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.T
     Returns:
         The calculated integral.
     """
+    del model
     lower, upper = limits.limit1d
     mu = params["mu"]
     sigma = params["sigma"]
@@ -122,8 +123,8 @@ class Novosibirsk(zfit.pdf.BasePDF):
         lambd,
         obs,
         *,
-        extended: Optional[ztyping.ExtendedInputType] = False,
-        norm: Optional[ztyping.NormInputType] = None,
+        extended: ztyping.ExtendedInputType | None = False,
+        norm: ztyping.NormInputType | None = None,
         name: str = "Novosibirsk",
     ):
         """Novosibirsk PDF.

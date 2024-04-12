@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -19,7 +19,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         obs: ztyping.ObsTypeInput,
         ndraws: int = 20000,
         *,
-        extended: Optional[ztyping.ParamTypeInput] = None,
+        extended: ztyping.ParamTypeInput | None = None,
         name: str = "Convolution",
         experimental_pdf_normalized=False,
     ):
@@ -39,9 +39,11 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         super().__init__(obs=obs, pdfs=[func, kernel], params={}, name=name, extended=extended)
         limits = self._check_input_limits(limits=limits)
         if limits.n_limits == 0:
-            raise exception.LimitsNotSpecifiedError("obs have to have limits to define where to integrate over.")
+            msg = "obs have to have limits to define where to integrate over."
+            raise exception.LimitsNotSpecifiedError(msg)
         if limits.n_limits > 1:
-            raise WorkInProgressError("Multiple Limits not implemented")
+            msg = "Multiple Limits not implemented"
+            raise WorkInProgressError(msg)
 
         #        if not isinstance(func, zfit.pdf.BasePDF):
         #            raise TypeError(f"func has to be a PDF, not {type(func)}")
@@ -82,7 +84,8 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
 
     @zfit.supports(norm=True)
     @z.function
-    def _pdf(self, x, norm_range):
+    def _pdf(self, x, norm):
+        del norm
         if not self._experimental_pdf_normalized:
             raise FunctionNotImplementedError
 

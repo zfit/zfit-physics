@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from collections import OrderedDict
-from typing import Optional
 
 import tensorflow as tf
 import tensorflow_probability.python.distributions as tfd
@@ -19,7 +20,7 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         obs: ztyping.ObsTypeInput,
         name: str = "GaussianKDE",
         *,
-        extended: Optional[ztyping.ParamTypeInput] = None,
+        extended: ztyping.ParamTypeInput | None = None,
     ):
         """Gaussian Kernel Density Estimation using Silverman's rule of thumb.
 
@@ -31,21 +32,21 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         """
         dtype = zfit.settings.ztypes.float
         if isinstance(data, zfit.core.interfaces.ZfitData):
-            raise WorkInProgressError("Currently, no dataset supported yet")
+            msg = "Currently, no dataset supported yet"
+            raise WorkInProgressError(msg)
             # size = data.nevents
             # dims = data.n_obs
             # with data.
             # data = data.value()
             # if data.weights is not None:
 
-        else:
-            if not isinstance(data, tf.Tensor):
-                data = z.convert_to_tensor(value=data)
-            data = z.to_real(data)
+        if not isinstance(data, tf.Tensor):
+            data = z.convert_to_tensor(value=data)
+        data = z.to_real(data)
 
-            shape_data = tf.shape(data)
-            size = tf.cast(shape_data[0], dtype=dtype)
-            dims = tf.cast(shape_data[-1], dtype=dtype)
+        shape_data = tf.shape(data)
+        size = tf.cast(shape_data[0], dtype=dtype)
+        dims = tf.cast(shape_data[-1], dtype=dtype)
         bandwidth = convert_to_container(bandwidth)
 
         # Bandwidth definition, use silverman's rule of thumb for nd
@@ -56,19 +57,18 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
             # cov = tf.linalg.diag(cov_diag)
             # kernel prob output shape: (n,)
             # kernel = tfd.MultivariateNormalFullCovariance(loc=data, covariance_matrix=cov)
-            kernel = tfd.MultivariateNormalDiag(loc=data, scale_diag=cov_diag)
+            return tfd.MultivariateNormalDiag(loc=data, scale_diag=cov_diag)
 
-            return kernel
             # return tfd.Independent(kernel)
 
         # reshaped_kernel = kernel
 
         probs = tf.broadcast_to(1 / size, shape=(tf.cast(size, tf.int32),))
         categorical = tfd.Categorical(probs=probs)  # no grad -> no need to recreate
-        dist_kwargs = lambda: dict(
-            mixture_distribution=categorical,
-            components_distribution=reshaped_kerner_factory(),
-        )
+
+        def dist_kwargs():
+            return {"mixture_distribution": categorical, "components_distribution": reshaped_kerner_factory()}
+
         distribution = tfd.MixtureSameFamily
         # TODO lambda for params
         params = OrderedDict((f"bandwidth_{i}", h) for i, h in enumerate(bandwidth))
