@@ -24,7 +24,6 @@ def cmsshape_pdf_func(x, m, beta, gamma):
         Based on code from `spark_tnp <https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooCMSShape.cc>`_ and
         `numba-stats <https://github.com/HDembinski/numba-stats/blob/main/src/numba_stats/cmsshape.py>`_.
     """
-    x = z.unstack_x(x)
     half = 0.5
     two = 2.0
     t1 = tf.math.exp(-gamma * (x - m))
@@ -93,6 +92,7 @@ class CMSShape(zfit.pdf.BasePDF):
         extended: ztyping.ExtendedInputType | None = None,
         norm: ztyping.NormInputType | None = None,
         name: str = "CMSShape",
+        label: str | None = None,
     ):
         """CMSShape PDF.
 
@@ -130,14 +130,17 @@ class CMSShape(zfit.pdf.BasePDF):
                or label of
                the PDF for better identification.
                Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
+            label: |@doc:pdf.init.label| Label of the PDF, if None is given, it will be the name. |@docend:pdf.init.label|
         """
         params = {"m": m, "beta": beta, "gamma": gamma}
-        super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm)
+        super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm, label=label)
 
-    def _unnormalized_pdf(self, x: tf.Tensor) -> tf.Tensor:
-        m = self.params["m"]
-        beta = self.params["beta"]
-        gamma = self.params["gamma"]
+    @zfit.supports()
+    def _unnormalized_pdf(self, x: tf.Tensor, params) -> tf.Tensor:
+        m = params["m"]
+        beta = params["beta"]
+        gamma = params["gamma"]
+        x = x[0]
         return cmsshape_pdf_func(x=x, m=m, beta=beta, gamma=gamma)
 
 

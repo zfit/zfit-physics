@@ -12,6 +12,7 @@ pytest>=3.4.2
 pytest-cov
 pytest-rerunfailures>=6
 pytest-runner>=2.11.1
+pytest-xdist
 seed_intersphinx_mapping
 setupext-janitor
 Sphinx>=3.5.4

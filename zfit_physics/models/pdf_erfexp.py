@@ -92,10 +92,11 @@ class ErfExp(zfit.pdf.BasePDF):
         params = {"mu": mu, "beta": beta, "gamma": gamma, "n": n}
         super().__init__(obs=obs, params=params, extended=extended, norm=norm, name=name, label=label)
 
-    def _unnormalized_pdf(self, x):
-        mu = self.params["mu"]
-        beta = self.params["beta"]
-        gamma = self.params["gamma"]
-        n = self.params["n"]
-        x = z.unstack_x(x)
+    @zfit.supports()
+    def _unnormalized_pdf(self, x, params):
+        mu = params["mu"]
+        beta = params["beta"]
+        gamma = params["gamma"]
+        n = params["n"]
+        x = x[0]
         return erfexp_pdf_func(x=x, mu=mu, beta=beta, gamma=gamma, n=n)

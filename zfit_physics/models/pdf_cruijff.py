@@ -97,11 +97,12 @@ class Cruijff(zfit.pdf.BasePDF):
         params = {"mu": mu, "sigmal": sigmal, "alphal": alphal, "sigmar": sigmar, "alphar": alphar}
         super().__init__(obs=obs, params=params, extended=extended, norm=norm, name=name, label=label)
 
-    def _unnormalized_pdf(self, x):
-        mu = self.params["mu"]
-        sigmal = self.params["sigmal"].value()
-        alphal = self.params["alphal"].value()
-        sigmar = self.params["sigmar"].value()
-        alphar = self.params["alphar"].value()
-        x = z.unstack_x(x)
+    @zfit.supports()
+    def _unnormalized_pdf(self, x, params):
+        mu = params["mu"]
+        sigmal = params["sigmal"]
+        alphal = params["alphal"]
+        sigmar = params["sigmar"]
+        alphar = params["alphar"]
+        x = x[0]
         return cruijff_pdf_func(x=x, mu=mu, sigmal=sigmal, alphal=alphal, sigmar=sigmar, alphar=alphar)

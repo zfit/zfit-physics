@@ -48,11 +48,11 @@ def argus_func(
 class Argus(zfit.pdf.BasePDF):
     def __init__(
         self,
-        obs: ztyping.ObsTypeInput,
+        *,
         m0,
         c,
         p,
-        *,
+        obs: ztyping.ObsTypeInput,
         extended: ztyping.ParamTypeInput | None = None,
         norm: ztyping.NormTypeInput = None,
         name: str = "ArgusPDF",
@@ -93,10 +93,10 @@ class Argus(zfit.pdf.BasePDF):
                ``ext_*`` methods and the ``counts`` (for binned PDFs). |@docend:pdf.init.extended|
             norm: |@doc:pdf.init.norm| Normalization of the PDF.
                By default, this is the same as the default space of the PDF. |@docend:pdf.init.norm|
-            name: |@doc:model.init.name| Human-readable name
+            name: |@doc:pdf.init.name| Human-readable name
                or label of
-               the PDF for better identification. |@docend:model.init.name|
-           label: |@doc:model.init.label| Label of the PDF, if None is given, it will be the name. |@docend:model.init.label|
+               the PDF for better identification. |@docend:pdf.init.name|
+           label: |@doc:pdf.init.label| Label of the PDF, if None is given, it will be the name. |@docend:pdf.init.label|
 
         Returns:
             `tf.Tensor`: the values matching the (broadcasted) shapes of the input
