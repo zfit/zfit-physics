@@ -2,15 +2,26 @@ bumpversion>=0.5.3
 coverage>=4.5.1
 coverage>=4.5.1
 flake8>=3.5.0
+jupyter-sphinx
+myst-nb
 numba-stats @ git+https://github.com/HDembinski/numba-stats.git  # CMSShape not yet released (expected 1.8.0)
 pip>=9.0.1
 pre-commit
+pydata-sphinx-theme>=0.9  # new dark theme configuration
 pytest>=3.4.2
 pytest-cov
 pytest-rerunfailures>=6
 pytest-runner>=2.11.1
-Sphinx>=1.7.1
-sphinx_bootstrap_theme
+seed_intersphinx_mapping
+setupext-janitor
+Sphinx>=3.5.4
+sphinx-autodoc-typehints
+sphinx-copybutton
+sphinx-panels
+sphinx_togglebutton
+sphinxcontrib-applehelp<1.0.8  # needs sphinx>=0.5, why are we still stuck at <0.5?
+sphinxcontrib-images
+sphinxcontrib-youtube>=1.0.0,<1.2.0
 tox>=2.9.1
 twine>=1.10.0
 twine
