@@ -1,19 +1,19 @@
-#!/usr/bin/env python
-
 """The setup script."""
-import os
+
+from __future__ import annotations
+
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-here = os.path.abspath(os.path.dirname(__file__))
-
-with open(os.path.join(here, "requirements.txt"), encoding="utf-8") as requirements_file:
+here = Path(__file__).parent.resolve()
+with Path(here / "requirements.txt").open(encoding="utf-8") as requirements_file:
     requirements = requirements_file.read().splitlines()
 
-with open(os.path.join(here, "requirements_dev.txt"), encoding="utf-8") as requirements_dev_file:
+with Path(here / "requirements_dev.txt").open(encoding="utf-8") as requirements_dev_file:
     dev_requirements = requirements_dev_file.read().splitlines()
 
-with open(os.path.join(here, "README.rst"), encoding="utf-8") as readme_file:
+with Path(here / "README.rst").open(encoding="utf-8") as readme_file:
     readme = readme_file.read()
 
 setup(

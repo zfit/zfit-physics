@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import tensorflow as tf
 import zfit
@@ -49,9 +49,10 @@ class ErfExp(zfit.pdf.BasePDF):
         n: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         *,
-        extended: Optional[ztyping.ExtendedInputType] = False,
-        norm: Optional[ztyping.NormInputType] = None,
+        extended: ztyping.ExtendedInputType | None = False,
+        norm: ztyping.NormInputType | None = None,
         name: str = "ErfExp",
+        label: str | None = None,
     ):
         """ErfExp PDF, the product of a complementary error function and an exponential function.
 
@@ -86,9 +87,10 @@ class ErfExp(zfit.pdf.BasePDF):
                or label of
                the PDF for better identification.
                Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
+            label: |@doc:pdf.init.label| A human readable label to identify the PDF. |@docend:pdf.init.label|
         """
         params = {"mu": mu, "beta": beta, "gamma": gamma, "n": n}
-        super().__init__(obs=obs, params=params, extended=extended, norm=norm)
+        super().__init__(obs=obs, params=params, extended=extended, norm=norm, name=name, label=label)
 
     def _unnormalized_pdf(self, x):
         mu = self.params["mu"]

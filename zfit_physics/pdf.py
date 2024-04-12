@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .models.pdf_argus import Argus
 from .models.pdf_cmsshape import CMSShape
 from .models.pdf_cruijff import Cruijff

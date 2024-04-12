@@ -1,20 +1,25 @@
-.. zfit-physics documentation master file, created by
-   sphinx-quickstart on Sat Mar 30 23:00:08 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
-Welcome to zfit-physics's documentation!
-========================================
+Welcome to zfit-physics
+=======================
+
+zfit-physics is a package that provides physics-related functionality to zfit. It is not a standalone package but requires `zfit <https://zfit.readthedocs.io/en/latest/>`_ to be installed.
+
+It can be installed via pip:
+
+.. code-block:: bash
+
+    pip install zfit-physics
+
+or via conda:
+
+.. code-block:: bash
+
+    conda install -c conda-forge zfit-physics
+
+PDF documentation
+-----------------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    api/static/zfit_physics.pdf

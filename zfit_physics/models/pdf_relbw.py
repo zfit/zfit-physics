@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import numpy as np
 import tensorflow as tf
@@ -40,7 +40,7 @@ class RelativisticBreitWigner(zfit.pdf.BasePDF):
         gamma: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         name: str = "RelativisticBreitWigner",
-        extended: Optional[ztyping.ParamTypeInput] = None,
+        extended: ztyping.ParamTypeInput | None = None,
     ):
         """Relativistic Breit-Wigner distribution.
 
@@ -50,7 +50,7 @@ class RelativisticBreitWigner(zfit.pdf.BasePDF):
             m: the average value
             gamma: the width of the distribution
         """
-        params = dict(m=m, gamma=gamma)
+        params = {"m": m, "gamma": gamma}
         super().__init__(obs=obs, params=params, name=name, extended=extended)
 
     def _unnormalized_pdf(self, x: tf.Tensor) -> tf.Tensor:
@@ -116,8 +116,7 @@ def relbw_cdf_func(x, m, gamma):
     norm = z.to_complex(-1) ** (1.0 / 4.0) * k / (2.0 * alpha * m**3)
 
     cdf_ = shape * norm
-    cdf_ = z.to_real(cdf_)
-    return cdf_
+    return z.to_real(cdf_)
 
 
 def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
@@ -131,6 +130,7 @@ def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
     Returns:
         The calculated integral.
     """
+    del model
     lower, upper = limits.rect_limits
     lower_cdf = relbw_cdf_func(x=lower, m=params["m"], gamma=params["gamma"])
     upper_cdf = relbw_cdf_func(x=upper, m=params["m"], gamma=params["gamma"])
