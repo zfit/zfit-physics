@@ -48,12 +48,15 @@ def argus_func(
 class Argus(zfit.pdf.BasePDF):
     def __init__(
         self,
-        obs: ztyping.ObsTypeInput,
+        *,
         m0,
         c,
         p,
-        name: str = "ArgusPDF",
+        obs: ztyping.ObsTypeInput,
         extended: ztyping.ParamTypeInput | None = None,
+        norm: ztyping.NormTypeInput = None,
+        name: str = "ArgusPDF",
+        label: str | None = None,
     ):
         r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle
         in a continuous background.
@@ -71,29 +74,49 @@ class Argus(zfit.pdf.BasePDF):
         The implementation follows the `RooFit version <https://root.cern.ch/doc/master/classRooArgusBG.html>`_
 
         Args:
-            obs: Observable the PDF is defined on
+            obs: |@doc:pdf.init.obs| Observables of the
+               model. This will be used as the default space of the PDF and,
+               if not given explicitly, as the normalization range.
+
+               The default space is used for example in the sample method: if no
+               sampling limits are given, the default space is used.
+
+               The observables are not equal to the domain as it does not restrict or
+               truncate the model outside this range. |@docend:pdf.init.obs|
             m0: Maximal energetically allowed mass, cutoff
             c: Shape parameter; "peakiness" of the distribution
             p: Generalization of the ARGUS shape, for p = 0.5, the normal ARGUS shape is recovered
+            extended: |@doc:pdf.init.extended| The overall yield of the PDF.
+               If this is parameter-like, it will be used as the yield,
+               the expected number of events, and the PDF will be extended.
+               An extended PDF has additional functionality, such as the
+               ``ext_*`` methods and the ``counts`` (for binned PDFs). |@docend:pdf.init.extended|
+            norm: |@doc:pdf.init.norm| Normalization of the PDF.
+               By default, this is the same as the default space of the PDF. |@docend:pdf.init.norm|
+            name: |@doc:pdf.init.name| Human-readable name
+               or label of
+               the PDF for better identification. |@docend:pdf.init.name|
+           label: |@doc:pdf.init.label| Label of the PDF, if None is given, it will be the name. |@docend:pdf.init.label|
 
         Returns:
             `tf.Tensor`: the values matching the (broadcasted) shapes of the input
         """
         params = {"m0": m0, "c": c, "p": p}
-        super().__init__(obs=obs, name=name, params=params, extended=extended)
+        super().__init__(obs=obs, name=name, params=params, extended=extended, norm=norm, label=label)
 
     _N_OBS = 1
 
-    def _unnormalized_pdf(self, x):
+    @zfit.supports()
+    def _unnormalized_pdf(self, x, params):
         """
         Calculation of ARGUS PDF value
         (Docs: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.argus.html)
         """
-        m = zfit.z.unstack_x(x)
+        m = x[0]
 
-        m0 = self.params["m0"]
-        c = self.params["c"]
-        p = self.params["p"]
+        m0 = params["m0"]
+        c = params["c"]
+        p = params["p"]
         return argus_func(m, m0, c, p)
 
 

@@ -32,7 +32,6 @@ def tsallis_pdf_func(x, m, t, n):
     elif run.numeric_checks:
         tf.debugging.assert_greater(n, znp.array(2.0), message="n > 2 is required")
 
-    x = z.unstack_x(x)
     mt = znp.hypot(m, x)
     nt = n * t
     c = (n - 1) * (n - 2) / (nt * (nt + (n - 2) * m))
@@ -103,6 +102,7 @@ class Tsallis(zfit.pdf.BasePDF):
         extended: ztyping.ExtendedInputType | None = None,
         norm: ztyping.NormInputType | None = None,
         name: str = "Tsallis",
+        label: str | None = None,
     ):
         """Tsallis-Hagedorn PDF.
 
@@ -138,6 +138,10 @@ class Tsallis(zfit.pdf.BasePDF):
                or label of
                the PDF for better identification.
                Has no programmatical functional purpose as identification. |@docend:pdf.init.name|
+            label: |@doc:pdf.init.label| Human-readable name
+                or label of
+                the PDF for a better description, to be used with plots etc.
+                Has no programmatical functional purpose as identification. |@docend:pdf.init.label|
         """
         if run.executing_eagerly():
             if n <= 2:
@@ -147,12 +151,14 @@ class Tsallis(zfit.pdf.BasePDF):
             tf.debugging.assert_greater(n, znp.asarray(2.0), message="n > 2 is required")
 
         params = {"m": m, "t": t, "n": n}
-        super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm)
+        super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm, label=label)
 
-    def _unnormalized_pdf(self, x: tf.Tensor) -> tf.Tensor:
-        m = self.params["m"]
-        t = self.params["t"]
-        n = self.params["n"]
+    @zfit.supports()
+    def _unnormalized_pdf(self, x: tf.Tensor, params) -> tf.Tensor:
+        m = params["m"]
+        t = params["t"]
+        n = params["n"]
+        x = x[0]
         return tsallis_pdf_func(x=x, m=m, t=t, n=n)
 
 

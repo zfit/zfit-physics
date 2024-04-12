@@ -23,7 +23,6 @@ def relbw_pdf_func(x, m, gamma):
     Notes:
         Based on code from this [github gist](https://gist.github.com/andrewfowlie/cd0ed7e6c96f7c9e88f85eb3b9665b97#file-bw-py-L87-L110)
     """
-    x = z.unstack_x(x)
     alpha = gamma / m
     gamma2 = m**2 * (1.0 + alpha**2) ** 0.5
     k = 2.0 ** (3.0 / 2.0) * m**2 * alpha * gamma2 / (np.pi * (m**2 + gamma2) ** 0.5)
@@ -39,8 +38,11 @@ class RelativisticBreitWigner(zfit.pdf.BasePDF):
         m: ztyping.ParamTypeInput,
         gamma: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
-        name: str = "RelativisticBreitWigner",
+        *,
         extended: ztyping.ParamTypeInput | None = None,
+        norm: ztyping.NormTypeInput | None = None,
+        name: str = "RelativisticBreitWigner",
+        label: str | None = None,
     ):
         """Relativistic Breit-Wigner distribution.
 
@@ -49,11 +51,35 @@ class RelativisticBreitWigner(zfit.pdf.BasePDF):
         Args:
             m: the average value
             gamma: the width of the distribution
+            obs: |@doc:pdf.init.obs| Observables of the
+               model. This will be used as the default space of the PDF and,
+               if not given explicitly, as the normalization range.
+
+               The default space is used for example in the sample method: if no
+               sampling limits are given, the default space is used.
+
+               The observables are not equal to the domain as it does not restrict or
+               truncate the model outside this range. |@docend:pdf.init.obs|
+            extended: |@doc:pdf.init.extended| The overall yield of the PDF.
+               If this is parameter-like, it will be used as the yield,
+               the expected number of events, and the PDF will be extended.
+               An extended PDF has additional functionality, such as the
+               ``ext_*`` methods and the ``counts`` (for binned PDFs). |@docend:pdf.init.extended|
+            norm: |@doc:pdf.init.norm| Normalization of the PDF.
+               By default, this is the same as the default space of the PDF. |@docend:pdf.init.norm|
+            name: |@doc:pdf.init.name| Name of the PDF.
+               Maybe has implications on the serialization and deserialization of the PDF.
+               For a human-readable name, use the label. |@docend:pdf.init.name|
+            label: |@doc:pdf.init.label| Human-readable name
+                or label of
+                the PDF for a better description, to be used with plots etc.
+                Has no programmatical functional purpose as identification. |@docend:pdf.init.label|
         """
         params = {"m": m, "gamma": gamma}
-        super().__init__(obs=obs, params=params, name=name, extended=extended)
+        super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm, label=label)
 
-    def _unnormalized_pdf(self, x: tf.Tensor) -> tf.Tensor:
+    @zfit.supports()
+    def _unnormalized_pdf(self, x: tf.Tensor, params) -> tf.Tensor:
         """Calculate the PDF at value(s) x.
 
         Args:
@@ -62,7 +88,10 @@ class RelativisticBreitWigner(zfit.pdf.BasePDF):
         Returns:
             `tf.Tensor`: The value(s) of the unnormalized PDF at x.
         """
-        return relbw_pdf_func(x, m=self.params["m"], gamma=self.params["gamma"])
+        m = params["m"]
+        gamma = params["gamma"]
+        x = x[0]
+        return relbw_pdf_func(x, m=m, gamma=gamma)
 
 
 @z.function(wraps="tensor")

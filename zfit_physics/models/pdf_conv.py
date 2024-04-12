@@ -20,7 +20,9 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         ndraws: int = 20000,
         *,
         extended: ztyping.ParamTypeInput | None = None,
+        norm: ztyping.NormTypeInput = None,
         name: str = "Convolution",
+        label: str | None = None,
         experimental_pdf_normalized=False,
     ):
         """Numerical Convolution pdf of *func* convoluted with *kernel*.
@@ -31,12 +33,28 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
             kernel (:py:class:`zfit.pdf.BasePDF`): PDF with `pdf` method that takes x acting as the kernel.
                 Here x is a `Data` with the obs and limits of *limits*.
             limits (:py:class:`zfit.Space`): Limits for the numerical integration.
-            obs (:py:class:`zfit.Space`): Observables of the class
-            extended: If the PDF should be extended, i.e. a yield.
-            ndraws (int): Number of draws for the mc integration
-            name (str): Human readable name of the pdf
+            obs: |@doc:pdf.init.obs| Observables of the
+               model. This will be used as the default space of the PDF and,
+               if not given explicitly, as the normalization range.
+
+               The default space is used for example in the sample method: if no
+               sampling limits are given, the default space is used.
+
+               The observables are not equal to the domain as it does not restrict or
+               truncate the model outside this range. |@docend:pdf.init.obs|
+            extended: |@doc:pdf.init.extended| The overall yield of the PDF.
+               If this is parameter-like, it will be used as the yield,
+               the expected number of events, and the PDF will be extended.
+               An extended PDF has additional functionality, such as the
+               ``ext_*`` methods and the ``counts`` (for binned PDFs). |@docend:pdf.init.extended|
+            norm: |@doc:pdf.init.norm| Normalization of the PDF.
+               By default, this is the same as the default space of the PDF. |@docend:pdf.init.norm|
+            name: |@doc:pdf.init.name| Human-readable name
+               or label of
+               the PDF for better identification. |@docend:pdf.init.name|
+           label: |@doc:pdf.init.label| Label of the PDF, if None is given, it will be the name. |@docend:pdf.init.label|
         """
-        super().__init__(obs=obs, pdfs=[func, kernel], params={}, name=name, extended=extended)
+        super().__init__(obs=obs, pdfs=[func, kernel], params={}, name=name, extended=extended, norm=norm, label=label)
         limits = self._check_input_limits(limits=limits)
         if limits.n_limits == 0:
             msg = "obs have to have limits to define where to integrate over."

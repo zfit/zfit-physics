@@ -18,17 +18,37 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         data: tf.Tensor,
         bandwidth: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
-        name: str = "GaussianKDE",
         *,
         extended: ztyping.ParamTypeInput | None = None,
+        norm: ztyping.NormTypeInput = None,
+        name: str = "GaussianKDE",
+        label: str | None = None,
     ):
         """Gaussian Kernel Density Estimation using Silverman's rule of thumb.
 
         Args:
             data: Data points to build a kernel around
             bandwidth: sigmas for the covariance matrix of the multivariate gaussian
-            obs:
-            name: Name of the PDF
+            obs: |@doc:pdf.init.obs| Observables of the
+               model. This will be used as the default space of the PDF and,
+               if not given explicitly, as the normalization range.
+
+               The default space is used for example in the sample method: if no
+               sampling limits are given, the default space is used.
+
+               The observables are not equal to the domain as it does not restrict or
+               truncate the model outside this range. |@docend:pdf.init.obs|
+            extended: |@doc:pdf.init.extended| The overall yield of the PDF.
+               If this is parameter-like, it will be used as the yield,
+               the expected number of events, and the PDF will be extended.
+               An extended PDF has additional functionality, such as the
+               ``ext_*`` methods and the ``counts`` (for binned PDFs). |@docend:pdf.init.extended|
+            norm: |@doc:pdf.init.norm| Normalization of the PDF.
+               By default, this is the same as the default space of the PDF. |@docend:pdf.init.norm|
+            name: |@doc:pdf.init.name| Human-readable name
+               or label of
+               the PDF for better identification. |@docend:pdf.init.name|
+           label: |@doc:pdf.init.label| Label of the PDF, if None is given, it will be the name. |@docend:pdf.init.label|
         """
         dtype = zfit.settings.ztypes.float
         if isinstance(data, zfit.core.interfaces.ZfitData):
@@ -80,6 +100,8 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
             obs=obs,
             name=name,
             extended=extended,
+            norm=norm,
+            label=label,
         )
 
     # @zfit.supports()
