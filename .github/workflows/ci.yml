@@ -42,10 +42,7 @@ jobs:
         with:
           environment-name: test-env
           create-args: >-
-            python=${{ matrix.python-version }}
-            pip
-            ${{ if ne(matrix.python-version, '3.12') }}
-            root
+            python=${{ matrix.python-version }} pip ${{ matrix.python-version != '3.12' && 'root' || '' }}
       - name: Install Python dependencies
         run: |
           which python
@@ -74,10 +71,7 @@ jobs:
         with:
           environment-name: test-env
           create-args: >-
-            python=${{ matrix.python-version }}
-            pip
-            ${{ if ne(matrix.python-version, '3.12') }}
-            root
+            python=${{ matrix.python-version }} pip ${{ matrix.python-version != '3.12' && 'root' || '' }}
       - name: Install Python dependencies
         run: |
           which python
