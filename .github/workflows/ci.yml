@@ -51,7 +51,7 @@ jobs:
           python -V
           python -m pip install uv
           python -m uv pip install -e ".[dev]"
-          python -m  uv pip install git+https://github.com/HDembinski/numba-stats.git
+          python -m uv pip install git+https://github.com/HDembinski/numba-stats.git
       - name: Test with pytest
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
@@ -82,7 +82,7 @@ jobs:
           python -V
           python -m pip install uv
           python -m uv pip install -e ".[dev]"
-          python -m  uv pip install git+https://github.com/HDembinski/numba-stats.git
+          python -m uv pip install git+https://github.com/HDembinski/numba-stats.git
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=0
