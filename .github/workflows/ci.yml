@@ -33,7 +33,7 @@ jobs:
       max-parallel: 4
       fail-fast: False
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11" ]
+        python-version: [ "3,9", "3.10", "3.11", "3.12" ]
     name: JIT compiled tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +51,7 @@ jobs:
           python -V
           python -m pip install uv
           python -m uv pip install -e ".[dev]"
+          python -m  uv pip install git+https://github.com/HDembinski/numba-stats.git
       - name: Test with pytest
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
@@ -63,7 +64,7 @@ jobs:
       max-parallel: 4
       fail-fast: False
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11" ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
     name: Eager mode tests for Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
@@ -81,6 +82,7 @@ jobs:
           python -V
           python -m pip install uv
           python -m uv pip install -e ".[dev]"
+          python -m  uv pip install git+https://github.com/HDembinski/numba-stats.git
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=0

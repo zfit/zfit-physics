@@ -12,6 +12,7 @@ Major Features and Improvements
 - added ErfExp PDF
 - added Novosibirsk PDF
 - added Tsallis PDF
+- upgrade to zfit>=0.20, support Python 3.9-3.12
 
 Breaking changes
 ------------------
