@@ -1,8 +1,6 @@
 *********
 Changelog
 *********
-Develop
-=======
 
 0.7.0 (13 Apr 2024)
 ===================
@@ -15,25 +13,6 @@ Major Features and Improvements
 - added Novosibirsk PDF
 - added Tsallis PDF
 - upgrade to zfit>=0.20, support Python 3.9-3.12
-
-Breaking changes
-------------------
-
-Depreceations
--------------
-
-
-Bug fixes and small changes
----------------------------
-
-Experimental
-------------
-
-Requirement changes
--------------------
-
-Thanks
-------
 
 0.6.1 (8 Oct 2023)
 ===================
