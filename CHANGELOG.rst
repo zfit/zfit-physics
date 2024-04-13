@@ -4,6 +4,8 @@ Changelog
 Develop
 =======
 
+0.7.0 (13 Apr 2024)
+===================
 
 Major Features and Improvements
 -------------------------------
