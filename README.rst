@@ -16,6 +16,8 @@ zfit physics
 .. |zfit_logo| image:: docs/images/zfit-fin_400x168.png
    :target: https://github.com/zfit/zfit
    :alt: zfit logo
+**`Documentation (zfit-physics) <https://zfit-physics.readthedocs.io/en/latest/>`_
+** `zfit documentation <https://zfit.readthedocs.io/en/latest/>`_
 
 Tools and models to extend `zfit <https://github.com/zfit/zfit>`_.
 The structure of this package is still in flow, so before opening any PR
