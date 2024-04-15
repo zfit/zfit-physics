@@ -17,6 +17,11 @@ zfit physics
    :target: https://github.com/zfit/zfit
    :alt: zfit logo
 
+Documentation
+ - `as part of zfit (zfit-physics part) <https://zfit.readthedocs.io/en/latest/user_api/zfit.pdf.html#physics-pdfs>`_
+ - `zfit-physics (only) <https://zfit-physics.readthedocs.io/en/latest/>`_
+
+
 Tools and models to extend `zfit <https://github.com/zfit/zfit>`_.
 The structure of this package is still in flow, so before opening any PR
 you may want to open an issue to discuss how your proposed functionality will fit into `zfit-physics`.
