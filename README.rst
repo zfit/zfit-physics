@@ -22,13 +22,13 @@ Documentation
  - `zfit-physics (only) <https://zfit-physics.readthedocs.io/en/latest/>`_
 
 
-Tools and models to extend `zfit <https://github.com/zfit/zfit>`_.
+Tools and models to extend `zfit <https://github.com/zfit/zfit>`_ with physics specific content.
+Feel free to add your models, tools, etc. to this package.
+
+
 The structure of this package is still in flow, so before opening any PR
 you may want to open an issue to discuss how your proposed functionality will fit into `zfit-physics`.
 
-It is currently under heavy development. Use it to test currently experimental
-features. It offers a similar structure are zfit and will in the future be
-simply integrated into the zfit namespace (given that zfit-physics is installed).
 
 What's new
 =============
@@ -39,19 +39,23 @@ Installing
 ==========
 
 
-zfit-physics is available on pip. If possible, use a conda or virtual environment and do:
+zfit-physics is available on pip and conda-forge (and LCG and spack).
+Installation with pip has the newest stable version, and therefore recommended, while others may take weeks to months to update.
+If possible, use a conda or virtual environment and do:
 
 
 .. code-block:: console
 
     $ pip install zfit-physics
 
+(add a -U to update to the newest version)
 
-For the newest development version, you can install the version from git with
+Installation with conda-forge is also possible:
 
 .. code-block:: console
 
-   $ pip install git+https://github.com/zfit/zfit-physics
+    $ conda install -c conda-forge zfit-physics
+
 
 Contact
 =======
@@ -59,6 +63,4 @@ Contact
 You can contact us directly:
  - via e-mail: zfit@physik.uzh.ch
  - join our `Gitter channel <https://gitter.im/zfit/zfit>`_
-
-Contributors
-============
+ - open an `issue on GitHub <https://github.com/zfit/zfit-physics/issues/new/choose>`_ or `join the discussions <https://github.com/zfit/zfit-physics/discussions>`_ there
