@@ -2,7 +2,8 @@
 
 import numpy as np
 import pytest
-import ROOT
+
+ROOT = pytest.importorskip("ROOT")
 import tensorflow as tf
 import zfit
 from zfit.core.testing import tester
