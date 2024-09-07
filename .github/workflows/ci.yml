@@ -42,14 +42,13 @@ jobs:
         with:
           environment-name: test-env
           create-args: >-
-            python=${{ matrix.python-version }} pip ${{ matrix.python-version != '3.12' && 'root' || '' }}
+            python=${{ matrix.python-version }} pip root
       - name: Install Python dependencies
         run: |
           which python
           python -V
           python -m pip install uv
           python -m uv pip install -e ".[dev]"
-          python -m uv pip install git+https://github.com/HDembinski/numba-stats.git
       - name: Test with pytest
         run: |
           coverage run --source=. --omit=".tox/*" --branch -m pytest .
@@ -71,14 +70,13 @@ jobs:
         with:
           environment-name: test-env
           create-args: >-
-            python=${{ matrix.python-version }} pip ${{ matrix.python-version != '3.12' && 'root' || '' }}
+            python=${{ matrix.python-version }} pip root
       - name: Install Python dependencies
         run: |
           which python
           python -V
           python -m pip install uv
           python -m uv pip install -e ".[dev]"
-          python -m uv pip install git+https://github.com/HDembinski/numba-stats.git
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=0
