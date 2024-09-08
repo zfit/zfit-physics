@@ -27,7 +27,7 @@ def create_novosibirsk(mu, sigma, lambd, limits):
     novosibirsk = zphys.pdf.Novosibirsk(mu=mu, sigma=sigma, lambd=lambd, obs=obs)
     return novosibirsk, obs
 
-@pytest.mark.skip
+
 def create_and_eval_root_novosibirsk_and_integral(mu, sigma, lambd, limits, x, lower, upper):
     obs = ROOT.RooRealVar("obs", "obs", *limits)
     peak = ROOT.RooRealVar("peak", "peak", mu)
