@@ -56,36 +56,36 @@ def LnBK(ni, x):
 
 
 @z.function(wraps="tensor")
-def LogEval(d, l, alpha, beta, delta):
+def LogEval(d, lam, alpha, beta, delta):
     # d = x-mu
     # sq2pi = znp.sqrt(2*znp.arccos(-1))
     gamma = alpha  # znp.sqrt(alpha*alpha-beta*beta)
     dg = delta * gamma
     thing = delta * delta + d * d
-    logno = l * znp.log(gamma / delta) - logsq2pi - LnBK(l, dg)
+    logno = lam * znp.log(gamma / delta) - logsq2pi - LnBK(lam, dg)
 
     return znp.exp(
-        logno + beta * d + (0.5 - l) * (znp.log(alpha) - 0.5 * znp.log(thing)) + LnBK(l - 0.5, alpha * znp.sqrt(thing))
+        logno + beta * d + (0.5 - lam) * (znp.log(alpha) - 0.5 * znp.log(thing)) + LnBK(lam - 0.5, alpha * znp.sqrt(thing))
     )  # + znp.log(znp.abs(beta)+0.0001) )
 
 
 @z.function(wraps="tensor")
-def diff_eval(d, l, alpha, beta, delta):
+def diff_eval(d, lam, alpha, beta, delta):
     gamma = alpha
     dg = delta * gamma
     thing = delta * delta + d * d
     sqthing = znp.sqrt(thing)
     alphasq = alpha * sqthing
-    no = znp.power(gamma / delta, l) / BK(l, dg) * sq2pi_inv
-    ns1 = 0.5 - l
+    no = znp.power(gamma / delta, lam) / BK(lam, dg) * sq2pi_inv
+    ns1 = 0.5 - lam
 
     return (
         no
         * znp.power(alpha, ns1)
-        * znp.power(thing, l / 2.0 - 1.25)
+        * znp.power(thing, lam / 2.0 - 1.25)
         * (
-            -d * alphasq * (BK(l - 1.5, alphasq) + BK(l + 0.5, alphasq))
-            + (2.0 * (beta * thing + d * l) - d) * BK(ns1, alphasq)
+            -d * alphasq * (BK(lam - 1.5, alphasq) + BK(lam + 0.5, alphasq))
+            + (2.0 * (beta * thing + d * lam) - d) * BK(ns1, alphasq)
         )
         * znp.exp(beta * d)
         / 2.0
@@ -113,7 +113,7 @@ def diff_eval(d, l, alpha, beta, delta):
 
 
 @z.function(wraps="tensor")
-def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
+def ipatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
     r"""Calculate the Ipatia2 PDF value.
 
     Args:
@@ -138,7 +138,7 @@ def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
     cond2 = d > a2sigma
     conda1 = zeta != 0.0
     # cond1
-    phi = BK(l + 1.0, zeta) / BK(l, zeta)
+    phi = BK(lam + 1.0, zeta) / BK(lam, zeta)
     cons1 = sigma / znp.sqrt(phi)
     alpha = cons0 / cons1  # *znp.sqrt((1 - fb*fb))
     beta = fb  # *alpha
@@ -149,14 +149,14 @@ def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
     # printf("beta %e\n",beta)
     # printf("delta %e\n",delta)
 
-    k1 = LogEval(-asigma, l, alpha, beta, delta)
-    k2 = diff_eval(-asigma, l, alpha, beta, delta)
+    k1 = LogEval(-asigma, lam, alpha, beta, delta)
+    k2 = diff_eval(-asigma, lam, alpha, beta, delta)
     B = -asigma + n * k1 / k2
     A = k1 * znp.power(B + asigma, n)
     out1 = A * znp.power(B - d, -n)
 
-    k1 = LogEval(a2sigma, l, alpha, beta, delta)
-    k2 = diff_eval(a2sigma, l, alpha, beta, delta)
+    k1 = LogEval(a2sigma, lam, alpha, beta, delta)
+    k2 = diff_eval(a2sigma, lam, alpha, beta, delta)
 
     B = -a2sigma - n2 * k1 / k2
 
@@ -164,14 +164,14 @@ def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
 
     out2 = A * znp.power(B + d, -n2)
 
-    out3 = LogEval(d, l, alpha, beta, delta)
+    out3 = LogEval(d, lam, alpha, beta, delta)
     outa1 = znp.where(cond1, out1, znp.where(cond2, out2, out3))
 
     # cond2 = d > a2sigma
     beta = fb
-    cons1 = -2.0 * l
+    cons1 = -2.0 * lam
     # delta = sigma
-    condx = l <= -1.0
+    condx = lam <= -1.0
 
     delta1 = sigma * znp.sqrt(-2 + cons1)
 
@@ -183,21 +183,21 @@ def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
     # cond1
     cons1 = znp.exp(-beta * asigma)
     phi = 1.0 + asigma * asigma / delta2
-    k1 = cons1 * znp.power(phi, l - 0.5)
-    k2 = beta * k1 - cons1 * (l - 0.5) * znp.power(phi, l - 1.5) * 2 * asigma / delta2
+    k1 = cons1 * znp.power(phi, lam - 0.5)
+    k2 = beta * k1 - cons1 * (lam - 0.5) * znp.power(phi, lam - 1.5) * 2 * asigma / delta2
     B = -asigma + n * k1 / k2
     A = k1 * znp.power(B + asigma, n)
     outz1 = A * znp.power(B - d, -n)
     # cond2
     cons1 = znp.exp(beta * a2sigma)
     phi = 1.0 + a2sigma * a2sigma / delta2
-    k1 = cons1 * znp.power(phi, l - 0.5)
-    k2 = beta * k1 + cons1 * (l - 0.5) * znp.power(phi, l - 1.5) * 2.0 * a2sigma / delta2
+    k1 = cons1 * znp.power(phi, lam - 0.5)
+    k2 = beta * k1 + cons1 * (lam - 0.5) * znp.power(phi, lam - 1.5) * 2.0 * a2sigma / delta2
     B = -a2sigma - n2 * k1 / k2
     A = k1 * znp.power(B + a2sigma, n2)
     outz2 = A * znp.power(B + d, -n2)
     # cond3
-    outz3 = znp.exp(beta * d) * znp.power(1.0 + d * d / delta2, l - 0.5)
+    outz3 = znp.exp(beta * d) * znp.power(1.0 + d * d / delta2, lam - 0.5)
 
     outa2 = znp.where(cond1, outz1, znp.where(cond2, outz2, outz3))
 

@@ -36,6 +36,7 @@ Major Features and Improvements
 - added ErfExp PDF
 - added Novosibirsk PDF
 - added Tsallis PDF
+- added Ipatia2 PDF
 - upgrade to zfit>=0.20, support Python 3.9-3.12
 
 0.6.1 (8 Oct 2023)
