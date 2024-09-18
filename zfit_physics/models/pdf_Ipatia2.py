@@ -65,7 +65,10 @@ def LogEval(d, lam, alpha, beta, delta):
     logno = lam * znp.log(gamma / delta) - logsq2pi - LnBK(lam, dg)
 
     return znp.exp(
-        logno + beta * d + (0.5 - lam) * (znp.log(alpha) - 0.5 * znp.log(thing)) + LnBK(lam - 0.5, alpha * znp.sqrt(thing))
+        logno
+        + beta * d
+        + (0.5 - lam) * (znp.log(alpha) - 0.5 * znp.log(thing))
+        + LnBK(lam - 0.5, alpha * znp.sqrt(thing))
     )  # + znp.log(znp.abs(beta)+0.0001) )
 
 
