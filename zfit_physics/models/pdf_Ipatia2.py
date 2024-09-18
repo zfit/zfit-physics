@@ -229,7 +229,7 @@ class Ipatia2(zfit.pdf.BasePDF):
         r""""
         The implementation follows the `RooHypatia2 <https://root.cern.ch/doc/master/RooHypatia2_8cxx_source.html>`_
 
-        RooHypatia2 is the two-sided version of the Hypatia distribution described in https://arxiv.org/abs/1312.5000.
+        Ipatia2 is the two-sided version of the Hypatia distribution described in https://arxiv.org/abs/1312.5000.
 
         It has a hyperbolic core of a crystal-ball-like function :math:` G ` and two tails:
 
