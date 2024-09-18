@@ -3,10 +3,9 @@ from __future__ import annotations
 import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
-
 import zfit
-from zfit import z
 import zfit.z.numpy as znp
+from zfit import z
 from zfit.util import ztyping
 
 sq2pi = np.sqrt(2.0 * np.arccos(-1.0))
@@ -17,9 +16,7 @@ log_de_2 = np.log(2.0)
 
 @z.function(wraps="tensor")
 def bessel_kv_func(nu, x):
-    """
-    Modified Bessel function of the 2nd kind
-    """
+    """Modified Bessel function of the 2nd kind."""
     return tfp.math.bessel_kve(nu, x) / znp.exp(znp.abs(x))
 
 
@@ -68,10 +65,7 @@ def LogEval(d, l, alpha, beta, delta):
     logno = l * znp.log(gamma / delta) - logsq2pi - LnBK(l, dg)
 
     return znp.exp(
-        logno
-        + beta * d
-        + (0.5 - l) * (znp.log(alpha) - 0.5 * znp.log(thing))
-        + LnBK(l - 0.5, alpha * znp.sqrt(thing))
+        logno + beta * d + (0.5 - l) * (znp.log(alpha) - 0.5 * znp.log(thing)) + LnBK(l - 0.5, alpha * znp.sqrt(thing))
     )  # + znp.log(znp.abs(beta)+0.0001) )
 
 
@@ -120,8 +114,7 @@ def diff_eval(d, l, alpha, beta, delta):
 
 @z.function(wraps="tensor")
 def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
-    r"""
-    Calculate the Ipatia2 PDF value.
+    r"""Calculate the Ipatia2 PDF value.
 
     Args:
         x: Value(s) to evaluate the PDF at.
@@ -144,7 +137,6 @@ def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
     cond1 = d < -asigma
     cond2 = d > a2sigma
     conda1 = zeta != 0.0
-    conda2 = l < 0.0
     # cond1
     phi = BK(l + 1.0, zeta) / BK(l, zeta)
     cons1 = sigma / znp.sqrt(phi)
@@ -200,9 +192,7 @@ def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
     cons1 = znp.exp(beta * a2sigma)
     phi = 1.0 + a2sigma * a2sigma / delta2
     k1 = cons1 * znp.power(phi, l - 0.5)
-    k2 = (
-        beta * k1 + cons1 * (l - 0.5) * znp.power(phi, l - 1.5) * 2.0 * a2sigma / delta2
-    )
+    k2 = beta * k1 + cons1 * (l - 0.5) * znp.power(phi, l - 1.5) * 2.0 * a2sigma / delta2
     B = -a2sigma - n2 * k1 / k2
     A = k1 * znp.power(B + a2sigma, n2)
     outz2 = A * znp.power(B + d, -n2)
@@ -211,9 +201,7 @@ def ipatia2_func(x, l, zeta, fb, mu, sigma, n, n2, a, a2):
 
     outa2 = znp.where(cond1, outz1, znp.where(cond2, outz2, outz3))
 
-    out = znp.where(conda1, outa1, outa2)
-
-    return out
+    return znp.where(conda1, outa1, outa2)
 
 
 class Ipatia2(zfit.pdf.BasePDF):
