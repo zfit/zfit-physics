@@ -116,8 +116,8 @@ def diff_eval(d, lam, alpha, beta, delta):
 
 
 @z.function(wraps="tensor")
-def ipatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
-    r"""Calculate the Ipatia2 PDF value.
+def hypatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
+    r"""Calculate the Hypatia2 PDF value.
 
     Args:
         x: Value(s) to evaluate the PDF at.
@@ -131,7 +131,7 @@ def ipatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
         beta: Asymmetry parameter :math` \beta `. Symmetric case is :math` \beta = 0 `, choose values close to zero.
         zeta: Shape parameter (:math` \zeta >= 0 `).
     Returns:
-        `tf.Tensor`: The value of the Ipatia2 PDF at x.
+        `tf.Tensor`: The value of the Hypatia2 PDF at x.
     """
     d = x - mu
     cons0 = znp.sqrt(zeta)
@@ -207,7 +207,7 @@ def ipatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
     return znp.where(conda1, outa1, outa2)
 
 
-class Ipatia2(zfit.pdf.BasePDF):
+class Hypatia2(zfit.pdf.BasePDF):
     def __init__(
         self,
         obs: ztyping.ObsTypeInput,
@@ -223,13 +223,13 @@ class Ipatia2(zfit.pdf.BasePDF):
         *,
         extended: ztyping.ExtendedInputType | None = None,
         norm: ztyping.NormInputType | None = None,
-        name: str = "Ipatia2",
+        name: str = "Hypatia2",
         label: str | None = None,
     ):
         r""""
         The implementation follows the `RooHypatia2 <https://root.cern.ch/doc/master/RooHypatia2_8cxx_source.html>`_
 
-        Ipatia2 is the two-sided version of the Hypatia distribution described in https://arxiv.org/abs/1312.5000.
+        Hypatia2 is the two-sided version of the Hypatia distribution described in https://arxiv.org/abs/1312.5000.
 
         It has a hyperbolic core of a crystal-ball-like function :math:` G ` and two tails:
 
@@ -327,4 +327,4 @@ class Ipatia2(zfit.pdf.BasePDF):
         lam = params["lam"]
         beta = params["beta"]
         zeta = params["zeta"]
-        return ipatia2_func(x0, lam, zeta, beta, mu, sigma, nl, nr, al, ar)
+        return hypatia2_func(x0, lam, zeta, beta, mu, sigma, nl, nr, al, ar)
