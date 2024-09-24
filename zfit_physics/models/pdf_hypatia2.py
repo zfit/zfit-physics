@@ -42,7 +42,13 @@ def BK(ni, x):
     second_cond = tf.logical_and(tf.logical_and(x < 1.0e-04, nu > 0.0), nu < 55)
     third_cond = tf.logical_and(x < 0.1, nu >= 55)
     cond = tf.logical_or(first_cond, tf.logical_or(second_cond, third_cond))
-    return znp.where(cond, low_x_BK(nu, x), bessel_kv_func(nu, x))
+    return z.safe_where(
+        cond,
+        lambda t: low_x_BK(nu, t),
+        lambda t: bessel_kv_func(nu, t),
+        values=x,
+        value_safer=lambda t: znp.ones_like(t),
+    )
 
 
 @z.function(wraps="tensor")
@@ -52,7 +58,13 @@ def LnBK(ni, x):
     second_cond = tf.logical_and(tf.logical_and(x < 1.0e-04, nu > 0.0), nu < 55)
     third_cond = tf.logical_and(x < 0.1, nu >= 55)
     cond = tf.logical_or(first_cond, tf.logical_or(second_cond, third_cond))
-    return znp.where(cond, low_x_LnBK(nu, x), znp.log(bessel_kv_func(nu, x)))
+    return z.safe_where(
+        cond,
+        lambda t: low_x_LnBK(nu, t),
+        lambda t: znp.log(bessel_kv_func(nu, t)),
+        values=x,
+        value_safer=lambda t: znp.ones_like(t),
+    )
 
 
 @z.function(wraps="tensor")
