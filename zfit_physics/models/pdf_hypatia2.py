@@ -102,14 +102,14 @@ def hypatia2_func(x, mu, sigma, lambd, zeta, beta, alphal, nl, alphar, nr):
     Args:
         x: Value(s) to evaluate the PDF at.
         mu: Location parameter. Shifts the distribution left/right.
-        sigma: Width parameter. If :math:` \beta = 0, \ \sigma ` is the RMS width.
-        alphal: Start of the left tail (:math` a \geq 0 `, to the left of the peak). Note that when setting :math` al = \sigma = 1 `, the tail region is to the left of :math` x = \mu - 1 `, so a should be positive.
-        nl: Shape parameter of left tail (:math` nl \ge 0 `). With :math` nr = 0 `, the function is constant.
+        sigma: Width parameter. If :math:` \\beta = 0, \\ \\sigma ` is the RMS width.
+        alphal: Start of the left tail (:math` a \\geq 0 `, to the left of the peak). Note that when setting :math` al = \\sigma = 1 `, the tail region is to the left of :math` x = \\mu - 1 `, so a should be positive.
+        nl: Shape parameter of left tail (:math` nl \\ge 0 `). With :math` nr = 0 `, the function is constant.
         alphar: Start of right tail.
-        nr: Shape parameter of right tail (:math` nr \ge 0 `). With :math` nr = 0 `, the function is constant.
-        lambd: Shape parameter. Note that :math` \lambda < 0 ` is required if :math` \zeta = 0 `.
-        beta: Asymmetry parameter :math` \beta `. Symmetric case is :math` \beta = 0 `, choose values close to zero.
-        zeta: Shape parameter (:math` \zeta >= 0 `).
+        nr: Shape parameter of right tail (:math` nr \\ge 0 `). With :math` nr = 0 `, the function is constant.
+        lambd: Shape parameter. Note that :math` \\lambda < 0 ` is required if :math` \\zeta = 0 `.
+        beta: Asymmetry parameter :math` \\beta `. Symmetric case is :math` \\beta = 0 `, choose values close to zero.
+        zeta: Shape parameter (:math` \\zeta >= 0 `).
     Returns:
         `tf.Tensor`: The value of the Hypatia2 PDF at x.
     """
@@ -207,41 +207,41 @@ class Hypatia2(zfit.pdf.BasePDF):
 
         .. math::
 
-            \mathrm{Hypatia2}(x, \mu, \sigma, \lambda, \zeta, \beta, alpha_l, n_l, alpha_r, n_r) =
-            \begin{cases}
-            \frac{ G(\mu - alpha_l \sigma, \mu, \sigma, \lambda, \zeta, \beta)                             }
-                { \left( 1 - \frac{x}{n_l G(\ldots)/G'(\ldots) - alpha_l\sigma } \right)^{n_l} }
-                & \text{if } \frac{x-\mu}{\sigma} < -alpha_l \
-            \left( (x-\mu)^2 + A^2_\lambda(\zeta)\sigma^2 \right)^{\frac{1}{2}\lambda-\frac{1}{4}} e^{\beta(x-\mu)} K_{\lambda-\frac{1}{2}}
-                \left( \zeta \sqrt{1+\left( \frac{x-\mu}{A_\lambda(\zeta)\sigma} \right)^2 } \right) \equiv G(x, \mu, \ldots)
-                & \text{otherwise} \
-            \frac{ G(\mu + alpha_r \sigma, \mu, \sigma, \lambda, \zeta, \beta)                               }
-                { \left( 1 - \frac{x}{-n_r G(\ldots)/G'(\ldots) - alpha_r\sigma } \right)^{n_r} }
-                & \text{if } \frac{x-\mu}{\sigma} > alpha_r \
-            \end{cases}
-            \f]
-            Here, ` K_\lambda ` are the modified Bessel functions of the second kind
+            \\mathrm{Hypatia2}(x;\\mu, \\sigma, \\lambda, \\zeta, \\beta, \\alpha_{L}, n_{L}, \\alpha_{R}, n_{R}) =
+            \\begin{cases}
+            \\frac{ G(\\mu - \\alpha_{L} \\sigma, \\mu, \\sigma, \\lambda, \\zeta, \\beta)                             }
+                { \\left( 1 - \\frac{x}{n_{L} G(\\ldots)/G'(\\ldots) - \\alpha_{L}\\sigma } \\right)^{n_{L}} }
+                & \\text{if } \\frac{x-\\mu}{\\sigma} < -\\alpha_{L} \\
+            \\left( (x-\\mu)^2 + A^2_\\lambda(\\zeta)\\sigma^2 \\right)^{\\frac{1}{2}\\lambda-\\frac{1}{4}} e^{\\beta(x-\\mu)} K_{\\lambda-\\frac{1}{2}}
+                \\left( \\zeta \\sqrt{1+\\left( \\frac{x-\\mu}{A_\\lambda(\\zeta)\\sigma} \\right)^2 } \\right) \\equiv G(x, \\mu, \\ldots)
+                & \\text{otherwise} \\
+            \\frac{ G(\\mu + \\alpha_{R} \\sigma, \\mu, \\sigma, \\lambda, \\zeta, \\beta)                               }
+                { \\left( 1 - \\frac{x}{-n_{R} G(\\ldots)/G'(\\ldots) - \\alpha_{R}\\sigma } \\right)^{n_{R}} }
+                & \\text{if } \\frac{x-\\mu}{\\sigma} > \\alpha_{R} \\
+            \\end{cases}
+            \\f]
+            Here, ` K_\\lambda ` are the modified Bessel functions of the second kind
             ("irregular modified cylindrical Bessel functions" from the gsl,
             "special Bessel functions of the third kind"),
-            and ` A^2_\lambda(\zeta) ` is a ratio of these:
-            \f[
-            A_\lambda^{2}(\zeta) = \frac{\zeta K_\lambda(\zeta)}{K_{\lambda+1}(\zeta)}
+            and ` A^2_\\lambda(\\zeta) ` is a ratio of these:
+            \\f[
+            A_\\lambda^{2}(\\zeta) = \\frac{\\zeta K_\\lambda(\\zeta)}{K_{\\lambda+1}(\\zeta)}
 
-        Note that unless the parameters :math:` alpha_l,\ alpha_r ` are very large, the function has non-hyperbolic tails. This requires
-        :math:` G ` to be strictly concave, *i.e.*, peaked, as otherwise the tails would yield imaginary numbers. Choosing :math:` \lambda,
-        \beta, \zeta ` inappropriately will therefore lead to evaluation errors.
+        Note that unless the parameters :math:` \\alpha_{L},\\ \\alpha_{R} ` are very large, the function has non-hyperbolic tails. This requires
+        :math:` G ` to be strictly concave, *i.e.*, peaked, as otherwise the tails would yield imaginary numbers. Choosing :math:` \\lambda,
+        \\beta, \\zeta ` inappropriately will therefore lead to evaluation errors.
 
         Further, the original paper establishes that to keep the tails from rising,
         .. math::
-            \begin{split}
-            \beta^2 &< \alpha^2 \
-            \Leftrightarrow \beta^2 &< \frac{\zeta^2}{\delta^2} = \frac{\zeta^2}{\sigma^2 A_{\lambda}^2(\zeta)}
-            \end{split}
+            \\begin{split}
+            \\beta^2 &< \\alpha^2 \\
+            \\Leftrightarrow \\beta^2 &< \\frac{\\zeta^2}{\\delta^2} = \\frac{\\zeta^2}{\\sigma^2 A_{\\lambda}^2(\\zeta)}
+            \\end{split}
         needs to be satisfied, unless the fit range is very restricted, because otherwise, the function rises in the tails.
 
 
-        In case of evaluation errors, it is advisable to choose very large values for :math:` alpha_l,\ alpha_r `, tweak the parameters of the core region to
-        make it concave, and re-enable the tails. Especially :math:` \beta ` needs to be close to zero.
+        In case of evaluation errors, it is advisable to choose very large values for :math:` \\alpha_{L},\\ \\alpha_{R} `, tweak the parameters of the core region to
+        make it concave, and re-enable the tails. Especially :math:` \\beta ` needs to be close to zero.
 
         Args:
             obs: |@doc:pdf.init.obs| Observables of the
@@ -254,14 +254,14 @@ class Hypatia2(zfit.pdf.BasePDF):
                The observables are not equal to the domain as it does not restrict or
                truncate the model outside this range. |@docend:pdf.init.obs|
             mu: Location parameter. Shifts the distribution left/right.
-            sigma: Width parameter. If :math:` \beta = 0, \ \sigma ` is the RMS width.
-            lambd: Shape parameter. Note that :math` \lambda < 0 ` is required if :math` \zeta = 0 `.
-            zeta: Shape parameter (:math` \zeta >= 0 `).
-            beta: Asymmetry parameter :math` \beta `. Symmetric case is :math` \beta = 0 `, choose values close to zero.
-            al: Start of the left tail (:math` a \geq 0 `, to the left of the peak). Note that when setting :math` al = \sigma = 1 `, the tail region is to the left of :math` x = \mu - 1 `, so a should be positive.
-            nl: Shape parameter of left tail (:math` nl \ge 0 `). With :math` nr = 0 `, the function is constant.
+            sigma: Width parameter. If :math:` \\beta = 0, \\ \\sigma ` is the RMS width.
+            lambd: Shape parameter. Note that :math` \\lambda < 0 ` is required if :math` \\zeta = 0 `.
+            zeta: Shape parameter (:math` \\zeta >= 0 `).
+            beta: Asymmetry parameter :math` \\beta `. Symmetric case is :math` \\beta = 0 `, choose values close to zero.
+            al: Start of the left tail (:math` a \\geq 0 `, to the left of the peak). Note that when setting :math` al = \\sigma = 1 `, the tail region is to the left of :math` x = \\mu - 1 `, so a should be positive.
+            nl: Shape parameter of left tail (:math` nl \\ge 0 `). With :math` nr = 0 `, the function is constant.
             ar: Start of right tail.
-            nr: Shape parameter of right tail (:math` nr \ge 0 `). With :math` nr = 0 `, the function is constant.
+            nr: Shape parameter of right tail (:math` nr \\ge 0 `). With :math` nr = 0 `, the function is constant.
             extended: |@doc:pdf.init.extended| The overall yield of the PDF.
                If this is parameter-like, it will be used as the yield,
                the expected number of events, and the PDF will be extended.
