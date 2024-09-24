@@ -22,7 +22,7 @@ nr_true = 0.1
 
 def create_hypatia2(mu, sigma, lambd, zeta, beta, al, nl, ar, nr, limits):
     obs = zfit.Space("obs1", limits)
-    hypatia2 = zphys.pdf.Hypatia2(mu=mu, sigma=sigma, lambd=lambd, zeta=zeta, beta=beta, al=al, nl=nl, ar=ar, nr=nr, obs=obs)
+    hypatia2 = zphys.pdf.Hypatia2(mu=mu, sigma=sigma, lambd=lambd, zeta=zeta, beta=beta, alphal=al, nl=nl, alphar=ar, nr=nr, obs=obs)
     return hypatia2, obs
 
 

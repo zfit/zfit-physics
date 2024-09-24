@@ -96,16 +96,16 @@ def diff_eval(d, lambd, alpha, beta, delta):
 
 
 @z.function(wraps="tensor")
-def hypatia2_func(x, mu, sigma, lambd, zeta, beta, al, nl, ar, nr):
+def hypatia2_func(x, mu, sigma, lambd, zeta, beta, alphal, nl, alphar, nr):
     r"""Calculate the Hypatia2 PDF value.
 
     Args:
         x: Value(s) to evaluate the PDF at.
         mu: Location parameter. Shifts the distribution left/right.
         sigma: Width parameter. If :math:` \beta = 0, \ \sigma ` is the RMS width.
-        al: Start of the left tail (:math` a \geq 0 `, to the left of the peak). Note that when setting :math` al = \sigma = 1 `, the tail region is to the left of :math` x = \mu - 1 `, so a should be positive.
+        alphal: Start of the left tail (:math` a \geq 0 `, to the left of the peak). Note that when setting :math` al = \sigma = 1 `, the tail region is to the left of :math` x = \mu - 1 `, so a should be positive.
         nl: Shape parameter of left tail (:math` nl \ge 0 `). With :math` nr = 0 `, the function is constant.
-        ar: Start of right tail.
+        alphar: Start of right tail.
         nr: Shape parameter of right tail (:math` nr \ge 0 `). With :math` nr = 0 `, the function is constant.
         lambd: Shape parameter. Note that :math` \lambda < 0 ` is required if :math` \zeta = 0 `.
         beta: Asymmetry parameter :math` \beta `. Symmetric case is :math` \beta = 0 `, choose values close to zero.
@@ -115,8 +115,8 @@ def hypatia2_func(x, mu, sigma, lambd, zeta, beta, al, nl, ar, nr):
     """
     d = x - mu
     cons0 = znp.sqrt(zeta)
-    alsigma = al * sigma
-    arsigma = ar * sigma
+    alsigma = alphal * sigma
+    arsigma = alphar * sigma
     cond1 = d < -alsigma
     cond2 = d > arsigma
     conda1 = zeta != 0.0
@@ -188,9 +188,9 @@ class Hypatia2(zfit.pdf.BasePDF):
         lambd: ztyping.ParamTypeInput,
         zeta: ztyping.ParamTypeInput,
         beta: ztyping.ParamTypeInput,
-        al: ztyping.ParamTypeInput,
+        alphal: ztyping.ParamTypeInput,
         nl: ztyping.ParamTypeInput,
-        ar: ztyping.ParamTypeInput,
+        alphar: ztyping.ParamTypeInput,
         nr: ztyping.ParamTypeInput,
         *,
         extended: ztyping.ExtendedInputType | None = None,
@@ -207,17 +207,17 @@ class Hypatia2(zfit.pdf.BasePDF):
 
         .. math::
 
-            \mathrm{Hypatia2}(x, \mu, \sigma, \lambda, \zeta, \beta, a_l, n_l, a_r, n_r) =
+            \mathrm{Hypatia2}(x, \mu, \sigma, \lambda, \zeta, \beta, alpha_l, n_l, alpha_r, n_r) =
             \begin{cases}
-            \frac{ G(\mu - a_l \sigma, \mu, \sigma, \lambda, \zeta, \beta)                             }
-                { \left( 1 - \frac{x}{n_l G(\ldots)/G'(\ldots) - a_l\sigma } \right)^{n_l} }
-                & \text{if } \frac{x-\mu}{\sigma} < -a_l \
+            \frac{ G(\mu - alpha_l \sigma, \mu, \sigma, \lambda, \zeta, \beta)                             }
+                { \left( 1 - \frac{x}{n_l G(\ldots)/G'(\ldots) - alpha_l\sigma } \right)^{n_l} }
+                & \text{if } \frac{x-\mu}{\sigma} < -alpha_l \
             \left( (x-\mu)^2 + A^2_\lambda(\zeta)\sigma^2 \right)^{\frac{1}{2}\lambda-\frac{1}{4}} e^{\beta(x-\mu)} K_{\lambda-\frac{1}{2}}
                 \left( \zeta \sqrt{1+\left( \frac{x-\mu}{A_\lambda(\zeta)\sigma} \right)^2 } \right) \equiv G(x, \mu, \ldots)
                 & \text{otherwise} \
-            \frac{ G(\mu + a_r \sigma, \mu, \sigma, \lambda, \zeta, \beta)                               }
-                { \left( 1 - \frac{x}{-n_r G(\ldots)/G'(\ldots) - a_r\sigma } \right)^{n_r} }
-                & \text{if } \frac{x-\mu}{\sigma} > a_r \
+            \frac{ G(\mu + alpha_r \sigma, \mu, \sigma, \lambda, \zeta, \beta)                               }
+                { \left( 1 - \frac{x}{-n_r G(\ldots)/G'(\ldots) - alpha_r\sigma } \right)^{n_r} }
+                & \text{if } \frac{x-\mu}{\sigma} > alpha_r \
             \end{cases}
             \f]
             Here, ` K_\lambda ` are the modified Bessel functions of the second kind
@@ -227,7 +227,7 @@ class Hypatia2(zfit.pdf.BasePDF):
             \f[
             A_\lambda^{2}(\zeta) = \frac{\zeta K_\lambda(\zeta)}{K_{\lambda+1}(\zeta)}
 
-        Note that unless the parameters :math:` a_l,\ a_r ` are very large, the function has non-hyperbolic tails. This requires
+        Note that unless the parameters :math:` alpha_l,\ alpha_r ` are very large, the function has non-hyperbolic tails. This requires
         :math:` G ` to be strictly concave, *i.e.*, peaked, as otherwise the tails would yield imaginary numbers. Choosing :math:` \lambda,
         \beta, \zeta ` inappropriately will therefore lead to evaluation errors.
 
@@ -240,7 +240,7 @@ class Hypatia2(zfit.pdf.BasePDF):
         needs to be satisfied, unless the fit range is very restricted, because otherwise, the function rises in the tails.
 
 
-        In case of evaluation errors, it is advisable to choose very large values for :math:` a_l,\ a_r `, tweak the parameters of the core region to
+        In case of evaluation errors, it is advisable to choose very large values for :math:` alpha_l,\ alpha_r `, tweak the parameters of the core region to
         make it concave, and re-enable the tails. Especially :math:` \beta ` needs to be close to zero.
 
         Args:
@@ -280,9 +280,9 @@ class Hypatia2(zfit.pdf.BasePDF):
             "lambd": lambd,
             "zeta": zeta,
             "beta": beta,
-            "al": al,
+            "alphal": alphal,
             "nl": nl,
-            "ar": ar,
+            "alphar": alphar,
             "nr": nr,
         }
         super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm, label=label)
@@ -295,9 +295,9 @@ class Hypatia2(zfit.pdf.BasePDF):
         lambd = params["lambd"]
         zeta = params["zeta"]
         beta = params["beta"]
-        al = params["al"]
+        alphal = params["alphal"]
         nl = params["nl"]
-        ar = params["ar"]
+        alphar = params["alphar"]
         nr = params["nr"]
 
-        return hypatia2_func(x0, mu, sigma, lambd, zeta, beta, al, nl, ar, nr)
+        return hypatia2_func(x0, mu, sigma, lambd, zeta, beta, alphal, nl, alphar, nr)
