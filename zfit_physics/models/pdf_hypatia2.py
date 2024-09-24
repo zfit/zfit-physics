@@ -56,67 +56,47 @@ def LnBK(ni, x):
 
 
 @z.function(wraps="tensor")
-def LogEval(d, lam, alpha, beta, delta):
+def LogEval(d, lambd, alpha, beta, delta):
     # d = x-mu
     # sq2pi = znp.sqrt(2*znp.arccos(-1))
     gamma = alpha  # znp.sqrt(alpha*alpha-beta*beta)
     dg = delta * gamma
     thing = delta * delta + d * d
-    logno = lam * znp.log(gamma / delta) - logsq2pi - LnBK(lam, dg)
+    logno = lambd * znp.log(gamma / delta) - logsq2pi - LnBK(lambd, dg)
 
     return znp.exp(
         logno
         + beta * d
-        + (0.5 - lam) * (znp.log(alpha) - 0.5 * znp.log(thing))
-        + LnBK(lam - 0.5, alpha * znp.sqrt(thing))
+        + (0.5 - lambd) * (znp.log(alpha) - 0.5 * znp.log(thing))
+        + LnBK(lambd - 0.5, alpha * znp.sqrt(thing))
     )  # + znp.log(znp.abs(beta)+0.0001) )
 
 
 @z.function(wraps="tensor")
-def diff_eval(d, lam, alpha, beta, delta):
+def diff_eval(d, lambd, alpha, beta, delta):
     gamma = alpha
     dg = delta * gamma
     thing = delta * delta + d * d
     sqthing = znp.sqrt(thing)
     alphasq = alpha * sqthing
-    no = znp.power(gamma / delta, lam) / BK(lam, dg) * sq2pi_inv
-    ns1 = 0.5 - lam
+    no = znp.power(gamma / delta, lambd) / BK(lambd, dg) * sq2pi_inv
+    ns1 = 0.5 - lambd
 
     return (
         no
         * znp.power(alpha, ns1)
-        * znp.power(thing, lam / 2.0 - 1.25)
+        * znp.power(thing, lambd / 2.0 - 1.25)
         * (
-            -d * alphasq * (BK(lam - 1.5, alphasq) + BK(lam + 0.5, alphasq))
-            + (2.0 * (beta * thing + d * lam) - d) * BK(ns1, alphasq)
+            -d * alphasq * (BK(lambd - 1.5, alphasq) + BK(lambd + 0.5, alphasq))
+            + (2.0 * (beta * thing + d * lambd) - d) * BK(ns1, alphasq)
         )
         * znp.exp(beta * d)
         / 2.0
     )
 
 
-# def Gauss2F1(a, b, c, x):
-#     largey = tfp.math.hypergeometric.hyp2f1_small_argument(c - a, b, c, 1 - 1 / (1 - x)) / znp.power(1 - x, b)
-#     smally = tfp.math.hypergeometric.hyp2f1_small_argument(a, b, c, x)
-#     return znp.where(znp.abs(x) <= 1, smally, largey)
-#     # if (znp.abs(x) <= 1):
-#     # return ROOT.Math.hyperg(a, b, c, x)
-
-#     # ROOT::Math::hyperg(a,b,c,x)
-#     # else:
-#     # return ROOT.Math.hyperg(c - a, b, c, 1 - 1 / (1 - x)) / znp.power(1 - x, b)
-#     # return largey
-
-
-# def stIntegral(d1, delta, l):
-#     # printf("::::: %e %e %e\n", d1,delta, l)
-#     return d1 * Gauss2F1(0.5, 0.5 - l, 3.0 / 2, -d1 * d1 / (delta * delta))
-#     # printf(":::Done\n")
-#     # return out
-
-
 @z.function(wraps="tensor")
-def hypatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
+def hypatia2_func(x, mu, sigma, lambd, zeta, beta, al, nl, ar, nr):
     r"""Calculate the Hypatia2 PDF value.
 
     Args:
@@ -127,7 +107,7 @@ def hypatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
         nl: Shape parameter of left tail (:math` nl \ge 0 `). With :math` nr = 0 `, the function is constant.
         ar: Start of right tail.
         nr: Shape parameter of right tail (:math` nr \ge 0 `). With :math` nr = 0 `, the function is constant.
-        lam: Shape parameter. Note that :math` \lambda < 0 ` is required if :math` \zeta = 0 `.
+        lambd: Shape parameter. Note that :math` \lambda < 0 ` is required if :math` \zeta = 0 `.
         beta: Asymmetry parameter :math` \beta `. Symmetric case is :math` \beta = 0 `, choose values close to zero.
         zeta: Shape parameter (:math` \zeta >= 0 `).
     Returns:
@@ -135,72 +115,64 @@ def hypatia2_func(x, lam, zeta, fb, mu, sigma, n, n2, a, a2):
     """
     d = x - mu
     cons0 = znp.sqrt(zeta)
-    asigma = a * sigma
-    a2sigma = a2 * sigma
-    cond1 = d < -asigma
-    cond2 = d > a2sigma
+    alsigma = al * sigma
+    arsigma = ar * sigma
+    cond1 = d < -alsigma
+    cond2 = d > arsigma
     conda1 = zeta != 0.0
     # cond1
-    phi = BK(lam + 1.0, zeta) / BK(lam, zeta)
+    phi = BK(lambd + 1.0, zeta) / BK(lambd, zeta)
     cons1 = sigma / znp.sqrt(phi)
-    alpha = cons0 / cons1  # *znp.sqrt((1 - fb*fb))
-    beta = fb  # *alpha
+    alpha = cons0 / cons1  # *znp.sqrt((1 - beta*beta))
     delta = cons0 * cons1
 
-    # printf("-_-\n")
-    # printf("alpha %e\n",alpha)
-    # printf("beta %e\n",beta)
-    # printf("delta %e\n",delta)
+    k1 = LogEval(-alsigma, lambd, alpha, beta, delta)
+    k2 = diff_eval(-alsigma, lambd, alpha, beta, delta)
+    B = -alsigma + nl * k1 / k2
+    A = k1 * znp.power(B + alsigma, nl)
+    out1 = A * znp.power(B - d, -nl)
 
-    k1 = LogEval(-asigma, lam, alpha, beta, delta)
-    k2 = diff_eval(-asigma, lam, alpha, beta, delta)
-    B = -asigma + n * k1 / k2
-    A = k1 * znp.power(B + asigma, n)
-    out1 = A * znp.power(B - d, -n)
+    k1 = LogEval(arsigma, lambd, alpha, beta, delta)
+    k2 = diff_eval(arsigma, lambd, alpha, beta, delta)
 
-    k1 = LogEval(a2sigma, lam, alpha, beta, delta)
-    k2 = diff_eval(a2sigma, lam, alpha, beta, delta)
+    B = -arsigma - nr * k1 / k2
 
-    B = -a2sigma - n2 * k1 / k2
+    A = k1 * znp.power(B + arsigma, nr)
 
-    A = k1 * znp.power(B + a2sigma, n2)
+    out2 = A * znp.power(B + d, -nr)
 
-    out2 = A * znp.power(B + d, -n2)
-
-    out3 = LogEval(d, lam, alpha, beta, delta)
+    out3 = LogEval(d, lambd, alpha, beta, delta)
     outa1 = znp.where(cond1, out1, znp.where(cond2, out2, out3))
 
-    # cond2 = d > a2sigma
-    beta = fb
-    cons1 = -2.0 * lam
+    # cond2 = d > arsigma
+    cons1 = -2.0 * lambd
     # delta = sigma
-    condx = lam <= -1.0
+    condx = lambd <= -1.0
 
     delta1 = sigma * znp.sqrt(-2 + cons1)
 
-    # printf("WARNING: zeta ==0 and l > -1 ==> not defined rms. Changing the meaning of sigma, but I keep fitting anyway\n")
     delta2 = sigma
     delta = znp.where(condx, delta1, delta2)
 
     delta2 = delta * delta
     # cond1
-    cons1 = znp.exp(-beta * asigma)
-    phi = 1.0 + asigma * asigma / delta2
-    k1 = cons1 * znp.power(phi, lam - 0.5)
-    k2 = beta * k1 - cons1 * (lam - 0.5) * znp.power(phi, lam - 1.5) * 2 * asigma / delta2
-    B = -asigma + n * k1 / k2
-    A = k1 * znp.power(B + asigma, n)
-    outz1 = A * znp.power(B - d, -n)
+    cons1 = znp.exp(-beta * alsigma)
+    phi = 1.0 + alsigma * alsigma / delta2
+    k1 = cons1 * znp.power(phi, lambd - 0.5)
+    k2 = beta * k1 - cons1 * (lambd - 0.5) * znp.power(phi, lambd - 1.5) * 2 * alsigma / delta2
+    B = -alsigma + nl * k1 / k2
+    A = k1 * znp.power(B + alsigma, nl)
+    outz1 = A * znp.power(B - d, -nl)
     # cond2
-    cons1 = znp.exp(beta * a2sigma)
-    phi = 1.0 + a2sigma * a2sigma / delta2
-    k1 = cons1 * znp.power(phi, lam - 0.5)
-    k2 = beta * k1 + cons1 * (lam - 0.5) * znp.power(phi, lam - 1.5) * 2.0 * a2sigma / delta2
-    B = -a2sigma - n2 * k1 / k2
-    A = k1 * znp.power(B + a2sigma, n2)
-    outz2 = A * znp.power(B + d, -n2)
+    cons1 = znp.exp(beta * arsigma)
+    phi = 1.0 + arsigma * arsigma / delta2
+    k1 = cons1 * znp.power(phi, lambd - 0.5)
+    k2 = beta * k1 + cons1 * (lambd - 0.5) * znp.power(phi, lambd - 1.5) * 2.0 * arsigma / delta2
+    B = -arsigma - nr * k1 / k2
+    A = k1 * znp.power(B + arsigma, nr)
+    outz2 = A * znp.power(B + d, -nr)
     # cond3
-    outz3 = znp.exp(beta * d) * znp.power(1.0 + d * d / delta2, lam - 0.5)
+    outz3 = znp.exp(beta * d) * znp.power(1.0 + d * d / delta2, lambd - 0.5)
 
     outa2 = znp.where(cond1, outz1, znp.where(cond2, outz2, outz3))
 
@@ -213,13 +185,13 @@ class Hypatia2(zfit.pdf.BasePDF):
         obs: ztyping.ObsTypeInput,
         mu: ztyping.ParamTypeInput,
         sigma: ztyping.ParamTypeInput,
-        nl: ztyping.ParamTypeInput,
-        al: ztyping.ParamTypeInput,
-        nr: ztyping.ParamTypeInput,
-        ar: ztyping.ParamTypeInput,
-        lam: ztyping.ParamTypeInput,
-        beta: ztyping.ParamTypeInput,
+        lambd: ztyping.ParamTypeInput,
         zeta: ztyping.ParamTypeInput,
+        beta: ztyping.ParamTypeInput,
+        al: ztyping.ParamTypeInput,
+        nl: ztyping.ParamTypeInput,
+        ar: ztyping.ParamTypeInput,
+        nr: ztyping.ParamTypeInput,
         *,
         extended: ztyping.ExtendedInputType | None = None,
         norm: ztyping.NormInputType | None = None,
@@ -283,13 +255,13 @@ class Hypatia2(zfit.pdf.BasePDF):
                truncate the model outside this range. |@docend:pdf.init.obs|
             mu: Location parameter. Shifts the distribution left/right.
             sigma: Width parameter. If :math:` \beta = 0, \ \sigma ` is the RMS width.
+            lambd: Shape parameter. Note that :math` \lambda < 0 ` is required if :math` \zeta = 0 `.
+            zeta: Shape parameter (:math` \zeta >= 0 `).
+            beta: Asymmetry parameter :math` \beta `. Symmetric case is :math` \beta = 0 `, choose values close to zero.
             al: Start of the left tail (:math` a \geq 0 `, to the left of the peak). Note that when setting :math` al = \sigma = 1 `, the tail region is to the left of :math` x = \mu - 1 `, so a should be positive.
             nl: Shape parameter of left tail (:math` nl \ge 0 `). With :math` nr = 0 `, the function is constant.
             ar: Start of right tail.
             nr: Shape parameter of right tail (:math` nr \ge 0 `). With :math` nr = 0 `, the function is constant.
-            lam: Shape parameter. Note that :math` \lambda < 0 ` is required if :math` \zeta = 0 `.
-            beta: Asymmetry parameter :math` \beta `. Symmetric case is :math` \beta = 0 `, choose values close to zero.
-            zeta: Shape parameter (:math` \zeta >= 0 `).
             extended: |@doc:pdf.init.extended| The overall yield of the PDF.
                If this is parameter-like, it will be used as the yield,
                the expected number of events, and the PDF will be extended.
@@ -305,13 +277,13 @@ class Hypatia2(zfit.pdf.BasePDF):
         params = {
             "mu": mu,
             "sigma": sigma,
-            "nl": nl,
-            "al": al,
-            "nr": nr,
-            "ar": ar,
-            "lam": lam,
-            "beta": beta,
+            "lambd": lambd,
             "zeta": zeta,
+            "beta": beta,
+            "al": al,
+            "nl": nl,
+            "ar": ar,
+            "nr": nr,
         }
         super().__init__(obs=obs, params=params, name=name, extended=extended, norm=norm, label=label)
 
@@ -320,11 +292,12 @@ class Hypatia2(zfit.pdf.BasePDF):
         x0 = x[0]
         mu = params["mu"]
         sigma = params["sigma"]
-        nl = params["nl"]
-        al = params["al"]
-        nr = params["nr"]
-        ar = params["ar"]
-        lam = params["lam"]
-        beta = params["beta"]
+        lambd = params["lambd"]
         zeta = params["zeta"]
-        return hypatia2_func(x0, lam, zeta, beta, mu, sigma, nl, nr, al, ar)
+        beta = params["beta"]
+        al = params["al"]
+        nl = params["nl"]
+        ar = params["ar"]
+        nr = params["nr"]
+
+        return hypatia2_func(x0, mu, sigma, lambd, zeta, beta, al, nl, ar, nr)
