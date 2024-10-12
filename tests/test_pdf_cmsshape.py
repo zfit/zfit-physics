@@ -5,7 +5,6 @@ import pytest
 import tensorflow as tf
 import zfit
 from numba_stats import cmsshape as cmsshape_numba
-
 # Important, do the imports below
 from zfit.core.testing import tester
 
