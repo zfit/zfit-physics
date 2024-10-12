@@ -44,7 +44,7 @@ jobs:
         with:
           environment-name: test-env
           create-args: >-  # install ROOT only on non-windows
-            python=${{ matrix.python-version }} pip uv ${{ matrix.os != 'windows-latest' && 'root=6.30' || '' }}
+            python=${{ matrix.python-version }} pip uv ${{ matrix.os != 'windows-latest' && matrix.python-version !=  '3.12' && 'root=6.30' || '' }}
       - name: Install Python dependencies
         run: |
           which python
