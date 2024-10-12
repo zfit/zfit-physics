@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import zfit
 from zfit.util.container import convert_to_container
 
@@ -40,6 +41,7 @@ def nll_from_pyhf(data, pdf, *, params=None, init_pars=None, par_bounds=None, fi
         errordef = 0.5
 
     def nll_func(params, *, data=data, pdf=pdf, errordef=errordef):
+        params = np.asarray(params)
         return mle.twice_nll(params, data, pdf) * errordef
 
     return zfit.loss.SimpleLoss(func=nll_func, params=params, errordef=errordef)
