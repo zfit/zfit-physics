@@ -49,9 +49,9 @@ class Argus(zfit.pdf.BasePDF):
     def __init__(
         self,
         *,
-        m0,
-        c,
-        p,
+        m0: ztyping.ParamTypeInput,
+        c: ztyping.ParamTypeInput,
+        p: ztyping.ParamTypeInput,
         obs: ztyping.ObsTypeInput,
         extended: ztyping.ParamTypeInput | None = None,
         norm: ztyping.NormTypeInput = None,
