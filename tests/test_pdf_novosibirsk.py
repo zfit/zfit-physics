@@ -47,7 +47,7 @@ def create_and_eval_root_novosibirsk_and_integral(mu, sigma, lambd, limits, x, l
 
 @pytest.mark.parametrize("lambd_true", [1e-10, 0.5, 1.0, 10.0])
 def test_novosibirsk_pdf(lambd_true):
-    # Teat PDF here
+    # Test PDF here
     novosibirsk, _ = create_novosibirsk(mu=mu_true, sigma=sigma_true, lambd=lambd_true, limits=(50, 130))
     novosibirsk_root_90 = create_and_eval_root_novosibirsk_and_integral(
         mu=mu_true, sigma=sigma_true, lambd=lambd_true, limits=(50, 130), x=np.array([90.0]), lower=50, upper=130
