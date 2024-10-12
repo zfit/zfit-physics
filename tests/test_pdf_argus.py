@@ -4,7 +4,6 @@ import numpy as np
 import pytest
 import tensorflow as tf
 import zfit
-
 # Important, do the imports below
 from zfit.core.testing import tester
 
