@@ -24,6 +24,5 @@ sphinxcontrib-images
 sphinxcontrib-youtube>=1.0.0,<1.2.0
 tox>=2.9.1
 twine>=1.10.0
-twine
 watchdog>=0.8.3
 wheel>=0.29.0

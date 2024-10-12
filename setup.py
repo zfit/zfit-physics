@@ -20,7 +20,15 @@ setup(
     install_requires=requirements,
     long_description=readme,
     include_package_data=True,
-    packages=find_packages(include=["zfit_physics", "zfit_physics.models", "zfit_physics.unstable"]),
+    packages=find_packages(
+        include=[
+            "zfit_physics",
+            "zfit_physics.models",
+            "zfit_physics.unstable",
+            "zfit_physics.pyhf",
+            "zfit_physics.roofit",
+        ]
+    ),
     test_suite="tests",
     extras_require={"dev": dev_requirements},
     use_scm_version=True,
