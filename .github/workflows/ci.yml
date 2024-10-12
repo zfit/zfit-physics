@@ -50,7 +50,7 @@ jobs:
           which python
           python -V
           uv pip install -e ".[dev]"
-          uv pip install zfit@https://github.com/zfit/zfit
+          uv pip install zfit@git+https://github.com/zfit/zfit
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=${{ matrix.jit }}
