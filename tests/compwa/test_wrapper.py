@@ -19,7 +19,8 @@ def create_amplitude():
     )
 
     import ampform
-    from ampform.dynamics.builder import create_non_dynamic_with_ff, create_relativistic_breit_wigner_with_ff
+    from ampform.dynamics.builder import (
+        create_non_dynamic_with_ff, create_relativistic_breit_wigner_with_ff)
 
     model_builder = ampform.get_builder(reaction)
     model_builder.scalar_initial_state_mass = True
@@ -29,7 +30,8 @@ def create_amplitude():
         model_builder.set_dynamics(name, create_relativistic_breit_wigner_with_ff)
     model = model_builder.formulate()
 
-    from tensorwaves.data import TFPhaseSpaceGenerator, TFUniformRealNumberGenerator
+    from tensorwaves.data import (TFPhaseSpaceGenerator,
+                                  TFUniformRealNumberGenerator)
 
     rng = TFUniformRealNumberGenerator(seed=0)
     phsp_generator = TFPhaseSpaceGenerator(
@@ -61,12 +63,10 @@ def test_wrapper_simple():
     helicity_transformer = SympyDataTransformer.from_sympy(
         model.kinematic_variables, backend="numpy"
     )
-    from tensorwaves.data import (
-        IntensityDistributionGenerator,
-        TFPhaseSpaceGenerator,
-        TFUniformRealNumberGenerator,
-        TFWeightedPhaseSpaceGenerator,
-    )
+    from tensorwaves.data import (IntensityDistributionGenerator,
+                                  TFPhaseSpaceGenerator,
+                                  TFUniformRealNumberGenerator,
+                                  TFWeightedPhaseSpaceGenerator)
 
     rng = TFUniformRealNumberGenerator(seed=0)
     phsp_generator = TFPhaseSpaceGenerator(
