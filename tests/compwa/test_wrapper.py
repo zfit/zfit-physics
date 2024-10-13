@@ -122,9 +122,9 @@ def test_wrapper_simple():
     loss = zfit.loss.UnbinnedNLL(pdf, data_frame)
 
     # ok, here I was caught up playing around :) Minuit seems to perform the best though
-    # minimizer = zfit.minimize.Minuit(verbosity=7, gradient=True)
+    minimizer = zfit.minimize.Minuit(verbosity=7, gradient=True)
     # minimizer = zfit.minimize.Minuit(verbosity=7, gradient='zfit')
-    minimizer = zfit.minimize.ScipyLBFGSBV1(verbosity=8)
+    # minimizer = zfit.minimize.ScipyLBFGSBV1(verbosity=8)
     # minimizer = zfit.minimize.ScipyTrustKrylovV1(verbosity=8)
     # minimizer = zfit.minimize.NLoptMMAV1(verbosity=9)
     # minimizer = zfit.minimize.IpyoptV1(verbosity=8)
