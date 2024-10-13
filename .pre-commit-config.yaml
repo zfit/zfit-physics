@@ -19,6 +19,8 @@ repos:
       - id: fix-byte-order-marker
       - id: check-ast
 
+
+  - repo: https://github.com/PyCQA/isort
   - repo: local
     hooks:
       - id: doc arg replacer
@@ -37,8 +39,8 @@ repos:
       - id: python-no-eval
       - id: rst-directive-colons
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
+      rev: 5.13.2
+      hooks:
       - id: isort
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.17.0
