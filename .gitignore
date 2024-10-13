@@ -103,5 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 /.idea/sonarlint/*
+/src/zfit_physics/_version.py
 /tests/tfpwa/data/
 /src/zfit_physics/_version.py
