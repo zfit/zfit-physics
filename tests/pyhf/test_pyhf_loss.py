@@ -44,7 +44,7 @@ def test_nll_from_pyhf_simple():
     nll = zpyhf.loss.nll_from_pyhf(data, pdf)
 
     minimizer = zfit.minimize.Minuit(verbosity=7)
-    resultz = minimizer.minimize(nll)
+    # resultz = minimizer.minimize(nll)
 
     values, fmin = pyhf.infer.mle.fit(
         data, pdf, pdf.config.suggested_init(), pdf.config.suggested_bounds(), return_fitted_val=True
