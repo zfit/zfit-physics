@@ -4,7 +4,6 @@ import pytest
 
 def test_loss_registry():
     _ = pytest.importorskip("ROOT")
-    #  Copyright (c) 2024 zfit
 
     import zfit
 
@@ -39,6 +38,7 @@ def test_loss_registry():
 
     # create a loss function
     nll = gaussr.createNLL(datar)
+    nll_fromroofit = zroofit.loss.nll_from_roofit(nll)
 
     nllz = zfit.loss.UnbinnedNLL(model=gauss, data=data)
 
@@ -65,3 +65,6 @@ def test_loss_registry():
 
     assert result.params['mu']['value'] == pytest.approx(result4.params['mu']['value'], rel=1e-3)
     assert result.params['sigma']['value'] == pytest.approx(result4.params['sigma']['value'], rel=1e-3)
+
+    with zfit.param.set_values(params, params):
+        result5 = minimizerzgrad.minimize(nll_fromroofit)
