@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
+_ = pytest.importorskip("ROOT")
+
 
 def test_loss_registry():
-    _ = pytest.importorskip("ROOT")
-
     import zfit
 
     import zfit_physics.roofit as zroofit
@@ -24,7 +24,7 @@ def test_loss_registry():
     data = np.random.normal(loc=2.0, scale=3.0, size=ndraw)
     data = obs.filter(data)  # works also for pandas DataFrame
 
-    from ROOT import RooArgSet, RooDataSet, RooFit, RooGaussian, RooRealVar
+    from ROOT import RooArgSet, RooDataSet, RooGaussian, RooRealVar
 
     mur = RooRealVar("mu", "mu", 1.2, -4, 6)
     sigmar = RooRealVar("sigma", "sigma", 1.3, 0.5, 10)
