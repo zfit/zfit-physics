@@ -18,6 +18,6 @@ __credits__ = [
     # TODO(release): add more, Anton etc
 ]
 
-__all__ = ["pdf", "unstable"]
-
 from . import pdf, unstable
+
+__all__ = ["pdf", "unstable"]
