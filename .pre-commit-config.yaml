@@ -43,13 +43,13 @@ repos:
       hooks:
       - id: isort
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.17.0
+    rev: v3.18.0
     hooks:
       - id: pyupgrade
         args:
           - --py39-plus
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.5.0
+    rev: v2.7.0
     hooks:
       - id: setup-cfg-fmt
         args:
@@ -67,7 +67,7 @@ repos:
         args:
           - --py39-plus
   - repo: https://github.com/mgedmin/check-manifest
-    rev: '0.49'
+    rev: '0.50'
     hooks:
       - id: check-manifest
         stages:
