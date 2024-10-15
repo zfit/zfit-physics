@@ -6,11 +6,12 @@ from tf_pwa.config_loader import ConfigLoader
 
 import zfit_physics.tfpwa as ztfpwa
 
+this_dir = Path(__file__).parent
+
 
 def generate_phsp_mc():
     """Take three-body decay A->BCD for example, we generate a PhaseSpace MC sample and a toy data sample."""
 
-    this_dir = Path(__file__).parent
     datpath = (this_dir / "data")
     datpath.mkdir(exist_ok=True)
 
@@ -48,7 +49,7 @@ def generate_toy_from_phspMC(Ndata, data_file):
 
 def test_example1_tfpwa():
     # generate_phsp_mc()
-    config = ConfigLoader("config.yml")
+    config = ConfigLoader(this_dir / "config.yml")
     # Set init paramters. If not set, we will use random initial parameters
     config.set_params("gen_params.json")
 
