@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-import tf_pwa
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import tf_pwa
+
 import zfit
 
 

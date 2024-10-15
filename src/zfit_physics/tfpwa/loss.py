@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-import tf_pwa
+if TYPE_CHECKING:
+    import tf_pwa
+
 import zfit
 from zfit import z
 from zfit.core.interfaces import ZfitParameter
@@ -52,12 +54,14 @@ def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
 
 
 def _nll_from_fcn_or_false(fcn: tf_pwa.model.FCN, *, params: ParamType = None) -> zfit.loss.SimpleLoss | bool:
-    from tf_pwa.model import FCN
-
-    if isinstance(fcn, FCN):
-        return nll_from_fcn(fcn, params=params)
-    else:
+    try:
+        from tf_pwa.model import FCN
+    except ImportError:
         return False
+    else:
+        if isinstance(fcn, FCN):
+            return nll_from_fcn(fcn, params=params)
+    return False
 
 
 zfit.loss.SimpleLoss.register_convertable_loss(_nll_from_fcn_or_false, priority=50)
