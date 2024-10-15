@@ -6,7 +6,7 @@ __version__ = get_distribution(__name__).version
 
 __license__ = "BSD 3-Clause"
 __copyright__ = "Copyright 2019, zfit"
-__status__ = "Pre-alpha"
+__status__ = "Beta"
 
 __author__ = "zfit"
 __maintainer__ = "zfit"
@@ -18,6 +18,6 @@ __credits__ = [
     # TODO(release): add more, Anton etc
 ]
 
-__all__ = ["pdf"]
+__all__ = ["pdf", "unstable"]
 
 from . import pdf, unstable

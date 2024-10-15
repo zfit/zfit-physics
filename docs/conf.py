@@ -22,6 +22,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import yaml
+
 sys.path.insert(0, str(Path("..").resolve()))
 
 import zfit_physics
@@ -68,7 +70,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinxcontrib.youtube",
     "sphinx_panels",
-    "seed_intersphinx_mapping",
+    # "seed_intersphinx_mapping",
     "myst_nb",
     "sphinx_togglebutton",
 ]
@@ -114,6 +116,27 @@ autodoc_default_options = {
     "inherited-members": True,
 }
 autodoc_inherit_docstrings = False
+
+
+# add whitespaces to the internal commands. Maybe move to preprocessing?
+project_dir = Path(__file__).parents[1]
+rst_epilog = """
+.. |wzw| unicode:: U+200B
+   :trim:
+
+"""
+# ..  replace:: |wzw|
+#
+# .. |@docend| replace:: |wzw|
+# """
+with Path(project_dir / "utils/api/argdocs.yaml").open() as replfile:
+    replacements = yaml.load(replfile, Loader=yaml.Loader)
+for replacement_key in replacements:
+    rst_epilog += f"""
+.. |@doc:{replacement_key}| replace:: |wzw|
+
+.. |@docend:{replacement_key}| replace:: |wzw|
+"""
 
 # -- autosummary settings ---------------------------------------------
 

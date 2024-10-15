@@ -36,6 +36,18 @@ dependencies = ["zfit>=0.20"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
+
+tfpwa = ["tfpwa@git+https://github.com/jiangyi15/tf-pwa"]
+
+all = ["zfit-physics[tfpwa]"]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-rerunfailures",
+    "pytest-xdist",
+    "zfit-physics[all]",
+    "contextlib_chdir",  # backport of chdir from Python 3.11
+]
 dev = [
     "bumpversion>=0.5.3",
     "coverage>=4.5.1",
@@ -46,11 +58,7 @@ dev = [
     "pip>=9.0.1",
     "pre-commit",
     "pydata-sphinx-theme>=0.9", # new dark theme configuration
-    "pytest>=3.4.2",
-    "pytest-cov",
-    "pytest-rerunfailures>=6",
-    "pytest-runner>=2.11.1",
-    "pytest-xdist",
+    "pyyaml",
     "seed_intersphinx_mapping",
     "setupext-janitor",
     "Sphinx>=3.5.4",
@@ -65,6 +73,7 @@ dev = [
     "twine>=1.10.0",
     "watchdog>=0.8.3",
     "wheel>=0.29.0",
+    "zfit-physics[test]",
 ]
 
 [project.urls]
@@ -74,16 +83,11 @@ Repository = "https://github.com/zfit/zfit-physics"
 Discussions = "https://github.com/zfit/zfit-physics/discussions"
 Changelog = "https://github.com/zfit/zfit-physics/blob/main/CHANGELOG.rst"
 
-
-
-
-
-
-
-
 [tool.hatch]
 version.source = "vcs"
 build.hooks.vcs.version-file = "src/zfit_physics/_version.py"
+metadata.allow-direct-references = true
+
 
 [tool.pytest.ini_options]
 minversion = "6.0"

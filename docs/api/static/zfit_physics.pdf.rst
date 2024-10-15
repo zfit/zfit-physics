@@ -1,5 +1,5 @@
-pdf
-===
+PDFs
+=======================
 
 .. automodule:: zfit_physics.pdf
     :members:
