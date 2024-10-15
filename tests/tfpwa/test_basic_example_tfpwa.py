@@ -49,7 +49,7 @@ def generate_toy_from_phspMC(Ndata, data_file):
 
 def test_example1_tfpwa():
     # generate_phsp_mc()
-    config = ConfigLoader(this_dir / "config.yml")
+    config = ConfigLoader(str(this_dir / "config.yml"))
     # Set init paramters. If not set, we will use random initial parameters
     config.set_params("gen_params.json")
 
