@@ -23,3 +23,11 @@ PDF documentation
     :maxdepth: 2
 
     api/static/zfit_physics.pdf
+
+Extensions
+----------
+
+.. toctree::
+    :maxdepth: 1
+
+    api/static/zfit_physics.tfpwa.rst
