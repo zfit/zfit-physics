@@ -54,7 +54,7 @@ def generate_toy_from_phspMC(Ndata, data_file):
 
 
 def test_example1_tfpwa():
-    # generate_phsp_mc()
+    generate_phsp_mc()
     config = ConfigLoader(str(this_dir / "config.yml"))
     # Set init paramters. If not set, we will use random initial parameters
     config.set_params(str(this_dir / "gen_params.json"))
@@ -78,8 +78,8 @@ def test_example1_tfpwa():
         np.testing.assert_allclose(h, hz1, atol=0.001)
         np.testing.assert_allclose(g, gz1, atol=0.001)
 
-        # minimizer = zfit.minimize.Minuit(verbosity=7, **kwargs)
-        minimizer = zfit.minimize.ScipyBFGS(verbosity=7, **kwargs)  # performs best, seemingly
+        minimizer = zfit.minimize.Minuit(verbosity=7, **kwargs)
+        # minimizer = zfit.minimize.ScipyBFGS(verbosity=7, **kwargs)  # performs bestamba
         # minimizer = zfit.minimize.NLoptMMAV1(verbosity=7, **kwargs)
         # minimizer = zfit.minimize.ScipyLBFGSBV1(verbosity=7, **kwargs)
         # minimizer = zfit.minimize.NLoptLBFGSV1(verbosity=7, **kwargs)
