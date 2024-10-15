@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     import tf_pwa
 
 import zfit
-from zfit import z
+import zfit.z.numpy as znp
 from zfit.core.interfaces import ZfitParameter
 from zfit.util.container import convert_to_container
 
@@ -28,27 +28,30 @@ def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
         zfit.loss.SimpleLoss
     """
     params = params_from_fcn(fcn) if params is None else convert_to_container(params, container=list)
-    paramnames = [p.name for p in params]
+    paramnames = tuple(p.name for p in params)
 
-    @z.function(wraps="loss")
+    # something is off here: for the value, we need to pass the parameters as a dict
+    # but for the gradient/hesse, we need to pass them as a list
+    # TODO: activate if https://github.com/jiangyi15/tf-pwa/pull/153 is merged
+    # @z.function(wraps="loss")
     def eval_func(params):
         paramdict = make_paramdict(params)
         return fcn(paramdict)
 
-    @z.function(wraps="loss")
+    # TODO: activate if https://github.com/jiangyi15/tf-pwa/pull/153 is merged
+    # @z.function(wraps="loss")
     def eval_grad(params):
-        paramdict = make_paramdict(params)
-        return fcn.get_nll_grad(paramdict)[1]
+        return fcn.nll_grad(params)[1]
 
-    def make_paramdict(params):
-        return {p: v.value() for p, v in zip(paramnames, params)}
+    def make_paramdict(params, *, paramnames=paramnames):
+        return {p: znp.array(v.value()) for p, v in zip(paramnames, params)}
 
     return zfit.loss.SimpleLoss(
         func=eval_func,
         params=params,
         errordef=0.5,
         gradient=eval_grad,
-        hessian=lambda x: fcn.get_nll_grad_hessian(make_paramdict(x))[2],
+        hessian=lambda x: fcn.nll_grad_hessian(x)[2],
         jit=False,
     )
 

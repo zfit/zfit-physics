@@ -1,3 +1,5 @@
+import numpy as np
+
 try:
     from contextlib import chdir
 except ImportError:
@@ -52,7 +54,7 @@ def generate_toy_from_phspMC(Ndata, data_file):
 
 
 def test_example1_tfpwa():
-    generate_phsp_mc()
+    # generate_phsp_mc()
     config = ConfigLoader(str(this_dir / "config.yml"))
     # Set init paramters. If not set, we will use random initial parameters
     config.set_params(str(this_dir / "gen_params.json"))
@@ -62,17 +64,26 @@ def test_example1_tfpwa():
         nll = ztfpwa.loss.nll_from_fcn(fcn)
 
         initial_val = config.get_fcn()(config.get_params())
-        print(f"Initial value: {initial_val}")
         fit_result = config.fit(method="BFGS")
 
-        # kwargs = dict(gradient=True, tol=0.01)
-        print("initial NLL: ", nll.value())
+        kwargs = dict(gradient='zfit', tol=0.01)
         assert pytest.approx(nll.value(), 0.001) == initial_val
-        kwargs = dict(tol=0.01)
-        minimizer = zfit.minimize.Minuit(verbosity=0, **kwargs)
+        v, g, h = fcn.nll_grad_hessian()
+        vz, gz, hz = nll.value_gradient_hessian()
+        hz1 = nll.hessian()
+        gz1 = nll.gradient()
+        assert pytest.approx(v, 0.001) == vz
+        np.testing.assert_allclose(g, gz, atol=0.001)
+        np.testing.assert_allclose(h, hz, atol=0.001)
+        np.testing.assert_allclose(h, hz1, atol=0.001)
+        np.testing.assert_allclose(g, gz1, atol=0.001)
+
+        # minimizer = zfit.minimize.Minuit(verbosity=7, **kwargs)
+        minimizer = zfit.minimize.ScipyBFGS(verbosity=7, **kwargs)  # performs best, seemingly
         # minimizer = zfit.minimize.NLoptMMAV1(verbosity=7, **kwargs)
         # minimizer = zfit.minimize.ScipyLBFGSBV1(verbosity=7, **kwargs)
         # minimizer = zfit.minimize.NLoptLBFGSV1(verbosity=7, **kwargs)
+        # minimizer = zfit.minimize.IpyoptV1(verbosity=7, **kwargs)
         print(f"Minimizer {minimizer} start with {kwargs}")
         result = minimizer.minimize(fcn)
     print(f"Finished minimization with config:{kwargs}")
