@@ -31,3 +31,4 @@ Extensions
     :maxdepth: 1
 
     api/static/zfit_physics.tfpwa.rst
+    api/static/zfit_physics.roofit.rst
