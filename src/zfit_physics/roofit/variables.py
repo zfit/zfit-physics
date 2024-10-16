@@ -1,7 +1,17 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 
-def roo2z_param(v):
+import zfit
+
+if TYPE_CHECKING:
+    try:
+        import ROOT
+    except ImportError:
+        ROOT = None
+
+
+def roo2z_param(v: ROOT.RooRealVar) -> zfit.Parameter:
     """
     Converts a RooFit RooRealVar to a zfit parameter.
 
@@ -11,7 +21,6 @@ def roo2z_param(v):
     Returns:
         A zfit.Parameter object with properties copied from the RooFit variable.
     """
-    import zfit
 
     name = v.GetName()
     value = v.getVal()
