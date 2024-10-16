@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+import pytest
 
 import zfit_physics.compwa as zcompwa
 
@@ -38,14 +39,14 @@ def create_amplitude():
         initial_state_mass=reaction.initial_state[-1].mass,
         final_state_masses={i: p.mass for i, p in reaction.final_state.items()},
     )
-    phsp_momenta = phsp_generator.generate(100_000, rng)
-
-    unfolded_expression = model.expression.doit()
+    # phsp_momenta = phsp_generator.generate(100_000, rng)
+    #
+    # unfolded_expression = model.expression.doit()
 
     return model, reaction
 
 
-def test_wrapper_simple():
+def test_wrapper_simple_compwa():
     import zfit
 
     model, reaction = create_amplitude()
@@ -58,6 +59,7 @@ def test_wrapper_simple():
         parameters=model.parameter_defaults,
         backend="tensorflow",
     )
+
     from tensorwaves.data import SympyDataTransformer
 
     helicity_transformer = SympyDataTransformer.from_sympy(
@@ -90,6 +92,7 @@ def test_wrapper_simple():
     data = helicity_transformer(data_momenta)
     data_frame = pd.DataFrame(data)
     phsp_frame = pd.DataFrame(phsp)
+
     initial_parameters = {
         R"C_{J/\psi(1S) \to {f_{0}(1500)}_{0} \gamma_{+1}; f_{0}(1500) \to \pi^{0}_{0} \pi^{0}_{0}}": (
             1.0
@@ -104,31 +107,72 @@ def test_wrapper_simple():
         R"\Gamma_{f_{0}(1710)}": 0.3,
     }
 
+    free_parameter_symbols = [
+        symbol
+        for symbol in model.parameter_defaults
+        if symbol.name in set(initial_parameters)
+    ]
+    # cached_intensity_func, transform_to_cache = create_cached_function(
+    #     unfolded_expression,
+    #     parameters=model.parameter_defaults,
+    #     free_parameters=free_parameter_symbols,
+    #     backend="jax",
+    # )
+    # cached_data = transform_to_cache(data)
+    # cached_phsp = transform_to_cache(phsp)
+
     # data conversion
     # phsp_zfit = zfit.Data.from_pandas(phsp_frame)
     # data_zfit = zfit.Data.from_pandas(data_frame)
-    data_frame = data_frame.astype(np.float64)
-    phsp_frame = phsp_frame.astype(np.float64)
+    # data_frame = data_frame.astype(np.float64)
+    # phsp_frame = phsp_frame.astype(np.float64)
     intensity = intensity_func
 
     pdf = zcompwa.pdf.ComPWAPDF(
         intensity=intensity,
-        norm=phsp_frame,
+        norm=pd.DataFrame(phsp).astype(np.float64),  # there are complex numbers in the norm
     )
+    # pdf = zcompwa.pdf.ComPWAPDF(
+    #     intensity=intensity,
+    #     norm=phsp_frame,
+    # )
+
+    from tensorwaves.estimator import UnbinnedNLL
+
+    estimator = UnbinnedNLL(
+        intensity_func,
+        data=data,
+        phsp=phsp,
+        backend="tensorflow",
+    )
+
     # for p in pdf.get_params():  # returns the free params automatically
     #     p.set_value(p + np.random.normal(0, 0.01))
     # zfit.run.set_graph_mode(False)
     zfit.run.set_autograd_mode(False)
     loss = zfit.loss.UnbinnedNLL(pdf, data_frame)
+    assert pytest.approx(loss.value(), 1e-5) == estimator()
+    np.testing.assert_allclose(loss.gradient(), estimator.gradient(), rtol=1e-5)
 
-    # ok, here I was caught up playing around :) Minuit seems to perform the best though
-    minimizer = zfit.minimize.Minuit(verbosity=7, gradient=True)
+    # ok, here I was caught playing around :) Minuit seems to perform the best though
+    # minimizer = zfit.minimize.Minuit(verbosity=7, gradient=True)
     # minimizer = zfit.minimize.Minuit(verbosity=7, gradient='zfit')
     # minimizer = zfit.minimize.ScipyLBFGSBV1(verbosity=8)
+    minimizer = zfit.minimize.ScipyBFGS(verbosity=10)
     # minimizer = zfit.minimize.ScipyTrustKrylovV1(verbosity=8)
     # minimizer = zfit.minimize.NLoptMMAV1(verbosity=9)
     # minimizer = zfit.minimize.IpyoptV1(verbosity=8)
-    result = minimizer.minimize(loss)
+    nll_estimator = zcompwa.loss.nll_from_estimator(estimator)
+
+    from tensorwaves.optimizer import Minuit2
+
+    minuit2 = Minuit2(
+        use_analytic_gradient=False,
+    )
+    fit_result = minuit2.optimize(estimator, initial_parameters)
+    params = loss.get_params()
+    with zfit.param.set_params(params, params):
+        result = minimizer.minimize(loss)
     print(result)
     result.hesse()
     print(result)

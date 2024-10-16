@@ -8,6 +8,13 @@ import zfit
 from zfit.core.interfaces import ZfitUnbinnedData
 
 
+def params_from_intensity(intensity):
+    return [
+        zfit.param.convert_to_parameter(val, name=name, prefer_constant=False)
+        for name, val in intensity.parameters.items()
+    ]
+
+
 def obs_from_frame(frame1, frame2=None, bufferfactor=0.01):
     obs = []
     if frame2 is None:

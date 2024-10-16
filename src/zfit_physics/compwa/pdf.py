@@ -6,7 +6,7 @@ import zfit  # suppress tf warnings
 import zfit.z.numpy as znp
 from zfit import supports, z
 
-from .variables import obs_from_frame
+from .variables import obs_from_frame, params_from_intensity
 
 
 def patched_call(self, data, *, params) -> np.ndarray:
@@ -20,13 +20,11 @@ class ComPWAPDF(zfit.pdf.BasePDF):
     def __init__(self, intensity, norm, obs=None, params=None, extended=None, name="ComPWA"):
         """ComPWA intensity normalized over the *norm* dataset."""
         if params is None:
-            params = {
-                name: zfit.param.convert_to_parameter(val, name=name, prefer_constant=False)
-                for name, val in intensity.parameters.items()
-            }
+            params = {p.name: p for p in params_from_intensity(intensity)}
+        norm = zfit.Data(norm, obs=obs)
         if obs is None:
-            obs = obs_from_frame(norm)
-        # intensity.__call__ = types.MethodType(patched_call, intensity)
+            obs = obs_from_frame(norm.to_pandas())
+        norm = norm.with_obs(obs)
         super().__init__(obs, params=params, name=name, extended=extended)
         self.intensity = intensity
         norm = {ob: znp.array(ar) for ob, ar in zip(self.obs, z.unstack_x(norm))}
@@ -61,11 +59,14 @@ class ComPWAPDF(zfit.pdf.BasePDF):
         probs = tf.numpy_function(unnormalized_pdf, [xunstacked, paramvalsfloat, paramvalscomplex], Tout=tf.float64)
         if norm is not False:
             normvalues = [znp.asarray(self.norm_sample[ob]) for ob in self.obs]
-            norm = znp.mean(
-                tf.numpy_function(unnormalized_pdf, [normvalues, paramvalsfloat, paramvalscomplex], Tout=tf.float64)
+            normval = (
+                znp.mean(
+                    tf.numpy_function(unnormalized_pdf, [normvalues, paramvalsfloat, paramvalscomplex], Tout=tf.float64)
+                )
+                * norm.volume
             )
-            norm.set_shape([])
-            probs /= norm
+            normval.set_shape((1,))
+            probs /= normval
         probs.set_shape([None])
         return probs
 

@@ -1,3 +1,3 @@
-from . import data, pdf, variables
+from . import data, loss, pdf, variables
 
-__all__ = ["data", "pdf", "variables"]
+__all__ = ["data", "pdf", "variables", "loss"]
