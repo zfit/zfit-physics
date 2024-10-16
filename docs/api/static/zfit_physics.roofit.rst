@@ -19,11 +19,12 @@ Import the module with:
 
 this will enable the RooFit functionality in zfit.
 
-We can create a RooFit NLL, a RooRealVar as ``fcn`` and use it as a loss function in zfit:
+We can create a RooFit NLL as ``RooFit_nll`` and use it as a loss function in zfit. For example, with a Gaussian model ``RooFit_gauss`` and a dataset ``RooFit_data``, both created with RooFit:
 
 .. code-block:: python
 
-    minimizer.minimize(loss=fcn)
+    RooFit_nll = RooFit_gauss.createNLL(RooFit_data)
+    minimizer.minimize(loss=RooFit_nll)
 
 More explicitly, the loss function can be created with
 
