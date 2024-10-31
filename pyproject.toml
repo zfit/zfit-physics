@@ -38,10 +38,9 @@ dynamic = ["version"]
 [project.optional-dependencies]
 
 tfpwa = ["tfpwa@git+https://github.com/jiangyi15/tf-pwa"]
-pyhf = [
-    "pyhf",
-]
-all = ["zfit-physics[tfpwa,pyhf]"]
+pyhf = ["pyhf"]
+evermore = ["evermore"]
+all = ["zfit-physics[tfpwa,pyhf, evermore]"]
 test = [
     "pytest",
     "pytest-cov",
