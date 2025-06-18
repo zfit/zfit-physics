@@ -5,7 +5,7 @@ import tensorflow_probability as tfp
 import zfit
 import zfit.models.functor
 from zfit import z
-from zfit.exception import FunctionNotImplementedError
+from zfit.exception import FunctionNotImplemented
 from zfit.util import exception, ztyping
 from zfit.util.exception import WorkInProgressError
 
@@ -118,7 +118,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
     def _pdf(self, x, norm):
         del norm
         if not self._experimental_pdf_normalized:
-            raise FunctionNotImplementedError
+            raise FunctionNotImplemented
 
         limits = self.conv_limits
         # area = limits.area()  # new spaces
