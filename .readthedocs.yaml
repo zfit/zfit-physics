@@ -7,17 +7,15 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.12"
+    python: "mambaforge-22.9"
+
+
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/conf.py
 
-formats: [ ]
+conda:
+  environment: docs/environment.yml
 
-python:
-  install:
-    - requirements: requirements_dev.txt
-    - requirements: requirements.txt
-    - method: pip
-      path: .
+formats: [ ]

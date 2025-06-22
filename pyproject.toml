@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling>=1.17.1", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 
@@ -37,11 +37,18 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 
-tfpwa = ["tfpwa@git+https://github.com/jiangyi15/tf-pwa"]
+compwa = [
+    "qrules",
+    "ampform",
+    "tensorwaves[phsp]",
+]
 pyhf = [
     "pyhf",
 ]
-all = ["zfit-physics[tfpwa,pyhf]"]
+tfpwa = [
+    "tfpwa>=0.2.2",
+]
+all = ["zfit-physics[pyhf,compwa,tfpwa]"]
 test = [
     "pytest",
     "pytest-cov",
@@ -50,6 +57,8 @@ test = [
     "zfit-physics[all]",
     "contextlib_chdir", # backport of chdir from Python 3.11
 ]
+
+
 dev = [
     "bumpversion>=0.5.3",
     "coverage>=4.5.1",
@@ -108,6 +117,14 @@ run.source = ["zfit_physics"]
 report.exclude_also = [
     '\.\.\.',
     'if typing.TYPE_CHECKING:',
+]
+
+[tool.check-manifest]
+ignore = [
+    ".tox/*",
+    "*/test*",
+    "*/__init__.py",
+    "*/_version.py",
 ]
 
 [tool.mypy]
@@ -171,6 +188,7 @@ ignore = [
     "PLW2901", # "for loop overwritten by assignment" -> we use this to update the loop variable
     "PD013", # "melt over stack": df function, but triggers on tensors
     "NPY002", # "Use rnd generator in numpy" -> we use np.random for some legacy stuff but do use the new one where we can
+    "T201", # "print used" -> we use print for displaying information in verbose mode
 
 ]
 isort.required-imports = ["from __future__ import annotations"]

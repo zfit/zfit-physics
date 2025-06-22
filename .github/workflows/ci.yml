@@ -39,7 +39,7 @@ jobs:
     name: Tests on OS ${{ matrix.os }} with Python ${{ matrix.python-version }} and JIT ${{ matrix.jit }}
     steps:
       - uses: actions/checkout@v4
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: mamba-org/setup-micromamba@v2
         name: Set up Micromamba environment
         with:
           environment-name: test-env
@@ -49,8 +49,7 @@ jobs:
         run: |
           which python
           python -V
-          uv pip install -e ".[dev]"
-          uv pip install zfit@git+https://github.com/zfit/zfit
+          uv pip install -e ".[dev]" zfit@git+https://github.com/zfit/zfit
       - name: Test with pytest
         run: |
           ZFIT_DO_JIT=${{ matrix.jit }}

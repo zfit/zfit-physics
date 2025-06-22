@@ -11,26 +11,53 @@ For example via conda:
 
     $ mamba install -c conda-forge root
 
+.. jupyter-execute::
+    :hide-code:
+    :hide-output:
+
+    import numpy as np
+    import zfit
+    from ROOT import RooArgSet, RooDataSet, RooGaussian, RooRealVar
+
+    data = np.random.normal(loc=2.0, scale=3.0, size=1000)
+
+    mur = RooRealVar("mu", "mu", 1.2, -4, 6)
+    sigmar = RooRealVar("sigma", "sigma", 1.3, 0.5, 10)
+    obsr = RooRealVar("x", "x", -2, 3)
+    RooFit_gauss = RooGaussian("gauss", "gauss", obsr, mur, sigmar)
+
+    RooFit_data = RooDataSet("data", "data", {obsr})
+    for d in data:
+        obsr.setVal(d)
+        RooFit_data.add(RooArgSet(obsr))
+
+    minimizer = zfit.minimize.Minuit()
+
 Import the module with:
 
-.. code-block:: python
 
-    import zfit_physics.roofit as ztfroofit
 
-this will enable the RooFit functionality in zfit.
+.. jupyter-execute::
+
+    import zfit_physics.roofit as zroofit
+
+this will enable the RooFit functionality in zfit and allow to automatically minimize the function using a zfit minimimzer as
+
+.. jupyter-execute::
+
+    RooFit_nll = RooFit_gauss.createNLL(RooFit_data)
 
 We can create a RooFit NLL as ``RooFit_nll`` and use it as a loss function in zfit. For example, with a Gaussian model ``RooFit_gauss`` and a dataset ``RooFit_data``, both created with RooFit:
 
-.. code-block:: python
+.. jupyter-execute::
 
-    RooFit_nll = RooFit_gauss.createNLL(RooFit_data)
-    minimizer.minimize(loss=RooFit_nll)
+    result = minimizer.minimize(loss=RooFit_nll)
 
 More explicitly, the loss function can be created with
 
-.. code-block:: python
+.. jupyter-execute::
 
-    nll = zroofit.loss.nll_from_roofit(fcn)
+    nll = zroofit.loss.nll_from_roofit(RooFit_nll)
 
 
 Variables

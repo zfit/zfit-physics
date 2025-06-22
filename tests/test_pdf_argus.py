@@ -14,7 +14,7 @@ param1_true = 0.3
 param2_true = 1.2
 
 
-def test_standard():
+def test_standard_argus():
     # test special properties  here
     obs = zfit.Space("obs1", (-2, 6))
 
@@ -24,8 +24,8 @@ def test_standard():
     upper = 5.0
     argus_pdf = argus.pdf(tf.linspace(lower, upper, 1000001))
     assert pytest.approx(zfit.run(tf.reduce_mean(argus_pdf) * (upper - lower)), 4e-2) == 1.0
-    analytic_integral = zfit.run(argus.analytic_integrate(obs, norm_range=False))
-    numeric_integral = zfit.run(argus.numeric_integrate(obs, norm_range=False))
+    analytic_integral = zfit.run(argus.analytic_integrate(obs, norm=False))
+    numeric_integral = zfit.run(argus.numeric_integrate(obs, norm=False))
     assert pytest.approx(analytic_integral, 4e-2) == numeric_integral
 
 

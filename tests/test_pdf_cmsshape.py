@@ -44,8 +44,8 @@ def test_cmsshape_pdf():
 def test_cmsshape_integral():
     # Test CDF and integral here
     cmsshape, obs = create_cmsshape(m=m_true, beta=beta_true, gamma=gamma_true, limits=(50, 130))
-    full_interval_analytic = zfit.run(cmsshape.analytic_integrate(obs, norm_range=False))
-    full_interval_numeric = zfit.run(cmsshape.numeric_integrate(obs, norm_range=False))
+    full_interval_analytic = zfit.run(cmsshape.analytic_integrate(obs, norm=False))
+    full_interval_numeric = zfit.run(cmsshape.numeric_integrate(obs, norm=False))
     true_integral = 0.99999
     numba_stats_full_integral = cmsshape_numba.cdf(
         130, beta=beta_true, gamma=gamma_true, loc=m_true
@@ -55,8 +55,8 @@ def test_cmsshape_integral():
     assert full_interval_analytic == pytest.approx(numba_stats_full_integral, 1e-8)
     assert full_interval_numeric == pytest.approx(numba_stats_full_integral, 1e-8)
 
-    analytic_integral = zfit.run(cmsshape.analytic_integrate(limits=(80, 100), norm_range=False))
-    numeric_integral = zfit.run(cmsshape.numeric_integrate(limits=(80, 100), norm_range=False))
+    analytic_integral = zfit.run(cmsshape.analytic_integrate(limits=(80, 100), norm=False))
+    numeric_integral = zfit.run(cmsshape.numeric_integrate(limits=(80, 100), norm=False))
     numba_stats_integral = cmsshape_numba.cdf(100, beta=beta_true, gamma=gamma_true, loc=m_true) - cmsshape_numba.cdf(
         80, beta=beta_true, gamma=gamma_true, loc=m_true
     )

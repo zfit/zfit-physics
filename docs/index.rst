@@ -32,3 +32,5 @@ Extensions
 
     api/static/zfit_physics.tfpwa.rst
     api/static/zfit_physics.roofit.rst
+    api/static/zfit_physics.pyhf.rst
+    api/static/zfit_physics.compwa.rst

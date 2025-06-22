@@ -1,0 +1,10 @@
+name: rtd38
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - root<=6.30
+  - uv
+  - pip:
+      - ../[dev]

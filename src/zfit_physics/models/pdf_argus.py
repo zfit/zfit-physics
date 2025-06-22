@@ -69,7 +69,7 @@ class Argus(zfit.pdf.BasePDF):
             \mathrm{Argus}(m, m_0, c, p) = m \cdot \left[ 1 - \left( \frac{m}{m_0} \right)^2 \right]^p
             \cdot \exp\left[ c \cdot \left(1 - \left(\frac{m}{m_0}\right)^2 \right) \right]
 
-        and normalized to one over the `norm_range` (which defaults to `obs`).
+        and normalized to one over the `norm` (which defaults to `obs`).
 
         The implementation follows the `RooFit version <https://root.cern.ch/doc/master/classRooArgusBG.html>`_
 
@@ -114,19 +114,36 @@ class Argus(zfit.pdf.BasePDF):
         Returns:
             `tf.Tensor`: the values matching the (broadcasted) shapes of the input
         """
+
         params = {"m0": m0, "c": c, "p": p}
         super().__init__(obs=obs, name=name, params=params, extended=extended, norm=norm, label=label)
+        if isinstance(p, zfit.param.ConstantParameter):
+            p_is_half = np.isclose(p.static_value, 0.5)
+        else:
+            try:
+                p_is_half = np.isclose(p, 0.5)
+            except NotImplementedError:
+                p_is_half = False  # we cannot know, unfortunately
 
-    _N_OBS = 1
+        if isinstance(c, zfit.param.ConstantParameter):
+            c_is_negative = c.static_value < 0
+        else:
+            try:
+                c_is_negative = c < 0
+            except NotImplementedError:
+                c_is_negative = False
 
-    @zfit.supports()
-    def _unnormalized_pdf(self, x, params):
+        self._argus_p_is_half = p_is_half
+        self._argus_c_is_positive = c_is_negative
+
+    @zfit.supports(norm=False)
+    def _pdf(self, x, norm, params):
         """
         Calculation of ARGUS PDF value
         (Docs: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.argus.html)
         """
         m = x[0]
-
+        del norm
         m0 = params["m0"]
         c = params["c"]
         p = params["p"]
@@ -191,12 +208,10 @@ def argus_integral_p_half_func(lower, upper, c, m0):
 
 
 def argus_integral_p_half(limits, params, model):
-    del model
-    p = params["p"]
-    if not isinstance(p, zfit.param.ConstantParameter) or not np.isclose(p.static_value, 0.5):
-        raise zfit.exception.AnalyticIntegralNotImplementedError()
     c = params["c"]
-    if not isinstance(c, zfit.param.ConstantParameter) or c.static_value > 0:
+    if not model._argus_p_is_half:
+        raise zfit.exception.AnalyticIntegralNotImplementedError()
+    if not model._argus_c_is_positive:
         raise zfit.exception.AnalyticIntegralNotImplementedError()
 
     m0 = params["m0"]

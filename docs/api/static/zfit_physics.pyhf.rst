@@ -18,7 +18,7 @@ The loss function can be created from a ``data`` and a ``pdf`` model with
 
 
 
-which optionally takes already created :py:class:~`zfit.core.interfaces.ZfitParameter` as arguments.
+which optionally takes already created :py:class:`~zfit.core.interfaces.ZfitParameter` as arguments.
 
 
 

@@ -7,9 +7,6 @@ Develop
 
 Major Features and Improvements
 -------------------------------
-- add a RooFit compatibility layer and automatically convert losses, also inside minimizers (through ``SimpleLoss.from_any``)
-- `TF-PWA <https://tf-pwa.readthedocs.io/en/latest/>`_ support for loss functions. Minimizer can directly minimize the loss function of a model.
-- `pyhf <https://pyhf.readthedocs.io/en/stable/>`_ support for loss functions. Minimizer can directly minimize the loss function of a model.
 
 Breaking changes
 ------------------
@@ -28,6 +25,16 @@ Requirement changes
 
 Thanks
 ------
+
+0.8.0 (7 Nov 2024)
+========================
+
+Major Features and Improvements
+-------------------------------
+- add a RooFit compatibility layer and automatically convert losses, also inside minimizers (through ``SimpleLoss.from_any``)
+- `TF-PWA <https://tf-pwa.readthedocs.io/en/latest/>`_ support for loss functions. Minimizer can directly minimize the loss function of a model.
+- `pyhf <https://pyhf.readthedocs.io/en/stable/>`_ support for loss functions. Minimizer can directly minimize the loss function of a model.
+- `ComPWA <https://compwa.github.io/>`_ support for loss functions and pdf. Minimizer can directly minimize the loss function of a model.
 
 0.7.0 (13 Apr 2024)
 ===================

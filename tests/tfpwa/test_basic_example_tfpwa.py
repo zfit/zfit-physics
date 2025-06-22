@@ -59,7 +59,7 @@ def test_example1_tfpwa():
     # Set init paramters. If not set, we will use random initial parameters
     config.set_params(str(this_dir / "gen_params.json"))
 
-    with chdir(this_dir):
+    with chdir(this_dir):  # needed for TF-PWA
         fcn = config.get_fcn()
         nll = ztfpwa.loss.nll_from_fcn(fcn)
 
@@ -92,4 +92,5 @@ def test_example1_tfpwa():
     print(result)
 
     assert result.converged
-    assert pytest.approx(result.fmin, 0.05) == fit_result.min_nll
+    tol = 3.0
+    assert result.fmin == pytest.approx(fit_result.min_nll, abs=tol)

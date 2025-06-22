@@ -335,6 +335,11 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "pandas": ("https://pandas.pydata.org/docs/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "tensorwaves": ("https://tensorwaves.readthedocs.io/latest/", None),
+    "zfit": ("https://zfit.readthedocs.io/en/latest/", None),
+    "tf_pwa": ("https://tf-pwa.readthedocs.io/en/latest/", None),
+    "pyhf": ("https://pyhf.readthedocs.io/en/latest/", None),
 }
 
 # -- Options for todo extension ----------------------------------------------
