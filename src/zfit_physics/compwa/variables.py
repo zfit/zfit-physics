@@ -5,7 +5,7 @@ from collections.abc import Mapping
 import numpy as np
 import pandas as pd
 import zfit
-from zfit.core.interfaces import ZfitUnbinnedData
+from zfit.interface import ZfitUnbinnedData
 
 __all__ = ["obs_from_frame", "params_from_intensity"]
 

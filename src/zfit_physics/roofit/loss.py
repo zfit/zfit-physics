@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
-from zfit.core.interfaces import ZfitParameter
+from zfit.interface import ZfitParameter
 
 if TYPE_CHECKING:
     try:

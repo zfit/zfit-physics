@@ -64,7 +64,7 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
                Has no programmatical functional purpose as identification. |@docend:pdf.init.label|
         """
         dtype = zfit.settings.ztypes.float
-        if isinstance(data, zfit.core.interfaces.ZfitData):
+        if isinstance(data, zfit.interface.ZfitData):
             msg = "Currently, no dataset supported yet"
             raise WorkInProgressError(msg)
             # size = data.nevents

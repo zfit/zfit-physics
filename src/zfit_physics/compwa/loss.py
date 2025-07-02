@@ -10,7 +10,7 @@ from .variables import params_from_intensity
 
 if TYPE_CHECKING:
     from tensorwaves.estimator import Estimator
-    from zfit.core.interfaces import ZfitLoss
+    from zfit.interface import ZfitLoss
 
 __all__ = ["nll_from_estimator"]
 

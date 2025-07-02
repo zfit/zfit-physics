@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 import zfit
 import zfit.z.numpy as znp
-from zfit.core.interfaces import ZfitParameter
+from zfit.interface import ZfitParameter
 from zfit.util.container import convert_to_container
 
 from .variables import params_from_fcn
