@@ -38,7 +38,7 @@ def nll_from_roofit(nll: ROOT.RooAbsReal, params: ZfitParameter | Iterable[ZfitP
     import zfit
 
     def roofit_eval(x):
-        for par, arg in zip(nll.getVariables(), x):
+        for par, arg in zip(nll.getVariables(), x, strict=False):
             par.setVal(arg)
         # following RooMinimizerFcn.cxx
         nll.setHideOffset(False)

@@ -44,7 +44,7 @@ def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
         return fcn.nll_grad(params)[1]
 
     def make_paramdict(params, *, paramnames=paramnames):
-        return {p: znp.array(v.value()) for p, v in zip(paramnames, params)}
+        return {p: znp.array(v.value()) for p, v in zip(paramnames, params, strict=False)}
 
     return zfit.loss.SimpleLoss(
         func=eval_func,

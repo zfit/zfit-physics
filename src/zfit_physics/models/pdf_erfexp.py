@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
+import tensorflow as tf
 import zfit
 from pydantic.v1 import Field
 from zfit import z
@@ -31,7 +32,7 @@ def erfexp_pdf_func(x, mu, beta, gamma, n):
         Implementation from https://gitlab.cern.ch/cms-muonPOG/spark_tnp/-/blob/Spark3/RooErfExp.cc
         The parameters beta and gamma are given in reverse order in this c++ implementation.
     """
-    return znp.erfc((x - mu) * beta) * znp.exp(-gamma * (znp.power(x, n) - znp.power(mu, n)))
+    return tf.math.erfc((x - mu) * beta) * znp.exp(-gamma * (znp.power(x, n) - znp.power(mu, n)))
 
 
 # Note: There is no analytic integral for the ErfExp PDF

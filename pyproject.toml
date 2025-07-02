@@ -21,7 +21,6 @@ classifiers = [
     "Operating System :: Unix",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -30,7 +29,7 @@ classifiers = [
 ]
 keywords = ["TensorFlow, model, fitting, scalable, HEP, physics"]
 
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 dependencies = ["zfit>=0.20"]
 dynamic = ["version"]
@@ -55,7 +54,6 @@ test = [
     "pytest-rerunfailures",
     "pytest-xdist",
     "zfit-physics[all]",
-    "contextlib_chdir", # backport of chdir from Python 3.11
 ]
 
 
@@ -129,7 +127,7 @@ ignore = [
 
 [tool.mypy]
 files = ["src", "tests"]
-python_version = "3.8"
+python_version = "3.10"
 warn_unused_configs = true
 strict = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
@@ -198,7 +196,7 @@ isort.required-imports = ["from __future__ import annotations"]
 "noxfile.py" = ["T20"]
 
 [tool.pylint]
-py-version = "3.8"
+py-version = "3.10"
 ignore-paths = [".*/_version.py"]
 reports.output-format = "colorized"
 similarities.ignore-imports = "yes"

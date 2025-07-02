@@ -44,7 +44,7 @@ def nll_from_estimator(estimator: Estimator, *, params=None, errordef=None, numg
     paramnames = [param.name for param in params]
 
     def func(params):
-        paramdict = dict(zip(paramnames, params))
+        paramdict = dict(zip(paramnames, params, strict=False))
         return estimator(paramdict)
 
     if numgrad:
@@ -52,7 +52,7 @@ def nll_from_estimator(estimator: Estimator, *, params=None, errordef=None, numg
     else:
 
         def grad(params):
-            paramdict = dict(zip(paramnames, params))
+            paramdict = dict(zip(paramnames, params, strict=False))
             return estimator.gradient(paramdict)
 
     if errordef is None:
@@ -71,7 +71,7 @@ def _nll_from_estimator_or_false(estimator: Estimator, *, params=None, errordef=
             import tensorwaves as tw
         except ImportError:
             return False
-        if not isinstance(estimator, (tw.estimator.ChiSquared, tw.estimator.UnbinnedNLL)):
+        if not isinstance(estimator, tw.estimator.ChiSquared | tw.estimator.UnbinnedNLL):
             warnings.warn(
                 "Only ChiSquared and UnbinnedNLL are supported from tensorwaves currently."
                 f"TensorWaves is in name of {estimator}, this could be a bug.",

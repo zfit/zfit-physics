@@ -15,7 +15,6 @@ from zfit.serialization import Serializer
 from zfit.serialization.pdfrepr import BasePDFRepr
 from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
-from zfit.z import numpy as znp
 
 
 @z.function(wraps="tensor")
@@ -191,7 +190,7 @@ def argus_cdf_p_half_nonpositive(lim, c, m0):
 def argus_cdf_p_half_c_neg(lim, c, m0):
     f1 = 1 - z.square(lim / m0)
     cdf = -0.5 * z.square(m0)
-    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * znp.erf(z.sqrt(-c * f1))
+    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * tf.math.erf(z.sqrt(-c * f1))
     return cdf
 
 
