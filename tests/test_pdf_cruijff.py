@@ -111,3 +111,32 @@ def cruijff_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.Cruijff, params_factories=cruijff_params_factory)
+
+
+def test_cruijff_serialization():
+    """Test Cruijff PDF serialization."""
+    obs = zfit.Space("x", (50, 130))
+
+    cruijff = zphys.pdf.Cruijff(
+        mu=mu_true,
+        sigmal=sigmal_true,
+        alphal=alphal_true,
+        sigmar=sigmar_true,
+        alphar=alphar_true,
+        obs=obs
+    )
+
+    # Test serialization
+    pdf_dict = cruijff.to_dict()
+    assert pdf_dict['type'] == 'Cruijff'
+
+    # Test deserialization
+    reconstructed_cruijff = zphys.pdf.Cruijff.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(60.0, 120.0, 100)
+    original_values = cruijff.pdf(test_data)
+    reconstructed_values = reconstructed_cruijff.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)

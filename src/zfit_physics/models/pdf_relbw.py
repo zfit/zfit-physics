@@ -1,11 +1,19 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import numpy as np
 import tensorflow as tf
 import zfit
+from pydantic.v1 import Field
 from zfit import z
+from zfit.core.serialmixin import SerializableMixin
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
+from zfit.z import numpy as znp
 
 
 @z.function(wraps="tensor")
@@ -30,7 +38,7 @@ def relbw_pdf_func(x, m, gamma):
     return k / ((x**2 - m**2) ** 2 + m**4 * alpha**2)
 
 
-class RelativisticBreitWigner(zfit.pdf.BasePDF):
+class RelativisticBreitWigner(zfit.pdf.BasePDF, SerializableMixin):
     _N_OBS = 1
 
     def __init__(
@@ -122,7 +130,7 @@ def arctan_complex(x):
         Formula is taken from https://www.wolframalpha.com/input/?i=arctan%28a%2Bb*i%29
     TODO: move somewhere?
     """
-    return 1 / 2 * 1j * (tf.math.log(1 - 1j * x) - tf.math.log(1 + 1j * x))
+    return 1 / 2 * 1j * (znp.log(1 - 1j * x) - znp.log(1 + 1j * x))
 
 
 @z.function(wraps="tensor")
@@ -179,3 +187,11 @@ def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
 # These lines of code adds the analytic integral function to RelativisticBreitWigner PDF.
 relbw_integral_limits = Space(axes=(0,), limits=(((ANY_LOWER,),), ((ANY_UPPER,),)))
 RelativisticBreitWigner.register_analytic_integral(func=relbw_integral, limits=relbw_integral_limits)
+
+
+class RelativisticBreitWignerPDFRepr(BasePDFRepr):
+    _implementation = RelativisticBreitWigner
+    hs3_type: Literal["RelativisticBreitWigner"] = Field("RelativisticBreitWigner", alias="type")
+    x: SpaceRepr
+    m: Serializer.types.ParamInputTypeDiscriminated
+    gamma: Serializer.types.ParamInputTypeDiscriminated

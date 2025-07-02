@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import functools
+
 import tensorflow as tf
 import tensorflow_probability as tfp
 import zfit
 import zfit.models.functor
+import zfit.z.numpy as znp
 from zfit import z
 from zfit.exception import FunctionNotImplemented
 from zfit.util import exception, ztyping
@@ -24,6 +27,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         name: str = "Convolution",
         label: str | None = None,
         experimental_pdf_normalized=False,
+        vectorized: bool | None = None,
     ):
         """Numerical Convolution pdf of *func* convoluted with *kernel*.
 
@@ -68,6 +72,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
                Has no programmatical functional purpose as identification. |@docend:pdf.init.label|
         """
         super().__init__(obs=obs, pdfs=[func, kernel], params={}, name=name, extended=extended, norm=norm, label=label)
+        self._use_vectorized_map = vectorized if vectorized is not None else True
         limits = self._check_input_limits(limits=limits)
         if limits.n_limits == 0:
             msg = "obs have to have limits to define where to integrate over."
@@ -108,8 +113,12 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
 
         func_values = self.pdfs[0].pdf(samples, norm=False)  # func of true vars
 
-        return tf.map_fn(
-            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples.value(), norm=False)),
+        from zfit import run
+
+        tf_map = tf.vectorized_map if self._use_vectorized_map and run.get_graph_mode() is not False else tf.map_fn
+
+        return tf_map(
+            lambda xi: area * znp.mean(func_values * self.pdfs[1].pdf(xi - samples.value(), norm=False)),
             x.value(),
         )
 
@@ -138,8 +147,15 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         samples = zfit.Data.from_tensor(obs=limits, tensor=samples)
 
         func_values = self.pdfs[0].pdf(samples)  # func of true vars
+        from zfit import run
 
-        return tf.map_fn(
-            lambda xi: area * tf.reduce_mean(func_values * self.pdfs[1].pdf(xi - samples.value())),
+        if self._use_vectorized_map and run.get_graph_mode() is not False:
+            tf_map = tf.vectorized_map
+        else:
+            output_signature = tf.TensorSpec(shape=(1, *func_values.shape[1:-1]), dtype=self.dtype)
+            tf_map = functools.partial(tf.map_fn, fn_output_signature=output_signature)
+
+        return tf_map(
+            lambda xi: area * znp.mean(func_values * self.pdfs[1].pdf(xi - samples.value())),
             x.value(),
         )

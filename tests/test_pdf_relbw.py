@@ -1,5 +1,6 @@
 """Tests for relativistic Breit-Wigner PDF."""
 
+import numpy as np
 import pytest
 import tensorflow as tf
 import zfit
@@ -53,3 +54,25 @@ def relbw_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.RelativisticBreitWigner, params_factories=relbw_params_factory)
+
+
+def test_relbw_serialization():
+    """Test RelativisticBreitWigner PDF serialization."""
+    obs = zfit.Space("x", (0, 200))
+
+    relbw = zphys.pdf.RelativisticBreitWigner(m=m_true, gamma=gamma_true, obs=obs)
+
+    # Test serialization
+    pdf_dict = relbw.to_dict()
+    assert pdf_dict['type'] == 'RelativisticBreitWigner'
+
+    # Test deserialization
+    reconstructed_relbw = zphys.pdf.RelativisticBreitWigner.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(50.0, 180.0, 100)
+    original_values = relbw.pdf(test_data)
+    reconstructed_values = reconstructed_relbw.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)

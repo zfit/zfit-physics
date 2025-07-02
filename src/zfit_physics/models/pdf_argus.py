@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
 import zfit
+from pydantic.v1 import Field
 from zfit import z
+from zfit.core.serialmixin import SerializableMixin
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
+from zfit.z import numpy as znp
 
 
 @z.function(wraps="tensor")
@@ -45,7 +53,7 @@ def argus_func(
     return m * z.pow(m_factor, p) * (z.exp(c * m_factor))
 
 
-class Argus(zfit.pdf.BasePDF):
+class Argus(zfit.pdf.BasePDF, SerializableMixin):
     def __init__(
         self,
         *,
@@ -183,7 +191,7 @@ def argus_cdf_p_half_nonpositive(lim, c, m0):
 def argus_cdf_p_half_c_neg(lim, c, m0):
     f1 = 1 - z.square(lim / m0)
     cdf = -0.5 * z.square(m0)
-    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * tf.math.erf(z.sqrt(-c * f1))
+    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * znp.erf(z.sqrt(-c * f1))
     return cdf
 
 
@@ -223,6 +231,16 @@ def argus_integral_p_half(limits, params, model):
 
 argus_integral_limits = zfit.Space(axes=(0,), limits=(zfit.Space.ANY_LOWER, zfit.Space.ANY_UPPER))
 Argus.register_analytic_integral(func=argus_integral_p_half, limits=argus_integral_limits)
+
+
+class ArgusPDFRepr(BasePDFRepr):
+    _implementation = Argus
+    hs3_type: Literal["Argus"] = Field("Argus", alias="type")
+    x: SpaceRepr
+    m0: Serializer.types.ParamInputTypeDiscriminated
+    c: Serializer.types.ParamInputTypeDiscriminated
+    p: Serializer.types.ParamInputTypeDiscriminated
+
 
 if __name__ == "__main__":
     # create the integral

@@ -1,10 +1,17 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import tensorflow as tf
 import zfit
 import zfit.z.numpy as znp
+from pydantic.v1 import Field
 from zfit import run, z
+from zfit.core.serialmixin import SerializableMixin
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
 
 
@@ -89,7 +96,7 @@ def tsallis_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tenso
     return upper_cdf - lower_cdf
 
 
-class Tsallis(zfit.pdf.BasePDF):
+class Tsallis(zfit.pdf.BasePDF, SerializableMixin):
     _N_OBS = 1
 
     def __init__(
@@ -173,3 +180,12 @@ class Tsallis(zfit.pdf.BasePDF):
 
 tsallis_integral_limits = Space(axes=0, limits=(ANY_LOWER, ANY_UPPER))
 Tsallis.register_analytic_integral(func=tsallis_integral, limits=tsallis_integral_limits)
+
+
+class TsallisPDFRepr(BasePDFRepr):
+    _implementation = Tsallis
+    hs3_type: Literal["Tsallis"] = Field("Tsallis", alias="type")
+    x: SpaceRepr
+    m: Serializer.types.ParamInputTypeDiscriminated
+    t: Serializer.types.ParamInputTypeDiscriminated
+    n: Serializer.types.ParamInputTypeDiscriminated

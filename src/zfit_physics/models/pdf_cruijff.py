@@ -1,7 +1,14 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import zfit
+from pydantic.v1 import Field
 from zfit import z
+from zfit.core.serialmixin import SerializableMixin
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
 from zfit.z import numpy as znp
 
@@ -38,7 +45,7 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
     return znp.exp(-0.5 * exponent)
 
 
-class Cruijff(zfit.pdf.BasePDF):
+class Cruijff(zfit.pdf.BasePDF, SerializableMixin):
     _N_OBS = 1
 
     def __init__(
@@ -118,3 +125,14 @@ class Cruijff(zfit.pdf.BasePDF):
         alphar = params["alphar"]
         x = x[0]
         return cruijff_pdf_func(x=x, mu=mu, sigmal=sigmal, alphal=alphal, sigmar=sigmar, alphar=alphar)
+
+
+class CruijffPDFRepr(BasePDFRepr):
+    _implementation = Cruijff
+    hs3_type: Literal["Cruijff"] = Field("Cruijff", alias="type")
+    x: SpaceRepr
+    mu: Serializer.types.ParamInputTypeDiscriminated
+    sigmal: Serializer.types.ParamInputTypeDiscriminated
+    alphal: Serializer.types.ParamInputTypeDiscriminated
+    sigmar: Serializer.types.ParamInputTypeDiscriminated
+    alphar: Serializer.types.ParamInputTypeDiscriminated
