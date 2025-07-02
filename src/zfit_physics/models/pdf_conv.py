@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import functools
-
 import tensorflow as tf
 import tensorflow_probability as tfp
 import zfit
@@ -149,11 +147,7 @@ class NumConvPDFUnbinnedV1(zfit.models.functor.BaseFunctor):
         func_values = self.pdfs[0].pdf(samples)  # func of true vars
         from zfit import run
 
-        if self._use_vectorized_map and run.get_graph_mode() is not False:
-            tf_map = tf.vectorized_map
-        else:
-            output_signature = tf.TensorSpec(shape=(1, *func_values.shape[1:-1]), dtype=self.dtype)
-            tf_map = functools.partial(tf.map_fn, fn_output_signature=output_signature)
+        tf_map = tf.vectorized_map if self._use_vectorized_map and run.get_graph_mode() is not False else tf.map_fn
 
         return tf_map(
             lambda xi: area * znp.mean(func_values * self.pdfs[1].pdf(xi - samples.value())),
