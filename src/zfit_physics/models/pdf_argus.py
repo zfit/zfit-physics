@@ -210,9 +210,9 @@ def argus_integral_p_half_func(lower, upper, c, m0):
 def argus_integral_p_half(limits, params, model):
     c = params["c"]
     if not model._argus_p_is_half:
-        raise zfit.exception.AnalyticIntegralNotImplementedError()
+        raise zfit.exception.AnalyticIntegralNotImplemented()
     if not model._argus_c_is_positive:
-        raise zfit.exception.AnalyticIntegralNotImplementedError()
+        raise zfit.exception.AnalyticIntegralNotImplemented()
 
     m0 = params["m0"]
     lower, upper = limits.limit1d
