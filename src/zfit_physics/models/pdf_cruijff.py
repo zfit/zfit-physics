@@ -29,7 +29,8 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
         `tf.Tensor`: The calculated PDF values.
 
     Notes:
-        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and http://hdl.handle.net/1794/9022, Equation IV.3
+        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and
+        http://hdl.handle.net/1794/9022, Equation IV.3
     """
     cond = znp.less(x, mu)
 
@@ -64,12 +65,14 @@ class Cruijff(zfit.pdf.BasePDF, SerializableMixin):
     ):
         """Cruijff PDF, a Gaussian with two width, left and right, and non-Gaussian tails.
 
-        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and http://hdl.handle.net/1794/9022, Equation IV.3
+        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and
+        http://hdl.handle.net/1794/9022, Equation IV.3
 
         .. math:
 
             f(x; \\mu, \\sigma_{L}, \\alpha_{L}, \\sigma_{R}, \\alpha_{R}) = \\begin{cases}
-            \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{L}^2 + \\alpha_{L} (x-\\mu)^2}\\right)}, \\mbox{for} x \\leqslant mu \\newline
+            \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{L}^2 + \\alpha_{L} (x-\\mu)^2}\\right)},
+            \\mbox{for} x \\leqslant mu \\newline
             \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{R}^2 + \\alpha_{R} (x-\\mu)^2}\\right)}, \\mbox{for} x > mu
             \\end{cases}
 
