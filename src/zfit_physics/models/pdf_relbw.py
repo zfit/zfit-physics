@@ -170,7 +170,7 @@ def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
     """Calculates the analytic integral of the relativistic Breit-Wigner PDF.
 
     Args:
-        limits: An object with attribute rect_limits.
+        limits: An object with attribute limit1d.
         params: A hashmap from which the parameters that defines the PDF will be extracted.
         model: Will be ignored.
 
@@ -178,7 +178,7 @@ def relbw_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tensor:
         The calculated integral.
     """
     del model
-    lower, upper = limits.rect_limits
+    lower, upper = limits.v1.limits
     lower_cdf = relbw_cdf_func(x=lower, m=params["m"], gamma=params["gamma"])
     upper_cdf = relbw_cdf_func(x=upper, m=params["m"], gamma=params["gamma"])
     return upper_cdf - lower_cdf

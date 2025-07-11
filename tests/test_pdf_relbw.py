@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 import tensorflow as tf
 import zfit
+import zfit.z.numpy as znp
 # Important, do the imports below
 from zfit.core.testing import tester
 
@@ -24,7 +25,10 @@ def test_relbw_pdf():
     # Test PDF here
     relbw, _ = create_relbw(m_true, gamma_true, limits=(0, 200))
     assert zfit.run(relbw.pdf(125.0)) == pytest.approx(0.4249, rel=1e-4)
-    assert relbw.pdf(tf.range(0.0, 200, 10_000)) <= relbw.pdf(125.0)
+    # Test that PDF value at a range point is valid
+    test_values = znp.linspace(0, 200, 10_000)
+    pdf_values = relbw.pdf(test_values)
+    np.testing.assert_array_less(pdf_values, np.ones_like(pdf_values) * relbw.pdf(125.0))
 
     sample = relbw.sample(1000)
     tf.debugging.assert_all_finite(sample.value(), "Some samples from the relbw PDF are NaN or infinite")

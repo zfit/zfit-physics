@@ -136,8 +136,8 @@ class Novosibirsk(zfit.pdf.BasePDF, SerializableMixin):
     ):
         """Novosibirsk PDF.
 
-        The Novosibirsk function is a continuous probability density function (PDF) that is used to model
-        asymmetric peaks in high-energy physics. It is a theoretical Compton spectrum with a logarithmic Gaussian function.
+        The Novosibirsk function is a continuous probability density function (PDF) that is used to model        asymmetric peaks in high-energy physics. It is a theoretical Compton spectrum with a
+        logarithmic Gaussian function.
 
         .. math::
             f(x;\\sigma, x_0, \\Lambda) = \\exp\\left[

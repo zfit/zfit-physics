@@ -87,7 +87,7 @@ def tsallis_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tenso
         The calculated integral.
     """
     del model
-    lower, upper = limits._rect_limits_tf
+    lower, upper = limits.v1.limits
     m = params["m"]
     t = params["t"]
     n = params["n"]
