@@ -27,7 +27,7 @@ Requirement changes
 Thanks
 ------
 
-0.8.1 
+0.8.1
 ========================
 
 Minor bug fixes, renaming legacy exceptions
