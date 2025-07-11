@@ -8,6 +8,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
 import zfit
+import zfit.z.numpy as znp
 from pydantic.v1 import Field
 from zfit import z
 from zfit.core.serialmixin import SerializableMixin
@@ -48,8 +49,8 @@ def argus_func(
     m = tfp.math.clip_by_value_preserve_gradient(m, 0.0, m0)
     m_frac = m / m0
 
-    m_factor = 1 - z.square(m_frac)
-    return m * z.pow(m_factor, p) * (z.exp(c * m_factor))
+    m_factor = 1 - znp.square(m_frac)
+    return m * znp.power(m_factor, p) * znp.exp(c * m_factor)
 
 
 class Argus(zfit.pdf.BasePDF, SerializableMixin):
@@ -65,8 +66,8 @@ class Argus(zfit.pdf.BasePDF, SerializableMixin):
         name: str = "ArgusPDF",
         label: str | None = None,
     ):
-        r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a particle
-        in a continuous background.
+        r"""`ARGUS shape <https://en.wikipedia.org/wiki/ARGUS_distribution>`_ describing the invariant mass of a
+        particle in a continuous background.
 
         The ARGUS shaped function describes the reconstructed invariant mass of a decayed particle, especially at the
         kinematic boundaries of the maximum beam energy. It is defined as
@@ -160,7 +161,7 @@ class Argus(zfit.pdf.BasePDF, SerializableMixin):
 # Keep? move to math?
 # @z.function_tf
 def uppergamma(s, x):
-    return tf.math.igammac(s, x=x) * z.exp(tf.math.lgamma(x))
+    return tf.math.igammac(s, x=x) * znp.exp(tf.math.lgamma(x))
 
 
 @z.function(wraps="tensor")
@@ -188,17 +189,19 @@ def argus_cdf_p_half_nonpositive(lim, c, m0):
 
 @z.function(wraps="tensor")
 def argus_cdf_p_half_c_neg(lim, c, m0):
-    f1 = 1 - z.square(lim / m0)
-    cdf = -0.5 * z.square(m0)
-    cdf *= z.exp(c * f1) * z.sqrt(f1) / c + 0.5 / z.pow(-c, 1.5) * z.sqrt(z.pi) * tf.math.erf(z.sqrt(-c * f1))
+    f1 = 1 - znp.square(lim / m0)
+    cdf = -0.5 * znp.square(m0)
+    cdf *= znp.exp(c * f1) * znp.sqrt(f1) / c + 0.5 / znp.power(-c, 1.5) * znp.sqrt(znp.pi) * tf.math.erf(
+        znp.sqrt(-c * f1)
+    )
     return cdf
 
 
 @z.function(wraps="tensor")
 def argus_cdf_p_half_c_zero(lim, c, m0):
     del c
-    f1 = 1 - z.square(lim / m0)
-    return -z.square(m0) / 3.0 * f1 * z.sqrt(f1)
+    f1 = 1 - znp.square(lim / m0)
+    return -znp.square(m0) / 3.0 * f1 * znp.sqrt(f1)
 
 
 # TODO: add Faddeev function approximation
@@ -223,8 +226,8 @@ def argus_integral_p_half(limits, params, model):
 
     m0 = params["m0"]
     lower, upper = limits.limit1d
-    lower = z.convert_to_tensor(lower)
-    upper = z.convert_to_tensor(upper)
+    lower = znp.asarray(lower)
+    upper = znp.asarray(upper)
     return argus_integral_p_half_func(lower=lower, upper=upper, c=c, m0=m0)
 
 
