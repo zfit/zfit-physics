@@ -8,6 +8,7 @@ if TYPE_CHECKING:
 
 import zfit
 import zfit.z.numpy as znp
+from zfit import z
 from zfit.core.interfaces import ZfitParameter
 from zfit.util.container import convert_to_container
 
@@ -32,14 +33,12 @@ def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
 
     # something is off here: for the value, we need to pass the parameters as a dict
     # but for the gradient/hesse, we need to pass them as a list
-    # TODO: activate if https://github.com/jiangyi15/tf-pwa/pull/153 is merged
-    # @z.function(wraps="loss")
+    @z.function(wraps="loss")
     def eval_func(params):
         paramdict = make_paramdict(params)
         return fcn(paramdict)
 
-    # TODO: activate if https://github.com/jiangyi15/tf-pwa/pull/153 is merged
-    # @z.function(wraps="loss")
+    @z.function(wraps="loss")
     def eval_grad(params):
         return fcn.nll_grad(params)[1]
 

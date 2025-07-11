@@ -67,6 +67,8 @@ def test_example1_tfpwa():
         fit_result = config.fit(method="BFGS")
 
         kwargs = dict(gradient='zfit', tol=0.01)
+        # kwargs = dict(gradient=False, tol=0.01)
+        # kwargs = dict(tol=0.01)
         assert pytest.approx(nll.value(), 0.001) == initial_val
         v, g, h = fcn.nll_grad_hessian()
         vz, gz, hz = nll.value_gradient_hessian()
@@ -79,7 +81,7 @@ def test_example1_tfpwa():
         np.testing.assert_allclose(g, gz1, atol=0.001)
 
         minimizer = zfit.minimize.Minuit(verbosity=7, **kwargs)
-        # minimizer = zfit.minimize.ScipyBFGS(verbosity=7, **kwargs)  # performs bestamba
+        # minimizer = zfit.minimize.ScipyBFGS(verbosity=7, **kwargs)  # performs best
         # minimizer = zfit.minimize.NLoptMMAV1(verbosity=7, **kwargs)
         # minimizer = zfit.minimize.ScipyLBFGSBV1(verbosity=7, **kwargs)
         # minimizer = zfit.minimize.NLoptLBFGSV1(verbosity=7, **kwargs)
