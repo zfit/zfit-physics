@@ -43,8 +43,8 @@ jobs:
         name: Set up Micromamba environment
         with:
           environment-name: test-env
-          create-args: >-  # install ROOT only on non-windows. ROOT > 6.30 fails currently
-            python=${{ matrix.python-version }} pip uv ${{ matrix.os != 'windows-latest' && 'root=6.30' || '' }}
+          create-args: >-  # install ROOT only on non-windows
+            python=${{ matrix.python-version }} pip uv ${{ matrix.os != 'windows-latest' && 'root' || '' }}
       - name: Install Python dependencies
         run: |
           which python
