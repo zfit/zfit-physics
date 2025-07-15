@@ -29,7 +29,7 @@ def nll_from_pyhf(data, pdf, *, params=None, init_pars=None, par_bounds=None, fi
 
         params = [
             zfit.Parameter(f"param_{i}", init, bound[0], bound[1], floating=not is_fixed)
-            for i, (init, is_fixed, bound) in enumerate(zip(init_pars, fixed_params, par_bounds))
+            for i, (init, is_fixed, bound) in enumerate(zip(init_pars, fixed_params, par_bounds, strict=False))
         ]
     else:
         if init_pars is not None or par_bounds is not None or fixed_params is not None:

@@ -40,3 +40,28 @@ def argus_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.Argus, params_factories=argus_params_factory)
+
+
+def test_argus_serialization():
+    """Test Argus PDF serialization."""
+    obs = zfit.Space("x", (-2, 6))
+    m0_val = 5.0
+    c_val = -3.0
+    p_val = 0.5
+
+    argus = zphys.pdf.Argus(m0=m0_val, c=c_val, p=p_val, obs=obs)
+
+    # Test serialization
+    pdf_dict = argus.to_dict()
+    assert pdf_dict['type'] == 'Argus'
+
+    # Test deserialization
+    reconstructed_argus = zphys.pdf.Argus.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(0.1, 4.9, 100)
+    original_values = argus.pdf(test_data)
+    reconstructed_values = reconstructed_argus.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)

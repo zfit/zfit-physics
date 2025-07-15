@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import tensorflow as tf
 import zfit
+from pydantic.v1 import Field
 from zfit import z
+from zfit.core.serialmixin import SerializableMixin
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
 from zfit.z import numpy as znp
 
@@ -38,7 +45,7 @@ def erfexp_pdf_func(x, mu, beta, gamma, n):
 # # Define the function
 # func = sp.erfc((x - mu) * beta) * sp.exp(-gamma * (x**n - mu**n))
 # sp.integrate(func, x)
-class ErfExp(zfit.pdf.BasePDF):
+class ErfExp(zfit.pdf.BasePDF, SerializableMixin):
     _N_OBS = 1
 
     def __init__(
@@ -112,3 +119,13 @@ class ErfExp(zfit.pdf.BasePDF):
         n = params["n"]
         x = x[0]
         return erfexp_pdf_func(x=x, mu=mu, beta=beta, gamma=gamma, n=n)
+
+
+class ErfExpPDFRepr(BasePDFRepr):
+    _implementation = ErfExp
+    hs3_type: Literal["ErfExp"] = Field("ErfExp", alias="type")
+    x: SpaceRepr
+    mu: Serializer.types.ParamInputTypeDiscriminated
+    beta: Serializer.types.ParamInputTypeDiscriminated
+    gamma: Serializer.types.ParamInputTypeDiscriminated
+    n: Serializer.types.ParamInputTypeDiscriminated

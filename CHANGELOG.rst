@@ -7,6 +7,7 @@ Develop
 
 Major Features and Improvements
 -------------------------------
+- serialization for PDFs
 
 Breaking changes
 ------------------
@@ -23,11 +24,12 @@ Experimental
 
 Requirement changes
 -------------------
+- Python minimum version is now 3.10
 
 Thanks
 ------
 
-0.8.1 
+0.8.1
 ========================
 
 Minor bug fixes, renaming legacy exceptions

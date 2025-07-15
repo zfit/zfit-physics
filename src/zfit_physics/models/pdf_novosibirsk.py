@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import numpy as np
 import tensorflow as tf
 import zfit
 import zfit.z.numpy as znp
+from pydantic.v1 import Field
 from zfit import z
+from zfit.core.serialmixin import SerializableMixin
 from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
 
 
@@ -112,7 +119,7 @@ def novosibirsk_integral_func(mu, sigma, lambd, lower, upper):
     return znp.where(cond, result_gauss, result_novosibirsk)
 
 
-class Novosibirsk(zfit.pdf.BasePDF):
+class Novosibirsk(zfit.pdf.BasePDF, SerializableMixin):
     _N_OBS = 1
 
     def __init__(
@@ -129,8 +136,8 @@ class Novosibirsk(zfit.pdf.BasePDF):
     ):
         """Novosibirsk PDF.
 
-        The Novosibirsk function is a continuous probability density function (PDF) that is used to model
-        asymmetric peaks in high-energy physics. It is a theoretical Compton spectrum with a logarithmic Gaussian function.
+        The Novosibirsk function is a continuous probability density function (PDF) that is used to model        asymmetric peaks in high-energy physics. It is a theoretical Compton spectrum with a
+        logarithmic Gaussian function.
 
         .. math::
             f(x;\\sigma, x_0, \\Lambda) = \\exp\\left[
@@ -190,3 +197,12 @@ class Novosibirsk(zfit.pdf.BasePDF):
 
 novosibirsk_integral_limits = Space(axes=0, limits=(ANY_LOWER, ANY_UPPER))
 Novosibirsk.register_analytic_integral(func=novosibirsk_integral, limits=novosibirsk_integral_limits)
+
+
+class NovosibirskPDFRepr(BasePDFRepr):
+    _implementation = Novosibirsk
+    hs3_type: Literal["Novosibirsk"] = Field("Novosibirsk", alias="type")
+    x: SpaceRepr
+    mu: Serializer.types.ParamInputTypeDiscriminated
+    sigma: Serializer.types.ParamInputTypeDiscriminated
+    lambd: Serializer.types.ParamInputTypeDiscriminated

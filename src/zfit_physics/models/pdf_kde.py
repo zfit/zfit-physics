@@ -5,6 +5,7 @@ from collections import OrderedDict
 import tensorflow as tf
 import tensorflow_probability.python.distributions as tfd
 import zfit
+import zfit.z.numpy as znp
 from zfit import z
 from zfit.models.dist_tfp import WrapDistribution
 from zfit.util import ztyping
@@ -64,7 +65,7 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
                Has no programmatical functional purpose as identification. |@docend:pdf.init.label|
         """
         dtype = zfit.settings.ztypes.float
-        if isinstance(data, zfit.core.interfaces.ZfitData):
+        if isinstance(data, zfit.interface.ZfitData):
             msg = "Currently, no dataset supported yet"
             raise WorkInProgressError(msg)
             # size = data.nevents
@@ -85,7 +86,7 @@ class GaussianKDE(WrapDistribution):  # multidimensional kde with gaussian kerne
         # Bandwidth definition, use silverman's rule of thumb for nd
         def reshaped_kerner_factory():
             cov_diag = [
-                tf.square((4.0 / (dims + 2.0)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in bandwidth
+                znp.square((4.0 / (dims + 2.0)) ** (1 / (dims + 4)) * size ** (-1 / (dims + 4)) * s) for s in bandwidth
             ]
             # cov = tf.linalg.diag(cov_diag)
             # kernel prob output shape: (n,)

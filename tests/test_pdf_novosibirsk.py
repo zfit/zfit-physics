@@ -98,3 +98,25 @@ def novosibirsk_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.Novosibirsk, params_factories=novosibirsk_params_factory)
+
+
+def test_novosibirsk_serialization():
+    """Test Novosibirsk PDF serialization."""
+    obs = zfit.Space("x", (50, 130))
+
+    novosibirsk = zphys.pdf.Novosibirsk(mu=mu_true, sigma=sigma_true, lambd=lambd_true, obs=obs)
+
+    # Test serialization
+    pdf_dict = novosibirsk.to_dict()
+    assert pdf_dict['type'] == 'Novosibirsk'
+
+    # Test deserialization
+    reconstructed_novosibirsk = zphys.pdf.Novosibirsk.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(60.0, 120.0, 100)
+    original_values = novosibirsk.pdf(test_data)
+    reconstructed_values = reconstructed_novosibirsk.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)
