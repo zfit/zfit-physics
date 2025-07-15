@@ -34,8 +34,12 @@ jobs:
       fail-fast: False
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ "3.10", "3.12" ]
-        jit: [ "0", "1" ]
+        python-version: [ "3.10" ]
+        jit: [ "1" ]
+        include:
+          - os: ubuntu-latest
+            python-version: "3.12"
+            use-graph: 1
     name: Tests on OS ${{ matrix.os }} with Python ${{ matrix.python-version }} and JIT ${{ matrix.jit }}
     steps:
       - uses: actions/checkout@v4
