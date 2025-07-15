@@ -39,7 +39,10 @@ jobs:
         include:
           - os: ubuntu-latest
             python-version: "3.12"
-            use-graph: 1
+            jit: 1
+          - os: ubuntu-latest
+            python-version: "3.10"
+            jit: 0
     name: Tests on OS ${{ matrix.os }} with Python ${{ matrix.python-version }} and JIT ${{ matrix.jit }}
     steps:
       - uses: actions/checkout@v4
