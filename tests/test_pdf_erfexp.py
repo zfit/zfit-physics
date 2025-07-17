@@ -98,3 +98,25 @@ def erfexp_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.ErfExp, params_factories=erfexp_params_factory)
+
+
+def test_erfexp_serialization():
+    """Test ErfExp PDF serialization."""
+    obs = zfit.Space("x", (50, 130))
+
+    erfexp = zphys.pdf.ErfExp(mu=mu_true, beta=beta_true, gamma=gamma_true, n=n_true, obs=obs)
+
+    # Test serialization
+    pdf_dict = erfexp.to_dict()
+    assert pdf_dict['type'] == 'ErfExp'
+
+    # Test deserialization
+    reconstructed_erfexp = zphys.pdf.ErfExp.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(60.0, 120.0, 100)
+    original_values = erfexp.pdf(test_data)
+    reconstructed_values = reconstructed_erfexp.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)

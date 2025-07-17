@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 import zfit
 import zfit.z.numpy as znp
-from zfit.core.interfaces import ZfitParameter
+from zfit.interface import ZfitParameter
 from zfit.util.container import convert_to_container
 
 from .variables import params_from_fcn
@@ -44,7 +44,7 @@ def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
         return fcn.nll_grad(params)[1]
 
     def make_paramdict(params, *, paramnames=paramnames):
-        return {p: znp.array(v.value()) for p, v in zip(paramnames, params)}
+        return {p: znp.array(v.value()) for p, v in zip(paramnames, params, strict=False)}
 
     return zfit.loss.SimpleLoss(
         func=eval_func,

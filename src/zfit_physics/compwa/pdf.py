@@ -21,7 +21,7 @@ class ComPWAPDF(zfit.pdf.BasePDF):
         norm = norm.with_obs(obs)
         super().__init__(obs, params=params, name=name, extended=extended, autograd_params=[])
         self.intensity = intensity
-        norm = {ob: znp.array(ar) for ob, ar in zip(self.obs, z.unstack_x(norm))}
+        norm = {ob: znp.array(ar) for ob, ar in zip(self.obs, z.unstack_x(norm), strict=False)}
         self.norm_sample = norm
 
     @supports(norm=True)
@@ -41,9 +41,10 @@ class ComPWAPDF(zfit.pdf.BasePDF):
                 paramvalscomplex.append(znp.zeros_like(val, dtype=znp.complex128))
 
         def unnormalized_pdf_helper(x, paramvalsfloat, paramvalscomplex):
-            data = {ob: znp.array(ar) for ob, ar in zip(self.obs, x)}
+            data = {ob: znp.array(ar) for ob, ar in zip(self.obs, x, strict=False)}
             paramsinternal = {
-                n: c if isc else f for n, f, c, isc in zip(params.keys(), paramvalsfloat, paramvalscomplex, iscomplex)
+                n: c if isc else f
+                for n, f, c, isc in zip(params.keys(), paramvalsfloat, paramvalscomplex, iscomplex, strict=False)
             }
             self.intensity.update_parameters(paramsinternal)
             return self.intensity(data)

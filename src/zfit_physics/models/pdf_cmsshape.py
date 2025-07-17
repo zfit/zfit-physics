@@ -1,10 +1,18 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import tensorflow as tf
 import zfit
+from pydantic.v1 import Field
 from zfit import z
-from zfit.core.space import ANY_LOWER, ANY_UPPER, Space
+from zfit.core.serialmixin import SerializableMixin
+from zfit.dimension import Space
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
+from zfit.z import numpy as znp
 
 
 @z.function(wraps="tensor")
@@ -26,9 +34,9 @@ def cmsshape_pdf_func(x, m, beta, gamma):
     """
     half = 0.5
     two = 2.0
-    t1 = tf.math.exp(-gamma * (x - m))
+    t1 = znp.exp(-gamma * (x - m))
     t2 = tf.math.erfc(-beta * (x - m))
-    t3 = half * gamma * tf.math.exp(-((half * gamma / beta) ** two))
+    t3 = half * gamma * znp.exp(-((half * gamma / beta) ** two))
     return t1 * t2 * t3
 
 
@@ -53,7 +61,7 @@ def cmsshape_cdf_func(x, m, beta, gamma):
     two = 2.0
     y = x - m
     t1 = tf.math.erf(gamma / (two * beta) + beta * y)
-    t2 = tf.math.exp(-((gamma / (two * beta)) ** two) - gamma * y)
+    t2 = znp.exp(-((gamma / (two * beta)) ** two) - gamma * y)
     t3 = tf.math.erfc(-beta * y)
     return half * (t1 - t2 * t3) + half
 
@@ -79,7 +87,7 @@ def cmsshape_integral(limits: ztyping.SpaceType, params: dict, model) -> tf.Tens
     return upper_cdf - lower_cdf
 
 
-class CMSShape(zfit.pdf.BasePDF):
+class CMSShape(zfit.pdf.BasePDF, SerializableMixin):
     _N_OBS = 1
 
     def __init__(
@@ -156,5 +164,14 @@ class CMSShape(zfit.pdf.BasePDF):
         return cmsshape_pdf_func(x=x, m=m, beta=beta, gamma=gamma)
 
 
-cmsshape_integral_limits = Space(axes=(0,), limits=(((ANY_LOWER,),), ((ANY_UPPER,),)))
+cmsshape_integral_limits = Space(axes=(0,), lower=(Space.ANY_LOWER,), upper=(Space.ANY_UPPER,))
 CMSShape.register_analytic_integral(func=cmsshape_integral, limits=cmsshape_integral_limits)
+
+
+class CMSShapePDFRepr(BasePDFRepr):
+    _implementation = CMSShape
+    hs3_type: Literal["CMSShape"] = Field("CMSShape", alias="type")
+    x: SpaceRepr
+    m: Serializer.types.ParamInputTypeDiscriminated
+    beta: Serializer.types.ParamInputTypeDiscriminated
+    gamma: Serializer.types.ParamInputTypeDiscriminated

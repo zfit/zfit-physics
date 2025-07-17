@@ -7,6 +7,7 @@ Develop
 
 Major Features and Improvements
 -------------------------------
+- serialization for PDFs
 
 Breaking changes
 ------------------
@@ -16,15 +17,22 @@ Deprecations
 
 Bug fixes and small changes
 ---------------------------
+- upgraded legacy zfit exception import
 
 Experimental
 ------------
 
 Requirement changes
 -------------------
+- Python minimum version is now 3.10
 
 Thanks
 ------
+
+0.8.1
+========================
+
+Minor bug fixes, renaming legacy exceptions
 
 0.8.0 (7 Nov 2024)
 ========================

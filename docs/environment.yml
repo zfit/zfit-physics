@@ -1,10 +1,10 @@
-name: rtd38
+name: rtd312
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.9
-  - root<=6.30
+  - python=3.12
+  - root
   - uv
   - pip:
       - ../[dev]

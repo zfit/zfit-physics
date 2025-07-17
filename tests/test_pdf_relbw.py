@@ -1,8 +1,10 @@
 """Tests for relativistic Breit-Wigner PDF."""
 
+import numpy as np
 import pytest
 import tensorflow as tf
 import zfit
+import zfit.z.numpy as znp
 # Important, do the imports below
 from zfit.core.testing import tester
 
@@ -23,7 +25,10 @@ def test_relbw_pdf():
     # Test PDF here
     relbw, _ = create_relbw(m_true, gamma_true, limits=(0, 200))
     assert zfit.run(relbw.pdf(125.0)) == pytest.approx(0.4249, rel=1e-4)
-    assert relbw.pdf(tf.range(0.0, 200, 10_000)) <= relbw.pdf(125.0)
+    # Test that PDF value at a range point is valid
+    test_values = znp.linspace(0, 200, 10_000)
+    pdf_values = relbw.pdf(test_values)
+    np.testing.assert_array_less(pdf_values, np.ones_like(pdf_values) * relbw.pdf(125.0))
 
     sample = relbw.sample(1000)
     tf.debugging.assert_all_finite(sample.value(), "Some samples from the relbw PDF are NaN or infinite")
@@ -53,3 +58,25 @@ def relbw_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.RelativisticBreitWigner, params_factories=relbw_params_factory)
+
+
+def test_relbw_serialization():
+    """Test RelativisticBreitWigner PDF serialization."""
+    obs = zfit.Space("x", (0, 200))
+
+    relbw = zphys.pdf.RelativisticBreitWigner(m=m_true, gamma=gamma_true, obs=obs)
+
+    # Test serialization
+    pdf_dict = relbw.to_dict()
+    assert pdf_dict['type'] == 'RelativisticBreitWigner'
+
+    # Test deserialization
+    reconstructed_relbw = zphys.pdf.RelativisticBreitWigner.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(50.0, 180.0, 100)
+    original_values = relbw.pdf(test_data)
+    reconstructed_values = reconstructed_relbw.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)

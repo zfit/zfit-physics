@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
-from zfit.core.interfaces import ZfitParameter
+from zfit.interface import ZfitParameter
 
 if TYPE_CHECKING:
     try:
@@ -38,7 +38,7 @@ def nll_from_roofit(nll: ROOT.RooAbsReal, params: ZfitParameter | Iterable[ZfitP
     import zfit
 
     def roofit_eval(x):
-        for par, arg in zip(nll.getVariables(), x):
+        for par, arg in zip(nll.getVariables(), x, strict=False):
             par.setVal(arg)
         # following RooMinimizerFcn.cxx
         nll.setHideOffset(False)
