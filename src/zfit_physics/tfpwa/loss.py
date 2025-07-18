@@ -13,7 +13,7 @@ from zfit.util.container import convert_to_container
 
 from .variables import params_from_fcn
 
-ParamType = [Union[ZfitParameter, Iterable[ZfitParameter]]] | None
+ParamType = Union[ZfitParameter, Iterable[ZfitParameter]] | None
 
 
 def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
