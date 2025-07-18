@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     import tf_pwa
@@ -13,7 +13,7 @@ from zfit.util.container import convert_to_container
 
 from .variables import params_from_fcn
 
-ParamType = Optional[Union[ZfitParameter, Iterable[ZfitParameter]]]
+ParamType = Union[ZfitParameter, Iterable[ZfitParameter]] | None
 
 
 def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
