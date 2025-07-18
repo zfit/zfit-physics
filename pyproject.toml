@@ -188,6 +188,7 @@ ignore = [
     "PD013", # "melt over stack": df function, but triggers on tensors
     "NPY002", # "Use rnd generator in numpy" -> we use np.random for some legacy stuff but do use the new one where we can
     "T201", # "print used" -> we use print for displaying information in verbose mode
+    "PLC0415", # Import-outside-top-level
 
 ]
 isort.required-imports = ["from __future__ import annotations"]
