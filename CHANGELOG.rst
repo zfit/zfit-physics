@@ -2,6 +2,30 @@
 Changelog
 *********
 
+Develop
+========================
+
+Major Features and Improvements
+-------------------------------
+
+Breaking changes
+------------------
+
+Deprecations
+-------------
+
+Bug fixes and small changes
+---------------------------
+
+Experimental
+------------
+
+Requirement changes
+-------------------
+
+Thanks
+------
+
 0.9.0 (18 Jul 2025)
 ========================
 
