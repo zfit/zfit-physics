@@ -2,32 +2,20 @@
 Changelog
 *********
 
-Develop
+0.9.0 (18 Jul 2025)
 ========================
 
 Major Features and Improvements
 -------------------------------
 - serialization for PDFs
 
-Breaking changes
-------------------
-
-Deprecations
--------------
-
 Bug fixes and small changes
 ---------------------------
 - upgraded legacy zfit exception import
 
-Experimental
-------------
-
 Requirement changes
 -------------------
 - Python minimum version is now 3.10
-
-Thanks
-------
 
 0.8.1
 ========================
