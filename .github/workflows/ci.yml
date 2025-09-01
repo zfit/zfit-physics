@@ -45,7 +45,7 @@ jobs:
             jit: 0
     name: Tests on OS ${{ matrix.os }} with Python ${{ matrix.python-version }} and JIT ${{ matrix.jit }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: mamba-org/setup-micromamba@v2
         name: Set up Micromamba environment
         with:
