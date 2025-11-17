@@ -27,6 +27,26 @@ Requirement changes
 Thanks
 ------
 
+0.9.0 (18 Jul 2025)
+========================
+
+Major Features and Improvements
+-------------------------------
+- serialization for PDFs
+
+Bug fixes and small changes
+---------------------------
+- upgraded legacy zfit exception import
+
+Requirement changes
+-------------------
+- Python minimum version is now 3.10
+
+0.8.1
+========================
+
+Minor bug fixes, renaming legacy exceptions
+
 0.8.0 (7 Nov 2024)
 ========================
 

@@ -1,7 +1,14 @@
 from __future__ import annotations
 
+from typing import Literal
+
 import zfit
+from pydantic.v1 import Field
 from zfit import z
+from zfit.core.serialmixin import SerializableMixin
+from zfit.serialization import Serializer
+from zfit.serialization.pdfrepr import BasePDFRepr
+from zfit.serialization.spacerepr import SpaceRepr
 from zfit.util import ztyping
 from zfit.z import numpy as znp
 
@@ -22,7 +29,8 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
         `tf.Tensor`: The calculated PDF values.
 
     Notes:
-        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and http://hdl.handle.net/1794/9022, Equation IV.3
+        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and
+        http://hdl.handle.net/1794/9022, Equation IV.3
     """
     cond = znp.less(x, mu)
 
@@ -38,7 +46,7 @@ def cruijff_pdf_func(x, mu, sigmal, alphal, sigmar, alphar):
     return znp.exp(-0.5 * exponent)
 
 
-class Cruijff(zfit.pdf.BasePDF):
+class Cruijff(zfit.pdf.BasePDF, SerializableMixin):
     _N_OBS = 1
 
     def __init__(
@@ -57,12 +65,14 @@ class Cruijff(zfit.pdf.BasePDF):
     ):
         """Cruijff PDF, a Gaussian with two width, left and right, and non-Gaussian tails.
 
-        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and http://hdl.handle.net/1794/9022, Equation IV.3
+        Implementation from https://arxiv.org/abs/1005.4087, citation 22, and
+        http://hdl.handle.net/1794/9022, Equation IV.3
 
         .. math:
 
             f(x; \\mu, \\sigma_{L}, \\alpha_{L}, \\sigma_{R}, \\alpha_{R}) = \\begin{cases}
-            \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{L}^2 + \\alpha_{L} (x-\\mu)^2}\\right)}, \\mbox{for} x \\leqslant mu \\newline
+            \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{L}^2 + \\alpha_{L} (x-\\mu)^2}\\right)},
+            \\mbox{for} x \\leqslant mu \\newline
             \\exp{\\left(- \\frac{(x-\\mu)^2}{2 \\sigma_{R}^2 + \\alpha_{R} (x-\\mu)^2}\\right)}, \\mbox{for} x > mu
             \\end{cases}
 
@@ -118,3 +128,14 @@ class Cruijff(zfit.pdf.BasePDF):
         alphar = params["alphar"]
         x = x[0]
         return cruijff_pdf_func(x=x, mu=mu, sigmal=sigmal, alphal=alphal, sigmar=sigmar, alphar=alphar)
+
+
+class CruijffPDFRepr(BasePDFRepr):
+    _implementation = Cruijff
+    hs3_type: Literal["Cruijff"] = Field("Cruijff", alias="type")
+    x: SpaceRepr
+    mu: Serializer.types.ParamInputTypeDiscriminated
+    sigmal: Serializer.types.ParamInputTypeDiscriminated
+    alphal: Serializer.types.ParamInputTypeDiscriminated
+    sigmar: Serializer.types.ParamInputTypeDiscriminated
+    alphar: Serializer.types.ParamInputTypeDiscriminated

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -145,7 +147,7 @@ def test_wrapper_simple_compwa():
     # cannot convert, cannot compare to the ComPWA gradient as it's not available or erros
     # np.testing.assert_allclose(loss.gradient(), estimator.gradient(initial_parameters), rtol=1e-5)
 
-    minimizer = zfit.minimize.Minuit(verbosity=7, gradient=True)
+    minimizer = zfit.minimize.Minuit(gradient=True, mode=1)
     # minimizer = zfit.minimize.Minuit(verbosity=7, gradient='zfit')
     # minimizer = zfit.minimize.ScipyLBFGSBV1(verbosity=8)
     # minimizer = zfit.minimize.ScipyBFGS(verbosity=9)
@@ -171,11 +173,17 @@ def test_wrapper_simple_compwa():
     minuit2 = Minuit2(
         use_analytic_gradient=False,
     )
+    start = time.time()
     fit_result = minuit2.optimize(estimator, initial_parameters)
+    duration_compwa = time.time()- start
     # print(fit_result)
+    print("starting zfit minimizer")
+    start = time.time()
 
     with zfit.param.set_values(params, params):
         result = minimizer.minimize(loss, params=paramsfit)
+    duration_zfit = time.time() - start
+    print(f"Duration compwa {duration_compwa:.1f} zfit {duration_zfit:.1f}")
     # print(result)
     # TODO: test values? But ComPWA has bad values
     # for p in paramsfit:

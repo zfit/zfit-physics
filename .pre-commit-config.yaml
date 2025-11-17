@@ -2,7 +2,7 @@ ci:
   autoupdate_schedule: quarterly
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -21,7 +21,7 @@ repos:
 
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
+    rev: 6.1.0
     hooks:
       - id: isort
   - repo: local
@@ -45,13 +45,13 @@ repos:
 
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
+    rev: v3.20.0
     hooks:
       - id: pyupgrade
         args:
           - --py39-plus
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.7.0
+    rev: v2.8.0
     hooks:
       - id: setup-cfg-fmt
         args:
@@ -81,7 +81,7 @@ repos:
       - id: auto-walrus
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.8.6"
+    rev: "v0.13.3"
     hooks:
       - id: ruff
         types_or:

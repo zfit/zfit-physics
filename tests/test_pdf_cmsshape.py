@@ -74,3 +74,25 @@ def cmsshape_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.CMSShape, params_factories=cmsshape_params_factory)
+
+
+def test_cmsshape_serialization():
+    """Test CMSShape PDF serialization."""
+    obs = zfit.Space("x", (50, 130))
+
+    cmsshape = zphys.pdf.CMSShape(m=m_true, beta=beta_true, gamma=gamma_true, obs=obs)
+
+    # Test serialization
+    pdf_dict = cmsshape.to_dict()
+    assert pdf_dict['type'] == 'CMSShape'
+
+    # Test deserialization
+    reconstructed_cmsshape = zphys.pdf.CMSShape.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(60.0, 120.0, 100)
+    original_values = cmsshape.pdf(test_data)
+    reconstructed_values = reconstructed_cmsshape.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)

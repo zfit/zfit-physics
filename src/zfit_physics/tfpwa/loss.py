@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     import tf_pwa
 
 import zfit
 import zfit.z.numpy as znp
-from zfit.core.interfaces import ZfitParameter
+from zfit.interface import ZfitParameter
 from zfit.util.container import convert_to_container
 
 from .variables import params_from_fcn
 
-ParamType = Optional[Union[ZfitParameter, Iterable[ZfitParameter]]]
+ParamType = Union[ZfitParameter, Iterable[ZfitParameter]] | None
 
 
 def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
@@ -44,7 +44,7 @@ def nll_from_fcn(fcn: tf_pwa.model.FCN, *, params: ParamType = None):
         return fcn.nll_grad(params)[1]
 
     def make_paramdict(params, *, paramnames=paramnames):
-        return {p: znp.array(v.value()) for p, v in zip(paramnames, params)}
+        return {p: znp.array(v.value()) for p, v in zip(paramnames, params, strict=False)}
 
     return zfit.loss.SimpleLoss(
         func=eval_func,

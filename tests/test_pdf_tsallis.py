@@ -73,3 +73,25 @@ def tsallis_params_factory():
 
 
 tester.register_pdf(pdf_class=zphys.pdf.Tsallis, params_factories=tsallis_params_factory)
+
+
+def test_tsallis_serialization():
+    """Test Tsallis PDF serialization."""
+    obs = zfit.Space("x", (0, 150))
+
+    tsallis = zphys.pdf.Tsallis(m=m_true, t=t_true, n=n_true, obs=obs)
+
+    # Test serialization
+    pdf_dict = tsallis.to_dict()
+    assert pdf_dict['type'] == 'Tsallis'
+
+    # Test deserialization
+    reconstructed_tsallis = zphys.pdf.Tsallis.from_dict(pdf_dict)
+
+    # Verify functionality - test that the PDFs produce the same values
+    test_data = tf.linspace(50.0, 130.0, 100)
+    original_values = tsallis.pdf(test_data)
+    reconstructed_values = reconstructed_tsallis.pdf(test_data)
+
+    # Check that values are close (allowing for small numerical differences)
+    np.testing.assert_allclose(zfit.run(original_values), zfit.run(reconstructed_values), rtol=1e-10)

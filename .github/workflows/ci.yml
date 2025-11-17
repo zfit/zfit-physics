@@ -34,17 +34,24 @@ jobs:
       fail-fast: False
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ "3.9", "3.12" ]
-        jit: [ "0", "1" ]
+        python-version: [ "3.10" ]
+        jit: [ "1" ]
+        include:
+          - os: ubuntu-latest
+            python-version: "3.12"
+            jit: 1
+          - os: ubuntu-latest
+            python-version: "3.10"
+            jit: 0
     name: Tests on OS ${{ matrix.os }} with Python ${{ matrix.python-version }} and JIT ${{ matrix.jit }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: mamba-org/setup-micromamba@v2
         name: Set up Micromamba environment
         with:
           environment-name: test-env
-          create-args: >-  # install ROOT only on non-windows. ROOT > 6.30 fails currently, and 6.30 is not available for 3.12
-            python=${{ matrix.python-version }} pip uv ${{ matrix.os != 'windows-latest' && matrix.python-version !=  '3.12' && 'root=6.30' || '' }}
+          create-args: >-  # install ROOT only on non-windows
+            python=${{ matrix.python-version }} pip uv ${{ matrix.os != 'windows-latest' && 'root' || '' }}
       - name: Install Python dependencies
         run: |
           which python
