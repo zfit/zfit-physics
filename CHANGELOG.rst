@@ -7,6 +7,7 @@ Develop
 
 Major Features and Improvements
 -------------------------------
+- Support python 3.10 to 3.13
 
 Breaking changes
 ------------------
