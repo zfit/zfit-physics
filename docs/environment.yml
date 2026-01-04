@@ -1,4 +1,4 @@
-name: rtd312
+name: rtd313
 channels:
   - conda-forge
   - defaults
