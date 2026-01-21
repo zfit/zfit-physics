@@ -7,6 +7,7 @@ Develop
 
 Major Features and Improvements
 -------------------------------
+- add Hypatia2 PDF
 
 Breaking changes
 ------------------
