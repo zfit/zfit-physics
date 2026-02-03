@@ -1,10 +1,11 @@
 name: rtd312
 channels:
   - conda-forge
-  - defaults
+  - nodefaults
 dependencies:
   - python=3.12
   - root
   - uv
+  - pip
   - pip:
       - ../[dev]
