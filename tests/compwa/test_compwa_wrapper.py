@@ -28,9 +28,9 @@ def create_amplitude():
     model_builder = ampform.get_builder(reaction)
     model_builder.scalar_initial_state_mass = True
     model_builder.stable_final_state_ids = [0, 1, 2]
-    model_builder.set_dynamics("J/psi(1S)", create_non_dynamic_with_ff)
+    model_builder.dynamics.assign("J/psi(1S)", create_non_dynamic_with_ff)
     for name in reaction.get_intermediate_particles().names:
-        model_builder.set_dynamics(name, create_relativistic_breit_wigner_with_ff)
+        model_builder.dynamics.assign(name, create_relativistic_breit_wigner_with_ff)
     model = model_builder.formulate()
 
 
