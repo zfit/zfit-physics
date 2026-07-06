@@ -42,7 +42,7 @@ def test_nll_from_pyhf_simple():
     data = datanp + pdf.config.auxdata
 
     nll = zpyhf.loss.nll_from_pyhf(data, pdf)
-    assert nll.value().shape == ()
+    assert nll.value().shape == ()  # nosec B101
 
     minimizer = zfit.minimize.Minuit(verbosity=7)
     resultz = minimizer.minimize(nll)
