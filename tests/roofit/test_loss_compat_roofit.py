@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-_ = pytest.importorskip("ROOT")
+pytest.importorskip("ROOT")
 
 
 def test_loss_registry():

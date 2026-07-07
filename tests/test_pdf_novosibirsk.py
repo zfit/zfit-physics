@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-ROOT = pytest.importorskip("ROOT")
+pytest.importorskip("ROOT")
 import tensorflow as tf
 import zfit
 from zfit.core.testing import tester
@@ -29,6 +29,8 @@ def create_novosibirsk(mu, sigma, lambd, limits):
 
 
 def create_and_eval_root_novosibirsk_and_integral(mu, sigma, lambd, limits, x, lower, upper):
+    import ROOT
+
     obs = ROOT.RooRealVar("obs", "obs", *limits)
     peak = ROOT.RooRealVar("peak", "peak", mu)
     width = ROOT.RooRealVar("width", "width", sigma)

@@ -65,6 +65,7 @@ dev = [
     "flake8>=3.5.0",
     "jupyter-sphinx",
     "myst-nb",
+    "numba>=0.61",
     "numba-stats",
     "pip>=9.0.1",
     "pre-commit",
