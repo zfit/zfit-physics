@@ -42,6 +42,7 @@ def test_nll_from_pyhf_simple():
     data = datanp + pdf.config.auxdata
 
     nll = zpyhf.loss.nll_from_pyhf(data, pdf)
+    assert nll.value().shape == ()  # nosec B101
 
     minimizer = zfit.minimize.Minuit(verbosity=7)
     resultz = minimizer.minimize(nll)
@@ -50,4 +51,4 @@ def test_nll_from_pyhf_simple():
         data, pdf, pdf.config.suggested_init(), pdf.config.suggested_bounds(), return_fitted_val=True
     )
     assert np.allclose(resultz.fmin, fmin / 2, atol=1e-4)
-    np.testing.assert_allclose(resultz.values, values, atol = 5e-3)
+    np.testing.assert_allclose(resultz.values, values, atol=5e-3)

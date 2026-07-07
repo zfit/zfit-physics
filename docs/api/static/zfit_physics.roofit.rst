@@ -20,6 +20,7 @@ For example via conda:
     from ROOT import RooArgSet, RooDataSet, RooGaussian, RooRealVar
 
     data = np.random.normal(loc=2.0, scale=3.0, size=1000)
+    data = data[(data >= -2) & (data <= 3)]
 
     mur = RooRealVar("mu", "mu", 1.2, -4, 6)
     sigmar = RooRealVar("sigma", "sigma", 1.3, 0.5, 10)
