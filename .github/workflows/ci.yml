@@ -50,8 +50,8 @@ jobs:
         name: Set up Micromamba environment
         with:
           environment-name: test-env
-          create-args: >-
-            python=${{ matrix.python-version }} pip uv ${{ matrix.os != 'windows-latest' && 'root' || '' }}
+          create-args: >-  # PyROOT and TensorFlow have an LLVM symbol collision on macOS
+            python=${{ matrix.python-version }} pip uv ${{ matrix.os == 'ubuntu-latest' && 'root' || '' }}
       - name: Install Python dependencies
         run: |
           which python
