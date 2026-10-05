@@ -18,5 +18,5 @@ for rest_file in parsed_args.files:
         underline = f.readline()[0] * len(replacement)
         lower_file = f.read()
     with Path(rest_file).open("w") as f:
-        f.write("\n".join((replacement, underline, lower_file)))
+        f.write(f"{replacement}\n{underline}\n{lower_file}")
     n_files += 1
