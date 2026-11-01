@@ -67,12 +67,12 @@ def test_example1_tfpwa():
         fit_result = config.fit(method="BFGS")
 
         kwargs = dict(gradient='zfit', tol=0.01)
-        assert pytest.approx(nll.value(), 0.001) == initial_val
+        assert pytest.approx(float(nll.value()), 0.001) == float(initial_val)
         v, g, h = fcn.nll_grad_hessian()
         vz, gz, hz = nll.value_gradient_hessian()
         hz1 = nll.hessian()
         gz1 = nll.gradient()
-        assert pytest.approx(v, 0.001) == vz
+        assert pytest.approx(float(v), 0.001) == float(vz)
         np.testing.assert_allclose(g, gz, atol=0.001)
         np.testing.assert_allclose(h, hz, atol=0.001)
         np.testing.assert_allclose(h, hz1, atol=0.001)
@@ -91,4 +91,4 @@ def test_example1_tfpwa():
 
     assert result.converged
     tol = 3.0
-    assert result.fmin == pytest.approx(fit_result.min_nll, abs=tol)
+    assert float(result.fmin) == pytest.approx(float(fit_result.min_nll), abs=tol)
